@@ -1,6 +1,11 @@
 package com.amlopezc.bikesmanager.entity;
 
-public class BikeStation {
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class BikeStation implements Parcelable {
+
 
     // Coordinates
     private double mLatitude;
@@ -25,6 +30,48 @@ public class BikeStation {
         this.mBrokenBikes = mBrokenBikes;
         this.mReservedBikes = mReservedBikes;
     }
+
+    //<editor-fold desc="PARCELABLE INTERFACE SUPPORT">
+    public static final Creator<BikeStation> CREATOR = new Creator<BikeStation>() {
+        @Override
+        public BikeStation createFromParcel(Parcel in) {
+            return new BikeStation(in);
+        }
+
+        @Override
+        public BikeStation[] newArray(int size) {
+            return new BikeStation[size];
+        }
+    };
+
+    public BikeStation(Parcel in) {
+        this.mLatitude = in.readDouble();
+        this.mLongitude = in.readDouble();
+        this.mNumber = in.readInt();
+        this.mDescription = in.readString();
+        this.mTotalBikes = in.readInt();
+        this.mAvailableBikes = in.readInt();
+        this.mBrokenBikes = in.readInt();
+        this.mReservedBikes = in.readInt();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeDouble(mLatitude);
+        dest.writeDouble(mLongitude);
+        dest.writeInt(mNumber);
+        dest.writeString(mDescription);
+        dest.writeInt(mTotalBikes);
+        dest.writeInt(mAvailableBikes);
+        dest.writeInt(mBrokenBikes);
+        dest.writeInt(mReservedBikes);
+    }
+    //</editor-fold>
 
     //<editor-fold desc="GETTERS AND SETTERS">
     public double getmLatitude() {
@@ -95,5 +142,7 @@ public class BikeStation {
     public String getAvailabilityMessage() {
         return String.format("%d\\%d", getmAvailableBikes(), getmTotalBikes());
     }
+
+
 
 }

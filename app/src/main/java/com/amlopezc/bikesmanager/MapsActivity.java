@@ -1,10 +1,12 @@
 package com.amlopezc.bikesmanager;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.amlopezc.bikesmanager.entity.BikeStation;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -17,22 +19,35 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+
 
 public class MapsActivity extends AppCompatActivity {
 
-    // Create a LatLngBounds that includes Madrid.
-    public static final LatLngBounds MADRID = new LatLngBounds(
-            new LatLng(40.38, -3.72), new LatLng(40.48, -3.67));
+    public final static String EXTRA_STATIONS = "com.amlopezc.bikesManager.STATIONS";
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-    private ArrayList<BikeStation> mStations; //temp, adding stations.
+    private ArrayList<BikeStation> mStations = new ArrayList<>(); //temp, adding stations.
+    // Create a LatLngBounds that includes Madrid.
+    public final LatLngBounds MADRID = new LatLngBounds(new LatLng(40.38, -3.72),
+            new LatLng(40.48, -3.67));
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        initData(); //temp, just filling an ArrayList with BikeStations
         setUpMapIfNeeded();
+    }
+
+    private void initData() {
+        mStations.add(new BikeStation(40.45, -3.68, 1, "Av. Alberto Alcocer, 162", 10, 6, 0, 0));
+        mStations.add(new BikeStation(40.45, -3.69, 2, "Av. General Perón, 38", 10, 10, 0, 0));
+        mStations.add(new BikeStation(40.42, -3.68, 3, "Calle de Alcalá, 75", 10, 1, 0, 0));
+        mStations.add(new BikeStation(40.41, -3.70, 4, "Puerta del Sol", 10, 5, 0, 0));
+        mStations.add(new BikeStation(40.41, -3.71, 5, "Plaza de la Cebada, 10", 10, 4, 0, 0));
+        mStations.add(new BikeStation(40.42, -3.71, 6, "Calle Bailén, 9", 10, 7, 0, 0));
+        mStations.add(new BikeStation(40.42, -3.70, 7, "Calle Gran Vía, 46", 10, 6, 0, 0));
+        mStations.add(new BikeStation(40.40, -3.69, 8, "Estación de Atocha", 10, 0, 0, 0));
     }
 
     @Override
@@ -40,7 +55,6 @@ public class MapsActivity extends AppCompatActivity {
         super.onResume();
         setUpMapIfNeeded();
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -54,16 +68,23 @@ public class MapsActivity extends AppCompatActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch(item.getItemId()){
+            case R.id.action_settings:
+                Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.action_list:
+                Intent intent = new Intent(this, ListActivity.class);
+                intent.putParcelableArrayListExtra(EXTRA_STATIONS, mStations);
+                startActivity(intent);
+                return true;
+            case R.id.action_chart:
+                Toast.makeText(this, "Chart", Toast.LENGTH_SHORT).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
 
-        return super.onOptionsItemSelected(item);
     }
-
 
     /**
      * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
@@ -108,23 +129,10 @@ public class MapsActivity extends AppCompatActivity {
     }
 
     private void addMarkers() {
-        BikeStation bikeStation;
 
-        mStations = new ArrayList<>();
-        mStations.add(new BikeStation(40.45, -3.68, 1, "Av. Alberto Alcocer, 162", 10, 6, 0, 0));
-        mStations.add(new BikeStation(40.45, -3.69, 2, "Av. General Perón, 38", 10, 10, 0, 0));
-        mStations.add(new BikeStation(40.42, -3.68, 3, "Calle de Alcalá, 75", 10, 1, 0, 0));
-        mStations.add(new BikeStation(40.41, -3.70, 4, "Puerta del Sol", 10, 5, 0, 0));
-        mStations.add(new BikeStation(40.41, -3.71, 5, "Plaza de la Cebada, 10", 10, 4, 0, 0));
-        mStations.add(new BikeStation(40.42, -3.71, 6, "Calle Bailén, 9", 10, 7, 0, 0));
-        mStations.add(new BikeStation(40.42, -3.70, 7, "Calle Gran Vía, 46", 10, 6, 0, 0));
-        mStations.add(new BikeStation(40.40, -3.69, 8, "Estación de Atocha", 10, 0, 0, 0));
-
-        Iterator iterator = mStations.iterator();
         BitmapDescriptor color;
 
-        while(iterator.hasNext()) {
-            bikeStation = (BikeStation)iterator.next();
+        for(BikeStation bikeStation : mStations) {
 
             if(bikeStation.getmAvailableBikes() == 0)
                 color = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
