@@ -6,25 +6,24 @@ import android.os.Parcelable;
 
 public class BikeStation implements Parcelable {
 
-
     // Coordinates
     private double mLatitude;
     private double mLongitude;
-    //Number and description (address basically)
+    //General Data
     private int mNumber;
-    private String mDescription;
+    private String mAddress;
     //Station numbers
     private int mTotalBikes;
     private int mAvailableBikes;
     private int mBrokenBikes;
     private int mReservedBikes;
 
-    public BikeStation(double mLatitude, double mLongitude, int mNumber, String mDescription,
+    public BikeStation(double mLatitude, double mLongitude, int mNumber, String mAddress,
                        int mTotalBikes, int mAvailableBikes, int mBrokenBikes, int mReservedBikes) {
         this.mLatitude = mLatitude;
         this.mLongitude = mLongitude;
         this.mNumber = mNumber;
-        this.mDescription = mDescription;
+        this.mAddress = mAddress;
         this.mTotalBikes = mTotalBikes;
         this.mAvailableBikes = mAvailableBikes;
         this.mBrokenBikes = mBrokenBikes;
@@ -48,7 +47,7 @@ public class BikeStation implements Parcelable {
         this.mLatitude = in.readDouble();
         this.mLongitude = in.readDouble();
         this.mNumber = in.readInt();
-        this.mDescription = in.readString();
+        this.mAddress = in.readString();
         this.mTotalBikes = in.readInt();
         this.mAvailableBikes = in.readInt();
         this.mBrokenBikes = in.readInt();
@@ -65,7 +64,7 @@ public class BikeStation implements Parcelable {
         dest.writeDouble(mLatitude);
         dest.writeDouble(mLongitude);
         dest.writeInt(mNumber);
-        dest.writeString(mDescription);
+        dest.writeString(mAddress);
         dest.writeInt(mTotalBikes);
         dest.writeInt(mAvailableBikes);
         dest.writeInt(mBrokenBikes);
@@ -74,73 +73,73 @@ public class BikeStation implements Parcelable {
     //</editor-fold>
 
     //<editor-fold desc="GETTERS AND SETTERS">
-    public double getmLatitude() {
+    public double getLatitude() {
         return mLatitude;
     }
 
-    public void setmLatitude(double mLatitude) {
+    public void setLatitude(double mLatitude) {
         this.mLatitude = mLatitude;
     }
 
-    public double getmLongitude() {
+    public double getLongitude() {
         return mLongitude;
     }
 
-    public void setmLongitude(double mLongitude) {
+    public void setLongitude(double mLongitude) {
         this.mLongitude = mLongitude;
     }
 
-    public int getmNumber() {
+    public int getNumber() {
         return mNumber;
     }
 
-    public void setmNumber(int mNumber) {
+    public void setNumber(int mNumber) {
         this.mNumber = mNumber;
     }
 
-    public String getmDescription() {
-        return mDescription;
+    public String getAddress() {
+        return mAddress;
     }
 
-    public void setmDescription(String mDescription) {
-        this.mDescription = mDescription;
+    public void setAddress(String mDescription) {
+        this.mAddress = mDescription;
     }
 
-    public int getmTotalBikes() {
+    public int getTotalBikes() {
         return mTotalBikes;
     }
 
-    public void setmTotalBikes(int mTotalBikes) {
+    public void setTotalBikes(int mTotalBikes) {
         this.mTotalBikes = mTotalBikes;
     }
 
-    public int getmAvailableBikes() {
+    public int getAvailableBikes() {
         return mAvailableBikes;
     }
 
-    public void setmAvailableBikes(int mAvailableBikes) {
+    public void setAvailableBikes(int mAvailableBikes) {
         this.mAvailableBikes = mAvailableBikes;
     }
 
-    public int getmBrokenBikes() {
+    public int getBrokenBikes() {
         return mBrokenBikes;
     }
 
-    public void setmBrokenBikes(int mBrokenBikes) {
+    public void setBrokenBikes(int mBrokenBikes) {
         this.mBrokenBikes = mBrokenBikes;
     }
 
-    public int getmReservedBikes() {
+    public int getReservedBikes() {
         return mReservedBikes;
     }
 
-    public void setmReservedBikes(int mReservedBikes) {
+    public void setReservedBikes(int mReservedBikes) {
         this.mReservedBikes = mReservedBikes;
     }
     //</editor-fold>
 
     public String getAvailabilityMessage() {
-        return String.format("%d\\%d", getmAvailableBikes(), getmTotalBikes());
+        return String.format("%d/%d", getAvailableBikes(), getTotalBikes());
     }
 
 

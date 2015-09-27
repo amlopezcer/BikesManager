@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.amlopezc.bikesmanager.entity.BikeStation;
+import com.amlopezc.bikesmanager.util.ExpandableListAdapter;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -23,7 +24,9 @@ import java.util.ArrayList;
 
 public class MapsActivity extends AppCompatActivity {
 
-    public final static String EXTRA_STATIONS = "com.amlopezc.bikesManager.STATIONS";
+    //Constants for the list intent
+    public final static String EXTRA_STATIONS = "STATIONS";
+    public final static int CODE_LIST = 1; //
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private ArrayList<BikeStation> mStations = new ArrayList<>(); //temp, adding stations.
@@ -75,7 +78,7 @@ public class MapsActivity extends AppCompatActivity {
             case R.id.action_list:
                 Intent intent = new Intent(this, ListActivity.class);
                 intent.putParcelableArrayListExtra(EXTRA_STATIONS, mStations);
-                startActivity(intent);
+                startActivityForResult(intent, CODE_LIST);
                 return true;
             case R.id.action_chart:
                 Toast.makeText(this, "Chart", Toast.LENGTH_SHORT).show();
@@ -134,20 +137,34 @@ public class MapsActivity extends AppCompatActivity {
 
         for(BikeStation bikeStation : mStations) {
 
-            if(bikeStation.getmAvailableBikes() == 0)
+            if(bikeStation.getAvailableBikes() == 0)
                 color = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
-            else if (bikeStation.getmAvailableBikes() < 5)
+            else if (bikeStation.getAvailableBikes() < 5)
                 color = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW);
             else
                 color = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
 
             mMap.addMarker(new MarkerOptions().
-                    position(new LatLng(bikeStation.getmLatitude(), bikeStation.getmLongitude())).
-                    title(bikeStation.getmDescription()).
+                    position(new LatLng(bikeStation.getLatitude(), bikeStation.getLongitude())).
+                    title(bikeStation.getAddress()).
                     snippet(bikeStation.getAvailabilityMessage()).
                     icon(color));
         }
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        // Receiving coordinates from the list to position the camera
+        if(requestCode == CODE_LIST && resultCode == ExpandableListAdapter.CODE_OK) {
+            Bundle bundle = data.getBundleExtra(ExpandableListAdapter.EXTRA_RESULT);
+
+            Double latCoord = bundle.getDouble(ExpandableListAdapter.BUNDLE_LAT);
+            Double longCoord = bundle.getDouble(ExpandableListAdapter.BUNDLE_LONG);
+
+            LatLng marker= new LatLng(latCoord, longCoord );
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker, 15));
+        }
     }
 }
 

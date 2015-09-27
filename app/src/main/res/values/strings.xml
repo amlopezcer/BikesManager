@@ -2,8 +2,17 @@
     <string name="app_name">Bikes Manager</string>
     <string name="title_activity_maps">Bikes Manager</string>
     <string name="action_settings">Settings</string>
-    <string name="action_list">Ver listado</string>
-    <string name="action_chart">Ver gráfico</string>
+
+    <string name="action_list">List</string>
+    <string name="action_chart">Chart</string>
+
     <string name="title_activity_list">ListActivity</string>
-    <string name="hello_world">Hello world!</string>
+
+    <string name="listViewItem_button_showInMap">Show in map</string>
+    <string name="listViewItem_textView_total">Total:</string>
+    <string name="listViewItem_textView_available">Available:</string>
+    <string name="listViewItem_textView_reserved">Reserved:</string>
+    <string name="listViewItem_textView_broken">Broken:</string>
+    <string name="listViewItem_textView_lastBooking">Last Booking:</string>
+
 </resources>

@@ -19,7 +19,7 @@ public class ListActivity extends AppCompatActivity {
     private ExpandableListAdapter mExpandableListAdapter;
     private ExpandableListView mExpandableListView;
     private List<String> mListDataHeader;
-    private HashMap<String, List<BikeStation>> mListDataChild;
+    private HashMap<String, BikeStation> mListDataChild;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,47 +37,17 @@ public class ListActivity extends AppCompatActivity {
         mListDataChild = new HashMap<>();
 
         Intent intent = getIntent();
-        ArrayList<BikeStation> list = intent.getParcelableArrayListExtra(MapsActivity.
+        ArrayList<BikeStation> bikeStationList = intent.getParcelableArrayListExtra(MapsActivity.
                 EXTRA_STATIONS);
 
-        //Adding header data
-        mListDataHeader.add("Available bikes");
-        mListDataHeader.add("All stations");
+        BikeStation bikeStation;
 
-        //Adding child data
-        ArrayList<BikeStation> availableStations = new ArrayList<>();
-        ArrayList<BikeStation> allStations = new ArrayList<>();
-
-        for(BikeStation bikeStation : list) {
-            if(bikeStation.getmAvailableBikes() > 0)
-                availableStations.add(bikeStation);
-            allStations.add(bikeStation);
+        for(int i = 0; i < bikeStationList.size(); i++) {
+            bikeStation = bikeStationList.get(i);
+            mListDataHeader.add(bikeStation.getAddress());
+            mListDataChild.put(mListDataHeader.get(i), bikeStation);
         }
-
-        mListDataChild.put(mListDataHeader.get(0), availableStations);
-        mListDataChild.put(mListDataHeader.get(1), allStations);
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_list, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 }

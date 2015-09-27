@@ -1,13 +1,14 @@
 package com.amlopezc.bikesmanager.util;
 
-
 import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Color;
+import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.amlopezc.bikesmanager.R;
 import com.amlopezc.bikesmanager.entity.BikeStation;
@@ -17,35 +18,43 @@ import java.util.List;
 
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
+    //intent and bundle
+    public static final String EXTRA_RESULT = "COORDINATES";
+    public static final int CODE_OK = 1;
+    public static final String BUNDLE_LAT = "LAT";
+    public static final String BUNDLE_LONG = "LONG";
+
+
     private Activity mContext;
     private List<String> mListDataHeader; //Groups (Bike stations)
-    private HashMap<String, List<BikeStation>> mListDataChild; //Bike stations details
+    private HashMap<String, BikeStation> mChildData; //Bike stations details
+
 
     public ExpandableListAdapter(Activity mContext, List<String> mListDataHeader, HashMap<String,
-            List<BikeStation>> mListDataChild) {
+            BikeStation> mChildData) {
         this.mContext = mContext;
         this.mListDataHeader = mListDataHeader;
-        this.mListDataChild = mListDataChild;
+        this.mChildData = mChildData;
     }
 
     @Override
     public int getGroupCount() {
-        return this.mListDataHeader.size();
+        return mListDataHeader.size();
     }
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        return this.mListDataChild.get(this.mListDataHeader.get(groupPosition)).size();
+        return 1;
     }
 
     @Override
     public Object getGroup(int groupPosition) {
-        return this.mListDataHeader.get(groupPosition);
+        return mListDataHeader.get(groupPosition);
     }
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        return this.mListDataChild.get(this.mListDataHeader.get(groupPosition)).get(childPosition);
+        return mChildData.get(mListDataHeader.get(groupPosition));
     }
 
     @Override
@@ -60,7 +69,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public boolean hasStableIds() {
-        return false;
+        return true;
     }
 
     @Override
@@ -83,24 +92,58 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             convertView = mContext.getLayoutInflater().inflate(R.layout.listview_item, parent,
                     false);
 
-        final BikeStation actual = (BikeStation) this.getChild(groupPosition, childPosition);
-        final TextView tv_ListChild = (TextView) convertView.findViewById(R.id.textView_itemList);
-        tv_ListChild.setText(actual.getmDescription());
-
-        Button btn = (Button) convertView.findViewById(R.id.button_listItem);
+        final BikeStation actual = (BikeStation) getChild(groupPosition, childPosition);
+        setChildData(convertView, actual);
+        Button btn = (Button) convertView.findViewById(R.id.button_showMap);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(mContext, tv_ListChild.getText(), Toast.LENGTH_SHORT).show();
+
+
+                // Returning to the maps activity with chosen coordinates
+                /*double[] coords = new double[2];
+                coords[0] = actual.getLatitude();
+                coords[1] = actual.getLongitude();*/
+
+                Bundle bundle = new Bundle();
+                bundle.putDouble(BUNDLE_LAT, actual.getLatitude());
+                bundle.putDouble(BUNDLE_LONG, actual.getLongitude());
+
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra(EXTRA_RESULT, bundle);
+                mContext.setResult(CODE_OK, returnIntent);
+
+                mContext.finish();
             }
         });
 
         return convertView;
-
     }
 
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
+    }
+
+    private void setChildData(View convertView, BikeStation actual) {
+        TextView tv_ListChild;
+
+        tv_ListChild = (TextView) convertView.findViewById(R.id.textView_totalNumber);
+        tv_ListChild.setText(Integer.toString(actual.getTotalBikes()));
+        tv_ListChild = (TextView) convertView.findViewById(R.id.textView_availableNumber);
+        tv_ListChild.setText(Integer.toString(actual.getAvailableBikes()));
+        //Color for available bikes number
+        if(actual.getAvailableBikes() == 0)
+            tv_ListChild.setTextColor(Color.RED);
+        else if (actual.getTotalBikes() - actual.getAvailableBikes() > actual.getAvailableBikes())
+            tv_ListChild.setTextColor(Color.rgb(255, 128, 0)); //Orange
+        else
+            tv_ListChild.setTextColor(Color.rgb(0, 102, 0)); // Dark green
+        tv_ListChild = (TextView) convertView.findViewById(R.id.textView_reservedNumber);
+        tv_ListChild.setText(Integer.toString(actual.getReservedBikes()));
+        tv_ListChild = (TextView) convertView.findViewById(R.id.textView_brokenNumber);
+        tv_ListChild.setText(Integer.toString(actual.getBrokenBikes()));
+        tv_ListChild = (TextView) convertView.findViewById(R.id.textView_coordinates);
+        tv_ListChild.setText(String.format("%f, %f", actual.getLatitude(), actual.getLongitude()));
     }
 }

@@ -5,17 +5,108 @@
     android:layout_height="match_parent"
     android:padding="8dp">
 
-    <TextView android:id="@+id/textView_itemList"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceListItem"
-        android:text="Large Text"
-        android:paddingLeft="?android:attr/expandableListPreferredChildIndicatorLeft" />
+    <TableLayout android:id="@+id/tableLayout_data"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-    <Button android:id="@+id/button_listItem"
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView android:id="@+id/textView_total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceListItem"
+                android:text="@string/listViewItem_textView_total" />
+            <TextView android:id="@+id/textView_totalNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/itemList_TextNumberMargin"
+                android:layout_marginStart="@dimen/itemList_TextNumberMargin"
+                android:textAppearance="?android:attr/textAppearanceListItem"
+                android:layout_gravity="end" />
+            <TextView android:id="@+id/textView_available"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/listView_figuresMargin"
+                android:layout_marginStart="@dimen/listView_figuresMargin"
+                android:textAppearance="?android:attr/textAppearanceListItem"
+                android:text="@string/listViewItem_textView_available"/>
+            <TextView android:id="@+id/textView_availableNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/itemList_TextNumberMargin"
+                android:layout_marginStart="@dimen/itemList_TextNumberMargin"
+                android:textAppearance="?android:attr/textAppearanceListItem"
+                android:layout_gravity="end" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView android:id="@+id/textView_reserved"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceListItem"
+                android:text="@string/listViewItem_textView_reserved"/>
+            <TextView android:id="@+id/textView_reservedNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/itemList_TextNumberMargin"
+                android:layout_marginStart="@dimen/itemList_TextNumberMargin"
+                android:textAppearance="?android:attr/textAppearanceListItem"
+                android:layout_gravity="end" />
+            <TextView android:id="@+id/textView_broken"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/listView_figuresMargin"
+                android:layout_marginStart="@dimen/listView_figuresMargin"
+                android:textAppearance="?android:attr/textAppearanceListItem"
+                android:text="@string/listViewItem_textView_broken"/>
+            <TextView android:id="@+id/textView_brokenNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceListItem"
+                android:layout_marginLeft="@dimen/itemList_TextNumberMargin"
+                android:layout_marginStart="@dimen/itemList_TextNumberMargin"
+                android:layout_gravity="end" />
+        </TableRow>
+    </TableLayout>
+
+    <TextView android:id="@+id/textView_coordinates"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/textView_itemList"
-        android:text="Button 1"/>
+        android:textAppearance="?android:attr/textAppearanceListItem"
+        android:layout_below="@id/tableLayout_data"
+        android:layout_marginTop="@dimen/listView_figuresMargin" />
+
+    <TextView android:id="@+id/textView_lastBooking"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceListItem"
+        android:layout_below="@id/textView_coordinates"
+        android:layout_marginTop="@dimen/listView_figuresMargin"
+        android:text="@string/listViewItem_textView_lastBooking"/>
+
+    <TextView android:id="@+id/textView_lastBookingData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceListItem"
+        android:layout_toRightOf="@id/textView_lastBooking"
+        android:layout_toEndOf="@id/textView_lastBooking"
+        android:layout_below="@id/textView_coordinates"
+        android:layout_marginTop="@dimen/listView_figuresMargin"
+        android:layout_marginLeft="@dimen/itemList_TextNumberMargin"
+        android:layout_marginStart="@dimen/itemList_TextNumberMargin" />
+
+    <Button android:id="@+id/button_showMap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/textView_lastBooking"
+        android:layout_marginTop="@dimen/listView_figuresMargin"
+        android:text="@string/listViewItem_button_showInMap"
+        style="?android:attr/borderlessButtonStyle"
+        android:textColor="#2E7D32"/>
 
 </RelativeLayout>
