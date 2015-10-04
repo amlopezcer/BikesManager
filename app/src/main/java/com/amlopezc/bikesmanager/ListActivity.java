@@ -16,8 +16,6 @@ import java.util.List;
 
 public class ListActivity extends AppCompatActivity {
 
-    private ExpandableListAdapter mExpandableListAdapter;
-    private ExpandableListView mExpandableListView;
     private List<String> mListDataHeader;
     private HashMap<String, BikeStation> mListDataChild;
 
@@ -25,6 +23,9 @@ public class ListActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
+
+        ExpandableListAdapter mExpandableListAdapter;
+        ExpandableListView mExpandableListView;
 
         mExpandableListView = (ExpandableListView) findViewById(R.id.expListView_list);
         prepareListData();
@@ -37,8 +38,8 @@ public class ListActivity extends AppCompatActivity {
         mListDataChild = new HashMap<>();
 
         Intent intent = getIntent();
-        ArrayList<BikeStation> bikeStationList = intent.getParcelableArrayListExtra(MapsActivity.
-                EXTRA_STATIONS);
+        ArrayList<BikeStation> bikeStationList = intent.getParcelableArrayListExtra(
+                MapsActivity.EXTRA_STATIONS);
 
         BikeStation bikeStation;
 

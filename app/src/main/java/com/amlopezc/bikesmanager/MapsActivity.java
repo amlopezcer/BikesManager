@@ -24,9 +24,10 @@ import java.util.ArrayList;
 
 public class MapsActivity extends AppCompatActivity {
 
-    //Constants for the list intent
+    //Constants for the list and chart intents
     public final static String EXTRA_STATIONS = "STATIONS";
-    public final static int CODE_LIST = 1; //
+    public final static String EXTRA_DATA = "DATA";
+    public final static int CODE_LIST = 1;
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private ArrayList<BikeStation> mStations = new ArrayList<>(); //temp, adding stations.
@@ -43,13 +44,13 @@ public class MapsActivity extends AppCompatActivity {
     }
 
     private void initData() {
-        mStations.add(new BikeStation(40.45, -3.68, 1, "Av. Alberto Alcocer, 162", 10, 6, 0, 0));
+        mStations.add(new BikeStation(40.45, -3.68, 1, "Av. Alberto Alcocer, 162", 10, 6, 0, 3));
         mStations.add(new BikeStation(40.45, -3.69, 2, "Av. General Perón, 38", 10, 10, 0, 0));
-        mStations.add(new BikeStation(40.42, -3.68, 3, "Calle de Alcalá, 75", 10, 1, 0, 0));
+        mStations.add(new BikeStation(40.42, -3.68, 3, "Calle de Alcalá, 75", 10, 1, 0, 5));
         mStations.add(new BikeStation(40.41, -3.70, 4, "Puerta del Sol", 10, 5, 0, 0));
         mStations.add(new BikeStation(40.41, -3.71, 5, "Plaza de la Cebada, 10", 10, 4, 0, 0));
-        mStations.add(new BikeStation(40.42, -3.71, 6, "Calle Bailén, 9", 10, 7, 0, 0));
-        mStations.add(new BikeStation(40.42, -3.70, 7, "Calle Gran Vía, 46", 10, 6, 0, 0));
+        mStations.add(new BikeStation(40.42, -3.71, 6, "Calle Bailén, 9", 10, 7, 2, 0));
+        mStations.add(new BikeStation(40.42, -3.70, 7, "Calle Gran Vía, 46", 10, 6, 1, 0));
         mStations.add(new BikeStation(40.40, -3.69, 8, "Estación de Atocha", 10, 0, 0, 0));
     }
 
@@ -71,17 +72,42 @@ public class MapsActivity extends AppCompatActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+
+        Intent intent;
+
         switch(item.getItemId()){
             case R.id.action_settings:
                 Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.action_list:
-                Intent intent = new Intent(this, ListActivity.class);
+                intent = new Intent(this, ListActivity.class);
                 intent.putParcelableArrayListExtra(EXTRA_STATIONS, mStations);
                 startActivityForResult(intent, CODE_LIST);
                 return true;
             case R.id.action_chart:
-                Toast.makeText(this, "Chart", Toast.LENGTH_SHORT).show();
+
+                int total = 0;
+                int available = 0;
+                int broken = 0;
+                int reserved = 0;
+                for(BikeStation bikeStation : mStations){
+                    total += bikeStation.getTotalBikes();
+                    available += bikeStation.getAvailableBikes();
+                    broken += bikeStation.getBrokenBikes();
+                    reserved += bikeStation.getReservedBikes();
+                 }
+                int occupied = total - available - broken - reserved;
+
+                ArrayList<Integer> data = new ArrayList<>();
+                data.add(total);
+                data.add(available);
+                data.add(broken);
+                data.add(reserved);
+                data.add(occupied);
+
+                intent = new Intent(this, ChartActivity.class);
+                intent.putIntegerArrayListExtra(EXTRA_DATA, data);
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

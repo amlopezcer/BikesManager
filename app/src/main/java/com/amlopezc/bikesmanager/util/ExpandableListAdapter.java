@@ -98,13 +98,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
                 // Returning to the maps activity with chosen coordinates
-                /*double[] coords = new double[2];
-                coords[0] = actual.getLatitude();
-                coords[1] = actual.getLongitude();*/
-
                 Bundle bundle = new Bundle();
                 bundle.putDouble(BUNDLE_LAT, actual.getLatitude());
                 bundle.putDouble(BUNDLE_LONG, actual.getLongitude());
@@ -125,7 +119,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         return true;
     }
 
-    private void setChildData(View convertView, BikeStation actual) {
+    private void setChildData(View convertView, BikeStation actual) { //TODO: meter el dateStamp de la última reserva
         TextView tv_ListChild;
 
         tv_ListChild = (TextView) convertView.findViewById(R.id.textView_totalNumber);
