@@ -13,23 +13,22 @@ import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.mikephil.charting.utils.ViewPortHandler;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class ChartActivity extends AppCompatActivity {
 
     private PieChart mChart;
-    private int mTotalBikes;
     private ArrayList<String> mXVals;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //TODO: HECHO TODO UN POCO RÁPIDO, PERO VA BIEN, REPASAR Y MEJORAR TANTO EN EL MAPS ACTIVITY COMO EN ESTA
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chart);
 
@@ -38,10 +37,9 @@ public class ChartActivity extends AppCompatActivity {
         //Setting the chart
         mChart.setDescription(null);
 
-        mChart.setDrawHoleEnabled(true);
         mChart.setHoleColorTransparent(true);
-        mChart.setHoleRadius(7);
-        mChart.setTransparentCircleRadius(10);
+
+        mChart.setDrawSliceText(false);
 
         mChart.setRotationAngle(0);
         mChart.setRotationEnabled(true);
@@ -54,7 +52,7 @@ public class ChartActivity extends AppCompatActivity {
                     return;
 
                 Toast.makeText(getApplicationContext(),
-                        String.format("%s: %d", mXVals.get(entry.getXIndex()), (int)entry.getVal()),
+                        String.format("%s: %d", mXVals.get(entry.getXIndex()), (int) entry.getVal()),
                         Toast.LENGTH_SHORT).
                         show();
             }
@@ -66,18 +64,17 @@ public class ChartActivity extends AppCompatActivity {
 
         addData();
 
-        /*
         Legend l = mChart.getLegend();
-        l.setPosition(Legend.LegendPosition.RIGHT_OF_CHART);
-        l.setXEntrySpace(7);
-        l.setYEntrySpace(5);*/
+        l.setPosition(Legend.LegendPosition.BELOW_CHART_CENTER);
+        l.setTextSize(10f);
     }
 
     private void addData() {
+        int totalBikes;
         Intent intent = getIntent();
 
         ArrayList<Integer> intentData = intent.getIntegerArrayListExtra(MapsActivity.EXTRA_DATA);
-        mTotalBikes = intentData.get(0);
+        totalBikes = intentData.get(0);
 
         ArrayList<Entry> yData = new ArrayList<>();
         for(int i = 1; i < intentData.size(); i++)  //don't want to show total bikes
@@ -89,9 +86,10 @@ public class ChartActivity extends AppCompatActivity {
         mXVals.add("Reserved");
         mXVals.add("Occupied");
 
-        PieDataSet pieDataSet = new PieDataSet(yData, String.format("Total bikes: %d", mTotalBikes));
-        pieDataSet.setSliceSpace(3);
+        PieDataSet pieDataSet = new PieDataSet(yData, "");
+        pieDataSet.setSliceSpace(2);
         pieDataSet.setSelectionShift(5);
+        pieDataSet.setValueFormatter(new MyValueFormatter());
 
         ArrayList<Integer> colors = new ArrayList<>();
         for(int c : ColorTemplate.VORDIPLOM_COLORS)
@@ -109,8 +107,12 @@ public class ChartActivity extends AppCompatActivity {
         pieDataSet.setColors(colors);
 
         PieData pieData = new PieData(mXVals, pieDataSet);
-        pieData.setValueTextSize(11f);
-        pieData.setValueTextColor(Color.GRAY);
+        pieData.setValueTextSize(12f);
+        pieData.setValueTextColor(Color.WHITE);
+
+        mChart.setCenterText(String.format("Total bikes: %d", totalBikes));
+        mChart.setCenterTextColor(Color.rgb(0, 60, 245)); //dark blue
+        mChart.setCenterTextSize(16f);
 
         mChart.setData(pieData);
         mChart.highlightValues(null);
@@ -137,5 +139,21 @@ public class ChartActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    private class MyValueFormatter implements ValueFormatter {
+
+        private DecimalFormat mFormat;
+
+        public MyValueFormatter() {
+            mFormat = new DecimalFormat("#####"); // no decimals
+        }
+
+        @Override
+        public String getFormattedValue(float value, Entry entry, int dataSetIndex,
+                                        ViewPortHandler viewPortHandler) {
+           return mFormat.format(value);
+        }
     }
 }

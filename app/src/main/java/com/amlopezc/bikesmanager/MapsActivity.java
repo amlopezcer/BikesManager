@@ -85,34 +85,37 @@ public class MapsActivity extends AppCompatActivity {
                 startActivityForResult(intent, CODE_LIST);
                 return true;
             case R.id.action_chart:
-
-                int total = 0;
-                int available = 0;
-                int broken = 0;
-                int reserved = 0;
-                for(BikeStation bikeStation : mStations){
-                    total += bikeStation.getTotalBikes();
-                    available += bikeStation.getAvailableBikes();
-                    broken += bikeStation.getBrokenBikes();
-                    reserved += bikeStation.getReservedBikes();
-                 }
-                int occupied = total - available - broken - reserved;
-
-                ArrayList<Integer> data = new ArrayList<>();
-                data.add(total);
-                data.add(available);
-                data.add(broken);
-                data.add(reserved);
-                data.add(occupied);
-
                 intent = new Intent(this, ChartActivity.class);
-                intent.putIntegerArrayListExtra(EXTRA_DATA, data);
+                intent.putIntegerArrayListExtra(EXTRA_DATA, prepareChartIntentData());
                 startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
 
+    private ArrayList<Integer> prepareChartIntentData() {
+        int total = 0;
+        int available = 0;
+        int broken = 0;
+        int reserved = 0;
+
+        for(BikeStation bikeStation : mStations){
+            total += bikeStation.getTotalBikes();
+            available += bikeStation.getAvailableBikes();
+            broken += bikeStation.getBrokenBikes();
+            reserved += bikeStation.getReservedBikes();
+        }
+        int occupied = total - available - broken - reserved;
+
+        ArrayList<Integer> data = new ArrayList<>();
+        data.add(total);
+        data.add(available);
+        data.add(broken);
+        data.add(reserved);
+        data.add(occupied);
+
+        return data;
     }
 
     /**
