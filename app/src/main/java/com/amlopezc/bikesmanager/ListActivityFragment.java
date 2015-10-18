@@ -11,8 +11,7 @@ import android.view.ViewGroup;
  */
 public class ListActivityFragment extends Fragment {
 
-    public ListActivityFragment() {
-    }
+    public ListActivityFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

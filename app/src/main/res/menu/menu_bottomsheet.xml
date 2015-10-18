@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_takeBike"
+        android:title="Take bike"
+        android:icon="@drawable/ic_action_add_circle" />
+    <item
+        android:id="@+id/menu_leaveBike"
+        android:title="Leave bike"
+        android:icon="@drawable/ic_action_remove_circle" />
+    <item
+        android:id="@+id/menu_reportBike"
+        android:title="Report error"
+        android:icon="@drawable/ic_action_error" />
+
+</menu>

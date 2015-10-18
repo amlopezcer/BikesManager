@@ -23,6 +23,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class ChartActivity extends AppCompatActivity {
+    //TODO: mostrar los datos en % ?
 
     private PieChart mChart;
     private ArrayList<String> mXVals;
@@ -58,8 +59,7 @@ public class ChartActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onNothingSelected() {
-            }
+            public void onNothingSelected() {}
         });
 
         addData();
@@ -134,13 +134,13 @@ public class ChartActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_refresh) {
+            Toast.makeText(this, "Refresh", Toast.LENGTH_SHORT).show();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
-
 
     private class MyValueFormatter implements ValueFormatter {
 

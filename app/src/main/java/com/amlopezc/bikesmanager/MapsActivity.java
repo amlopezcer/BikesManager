@@ -1,6 +1,6 @@
 package com.amlopezc.bikesmanager;
 
-
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -17,12 +17,17 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.cocosw.bottomsheet.BottomSheet;
 
 
-public class MapsActivity extends AppCompatActivity {
+public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarkerClickListener{
 
     //Constants for the list and chart intents
     public final static String EXTRA_STATIONS = "STATIONS";
@@ -30,7 +35,9 @@ public class MapsActivity extends AppCompatActivity {
     public final static int CODE_LIST = 1;
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-    private ArrayList<BikeStation> mStations = new ArrayList<>(); //temp, adding stations.
+
+    private HashMap<String, BikeStation> mStations = new HashMap<>();
+
     // Create a LatLngBounds that includes Madrid.
     public final LatLngBounds MADRID = new LatLngBounds(new LatLng(40.38, -3.72),
             new LatLng(40.48, -3.67));
@@ -39,19 +46,30 @@ public class MapsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        initData(); //temp, just filling an ArrayList with BikeStations
+        initData(); //temp
         setUpMapIfNeeded();
+        mMap.setOnMarkerClickListener(this);
     }
 
-    private void initData() {
-        mStations.add(new BikeStation(40.45, -3.68, 1, "Av. Alberto Alcocer, 162", 10, 6, 0, 3));
-        mStations.add(new BikeStation(40.45, -3.69, 2, "Av. General Perón, 38", 10, 10, 0, 0));
-        mStations.add(new BikeStation(40.42, -3.68, 3, "Calle de Alcalá, 75", 10, 1, 0, 5));
-        mStations.add(new BikeStation(40.41, -3.70, 4, "Puerta del Sol", 10, 5, 0, 0));
-        mStations.add(new BikeStation(40.41, -3.71, 5, "Plaza de la Cebada, 10", 10, 4, 0, 0));
-        mStations.add(new BikeStation(40.42, -3.71, 6, "Calle Bailén, 9", 10, 7, 2, 0));
-        mStations.add(new BikeStation(40.42, -3.70, 7, "Calle Gran Vía, 46", 10, 6, 1, 0));
-        mStations.add(new BikeStation(40.40, -3.69, 8, "Estación de Atocha", 10, 0, 0, 0));
+    private void initData() { //TODO: Eliminar al coger del servidor
+        String key;
+
+        key = "Av. Alberto Alcocer, 162";
+        mStations.put(key, new BikeStation(40.45, -3.68, 1, key, 10, 6, 0, 3));
+        key = "Av. General Perón, 38";
+        mStations.put(key, new BikeStation(40.45, -3.69, 2, key, 10, 10, 0, 0));
+        key = "Calle de Alcalá, 75";
+        mStations.put(key, new BikeStation(40.42, -3.68, 3, key, 10, 1, 0, 5));
+        key = "Puerta del Sol";
+        mStations.put(key, new BikeStation(40.41, -3.70, 4, key, 10, 5, 0, 0));
+        key = "Plaza de la Cebada, 10";
+        mStations.put(key, new BikeStation(40.41, -3.71, 5, key, 10, 4, 0, 0));
+        key = "Calle Bailén, 9";
+        mStations.put(key, new BikeStation(40.42, -3.71, 6, key, 10, 7, 2, 0));
+        key = "Calle Gran Vía, 46";
+        mStations.put(key, new BikeStation(40.42, -3.70, 7, key, 10, 6, 1, 0));
+        key = "Estación de Atocha";
+        mStations.put(key, new BikeStation(40.40, -3.69, 8, key, 10, 0, 0, 0));
     }
 
     @Override
@@ -81,7 +99,7 @@ public class MapsActivity extends AppCompatActivity {
                 return true;
             case R.id.action_list:
                 intent = new Intent(this, ListActivity.class);
-                intent.putParcelableArrayListExtra(EXTRA_STATIONS, mStations);
+                intent.putParcelableArrayListExtra(EXTRA_STATIONS, prepareListIntentData());
                 startActivityForResult(intent, CODE_LIST);
                 return true;
             case R.id.action_chart:
@@ -94,18 +112,26 @@ public class MapsActivity extends AppCompatActivity {
         }
     }
 
+    private ArrayList<BikeStation> prepareListIntentData() {
+        ArrayList<BikeStation> stations = new ArrayList<>();
+        for (Map.Entry<String, BikeStation> entry : mStations.entrySet())
+            stations.add(entry.getValue());
+        return stations;
+    }
+
     private ArrayList<Integer> prepareChartIntentData() {
         int total = 0;
         int available = 0;
         int broken = 0;
         int reserved = 0;
 
-        for(BikeStation bikeStation : mStations){
-            total += bikeStation.getTotalBikes();
-            available += bikeStation.getAvailableBikes();
-            broken += bikeStation.getBrokenBikes();
-            reserved += bikeStation.getReservedBikes();
+        for (Map.Entry<String, BikeStation> entry : mStations.entrySet()) {
+            total += entry.getValue().getTotalBikes();
+            available += entry.getValue().getAvailableBikes();
+            broken += entry.getValue().getBrokenBikes();
+            reserved += entry.getValue().getReservedBikes();
         }
+
         int occupied = total - available - broken - reserved;
 
         ArrayList<Integer> data = new ArrayList<>();
@@ -160,25 +186,22 @@ public class MapsActivity extends AppCompatActivity {
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(MADRID.getCenter(), 12));
     }
 
-    private void addMarkers() {
-
-        BitmapDescriptor color;
-
-        for(BikeStation bikeStation : mStations) {
-
-            if(bikeStation.getAvailableBikes() == 0)
-                color = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
-            else if (bikeStation.getAvailableBikes() < 5)
-                color = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW);
-            else
-                color = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
-
+    private void addMarkers() { //TODO: Hay un error al volver, no guarda los cambios, cogiendolo del servidor se debería arreglar.
+        for (Map.Entry<String, BikeStation> entry : mStations.entrySet())
             mMap.addMarker(new MarkerOptions().
-                    position(new LatLng(bikeStation.getLatitude(), bikeStation.getLongitude())).
-                    title(bikeStation.getAddress()).
-                    snippet(bikeStation.getAvailabilityMessage()).
-                    icon(color));
-        }
+                    position(new LatLng(entry.getValue().getLatitude(), entry.getValue().getLongitude())).
+                    title(entry.getKey()).
+                    snippet(entry.getValue().getAvailabilityMessage()).
+                    icon(getAvailabilityColor(entry.getValue())));
+    }
+
+    private BitmapDescriptor getAvailabilityColor(BikeStation bikeStation) {
+        if(bikeStation.getAvailableBikes() == 0)
+            return BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
+        else if (bikeStation.getAvailableBikes() < 5)
+            return BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW);
+        else
+            return BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
     }
 
     @Override
@@ -195,9 +218,72 @@ public class MapsActivity extends AppCompatActivity {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker, 15));
         }
     }
+
+    @Override
+    public boolean onMarkerClick(final Marker marker) {
+        final BikeStation bikeStation = mStations.get(marker.getTitle());
+
+        new BottomSheet.Builder(this).
+                title(marker.getTitle()).
+                grid().
+                sheet(R.menu.menu_bottomsheet).
+                darkTheme().
+                listener(new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case R.id.menu_takeBike:
+                                takeBike(bikeStation, marker);
+                                break;
+                            case R.id.menu_leaveBike:
+                                leaveBike(bikeStation, marker);
+                                break;
+                            case R.id.menu_reportBike:
+                                Toast.makeText(getApplicationContext(), "report", Toast.LENGTH_SHORT).show();
+                                break;
+                        }
+                    }
+                }).show();
+
+        return false;
+    }
+
+    private void takeBike(BikeStation bikeStation, Marker marker) {
+        if(bikeStation.getAvailableBikes() > 0) {
+            bikeStation.setAvailableBikes(bikeStation.getAvailableBikes() - 1);
+
+            marker.setSnippet(bikeStation.getAvailabilityMessage());
+            marker.setIcon(getAvailabilityColor(bikeStation));
+
+            Toast.makeText(getApplicationContext(),
+                    String.format("Bike taken from '%s' station", bikeStation.getAddress()),
+                    Toast.LENGTH_LONG).
+                    show();
+        } else {
+            Toast.makeText(getApplicationContext(),
+                    "No available bikes",
+                    Toast.LENGTH_SHORT).
+                    show();
+        }
+    }
+
+    private void leaveBike(BikeStation bikeStation, Marker marker) {
+        if(bikeStation.getAvailableBikes() != bikeStation.getTotalBikes()) { //TODO: De momento sólo cuento disponibles, a ver qué pasa con las rotas y las reservas
+            bikeStation.setAvailableBikes(bikeStation.getAvailableBikes() + 1);
+
+            marker.setSnippet(bikeStation.getAvailabilityMessage());
+            marker.setIcon(getAvailabilityColor(bikeStation));
+
+            Toast.makeText(getApplicationContext(),
+                    String.format("Bike leaved in '%s' station", bikeStation.getAddress()),
+                    Toast.LENGTH_LONG).
+                    show();
+        } else {
+            Toast.makeText(getApplicationContext(),
+                    "Station full",
+                    Toast.LENGTH_SHORT).
+                    show();
+        }
+    }
+
 }
-
-
-
-
-

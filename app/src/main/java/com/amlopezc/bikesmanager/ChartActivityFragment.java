@@ -8,8 +8,7 @@ import android.view.ViewGroup;
 
 public class ChartActivityFragment extends Fragment {
 
-    public ChartActivityFragment() {
-    }
+    public ChartActivityFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

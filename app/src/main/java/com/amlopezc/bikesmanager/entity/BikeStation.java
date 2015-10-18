@@ -73,21 +73,9 @@ public class BikeStation implements Parcelable {
     //</editor-fold>
 
     //<editor-fold desc="GETTERS AND SETTERS">
-    public double getLatitude() {
-        return mLatitude;
-    }
+    public double getLatitude() { return mLatitude; }
 
-    public void setLatitude(double mLatitude) {
-        this.mLatitude = mLatitude;
-    }
-
-    public double getLongitude() {
-        return mLongitude;
-    }
-
-    public void setLongitude(double mLongitude) {
-        this.mLongitude = mLongitude;
-    }
+    public double getLongitude() { return mLongitude; }
 
     public int getNumber() {
         return mNumber;
@@ -97,21 +85,9 @@ public class BikeStation implements Parcelable {
         this.mNumber = mNumber;
     }
 
-    public String getAddress() {
-        return mAddress;
-    }
+    public String getAddress() { return mAddress; }
 
-    public void setAddress(String mDescription) {
-        this.mAddress = mDescription;
-    }
-
-    public int getTotalBikes() {
-        return mTotalBikes;
-    }
-
-    public void setTotalBikes(int mTotalBikes) {
-        this.mTotalBikes = mTotalBikes;
-    }
+    public int getTotalBikes() { return mTotalBikes; }
 
     public int getAvailableBikes() {
         return mAvailableBikes;
