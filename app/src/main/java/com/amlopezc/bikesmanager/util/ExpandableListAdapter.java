@@ -20,7 +20,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     //intent and bundle
     public static final String EXTRA_RESULT = "COORDINATES";
-    public static final int CODE_OK = 1;
+    public static final int OK_RESULT_CODE = 1;
     public static final String BUNDLE_LAT = "LAT";
     public static final String BUNDLE_LONG = "LONG";
 
@@ -105,7 +105,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra(EXTRA_RESULT, bundle);
-                mContext.setResult(CODE_OK, returnIntent);
+                mContext.setResult(OK_RESULT_CODE, returnIntent);
 
                 mContext.finish();
             }

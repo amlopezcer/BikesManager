@@ -2,7 +2,9 @@ package com.amlopezc.bikesmanager;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,10 +31,13 @@ import com.cocosw.bottomsheet.BottomSheet;
 
 public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarkerClickListener{
 
-    //Constants for the list and chart intents
+    //Constants for intents
     public final static String EXTRA_STATIONS = "STATIONS";
     public final static String EXTRA_DATA = "DATA";
-    public final static int CODE_LIST = 1;
+
+    private final int SETTINGS_REQUEST_CODE = 0;
+    private final int LIST_REQUEST_CODE = 1;
+
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
@@ -95,12 +100,14 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
         switch(item.getItemId()){
             case R.id.action_settings:
-                Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
+                intent = new Intent();
+                intent.setClass(this, SettingsActivity.class);
+                startActivityForResult(intent, SETTINGS_REQUEST_CODE);
                 return true;
             case R.id.action_list:
                 intent = new Intent(this, ListActivity.class);
                 intent.putParcelableArrayListExtra(EXTRA_STATIONS, prepareListIntentData());
-                startActivityForResult(intent, CODE_LIST);
+                startActivityForResult(intent, LIST_REQUEST_CODE);
                 return true;
             case R.id.action_chart:
                 intent = new Intent(this, ChartActivity.class);
@@ -189,7 +196,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     private void addMarkers() { //TODO: Hay un error al volver, no guarda los cambios, cogiendolo del servidor se debería arreglar.
         for (Map.Entry<String, BikeStation> entry : mStations.entrySet())
             mMap.addMarker(new MarkerOptions().
-                    position(new LatLng(entry.getValue().getLatitude(), entry.getValue().getLongitude())).
+                    position(new LatLng(entry.getValue().getLatitude(),
+                            entry.getValue().getLongitude())).
                     title(entry.getKey()).
                     snippet(entry.getValue().getAvailabilityMessage()).
                     icon(getAvailabilityColor(entry.getValue())));
@@ -206,16 +214,24 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        // Receiving coordinates from the list to position the camera
-        if(requestCode == CODE_LIST && resultCode == ExpandableListAdapter.CODE_OK) {
-            Bundle bundle = data.getBundleExtra(ExpandableListAdapter.EXTRA_RESULT);
-
-            Double latCoord = bundle.getDouble(ExpandableListAdapter.BUNDLE_LAT);
-            Double longCoord = bundle.getDouble(ExpandableListAdapter.BUNDLE_LONG);
-
-            LatLng marker= new LatLng(latCoord, longCoord );
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker, 15));
+        switch (requestCode) {
+            case LIST_REQUEST_CODE:
+                /**
+                 * Coordinates from the list to position the camera, no need to check resultCode
+                 * because it can only be one (OK_RESULT_CODE). Include the 'if' statement to check
+                 * it if needed.
+                 */
+                Bundle bundle = data.getBundleExtra(ExpandableListAdapter.EXTRA_RESULT);
+                Double latCoord = bundle.getDouble(ExpandableListAdapter.BUNDLE_LAT);
+                Double longCoord = bundle.getDouble(ExpandableListAdapter.BUNDLE_LONG);
+                LatLng marker = new LatLng(latCoord, longCoord);
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker, 15));
+            case SETTINGS_REQUEST_CODE: //Configuration data :TODO: son pruebas, eliminar más adelante
+                SharedPreferences sharedPreferences = PreferenceManager.
+                        getDefaultSharedPreferences(this);
+                String username = sharedPreferences.getString("username", null);
+                String msg = String.format("Datos del usuario '%s' guardados", username);
+                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
         }
     }
 

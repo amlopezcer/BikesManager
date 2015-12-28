@@ -1,13 +1,17 @@
 <resources>
+    <!-- General -->
     <string name="app_name">Bikes Manager</string>
     <string name="title_activity_maps">Bikes Manager</string>
     <string name="action_settings">Settings</string>
 
+    <!-- DEFINIR -->
     <string name="action_list">List</string>
     <string name="action_chart">Chart</string>
 
+    <!-- DEFINIR -->
     <string name="title_activity_list">ListActivity</string>
 
+    <!-- DEFINIR -->
     <string name="listViewItem_button_showInMap">Show in map</string>
     <string name="listViewItem_textView_total">Total:</string>
     <string name="listViewItem_textView_available">Available:</string>
@@ -16,5 +20,9 @@
     <string name="listViewItem_textView_lastBooking">Last Booking:</string>
     <string name="title_activity_chart">ChartActivity</string>
     <string name="hello_world">Hello world!</string>
+
+    <!-- Preference Fragment -->
+    <!-- ... -->
+
 
 </resources>

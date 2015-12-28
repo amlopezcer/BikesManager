@@ -10,7 +10,7 @@ public class BikeStation implements Parcelable {
     private double mLatitude;
     private double mLongitude;
     //General Data
-    private int mNumber;
+    private int mId;
     private String mAddress;
     //Station numbers
     private int mTotalBikes;
@@ -18,11 +18,11 @@ public class BikeStation implements Parcelable {
     private int mBrokenBikes;
     private int mReservedBikes;
 
-    public BikeStation(double mLatitude, double mLongitude, int mNumber, String mAddress,
+    public BikeStation(double mLatitude, double mLongitude, int mId, String mAddress,
                        int mTotalBikes, int mAvailableBikes, int mBrokenBikes, int mReservedBikes) {
         this.mLatitude = mLatitude;
         this.mLongitude = mLongitude;
-        this.mNumber = mNumber;
+        this.mId = mId;
         this.mAddress = mAddress;
         this.mTotalBikes = mTotalBikes;
         this.mAvailableBikes = mAvailableBikes;
@@ -46,7 +46,7 @@ public class BikeStation implements Parcelable {
     public BikeStation(Parcel in) {
         this.mLatitude = in.readDouble();
         this.mLongitude = in.readDouble();
-        this.mNumber = in.readInt();
+        this.mId = in.readInt();
         this.mAddress = in.readString();
         this.mTotalBikes = in.readInt();
         this.mAvailableBikes = in.readInt();
@@ -63,7 +63,7 @@ public class BikeStation implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeDouble(mLatitude);
         dest.writeDouble(mLongitude);
-        dest.writeInt(mNumber);
+        dest.writeInt(mId);
         dest.writeString(mAddress);
         dest.writeInt(mTotalBikes);
         dest.writeInt(mAvailableBikes);
@@ -78,11 +78,11 @@ public class BikeStation implements Parcelable {
     public double getLongitude() { return mLongitude; }
 
     public int getNumber() {
-        return mNumber;
+        return mId;
     }
 
     public void setNumber(int mNumber) {
-        this.mNumber = mNumber;
+        this.mId = mNumber;
     }
 
     public String getAddress() { return mAddress; }
