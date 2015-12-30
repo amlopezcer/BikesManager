@@ -6,6 +6,11 @@
             android:key="username"
             android:title="User name"
             android:defaultValue=""/>
+
+        <EditTextPreference
+            android:key="server_address"
+            android:title="Server"
+            android:defaultValue=""/>
     </PreferenceCategory>
 
 </PreferenceScreen>

@@ -133,10 +133,10 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         int reserved = 0;
 
         for (Map.Entry<String, BikeStation> entry : mStations.entrySet()) {
-            total += entry.getValue().getTotalBikes();
-            available += entry.getValue().getAvailableBikes();
-            broken += entry.getValue().getBrokenBikes();
-            reserved += entry.getValue().getReservedBikes();
+            total += entry.getValue().getmTotalBikes();
+            available += entry.getValue().getmAvailableBikes();
+            broken += entry.getValue().getmBrokenBikes();
+            reserved += entry.getValue().getmReservedBikes();
         }
 
         int occupied = total - available - broken - reserved;
@@ -196,17 +196,17 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     private void addMarkers() { //TODO: Hay un error al volver, no guarda los cambios, cogiendolo del servidor se debería arreglar.
         for (Map.Entry<String, BikeStation> entry : mStations.entrySet())
             mMap.addMarker(new MarkerOptions().
-                    position(new LatLng(entry.getValue().getLatitude(),
-                            entry.getValue().getLongitude())).
+                    position(new LatLng(entry.getValue().getmLatitude(),
+                            entry.getValue().getmLongitude())).
                     title(entry.getKey()).
                     snippet(entry.getValue().getAvailabilityMessage()).
                     icon(getAvailabilityColor(entry.getValue())));
     }
 
     private BitmapDescriptor getAvailabilityColor(BikeStation bikeStation) {
-        if(bikeStation.getAvailableBikes() == 0)
+        if(bikeStation.getmAvailableBikes() == 0)
             return BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
-        else if (bikeStation.getAvailableBikes() < 5)
+        else if (bikeStation.getmAvailableBikes() < 5)
             return BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW);
         else
             return BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
@@ -265,14 +265,14 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     }
 
     private void takeBike(BikeStation bikeStation, Marker marker) {
-        if(bikeStation.getAvailableBikes() > 0) {
-            bikeStation.setAvailableBikes(bikeStation.getAvailableBikes() - 1);
+        if(bikeStation.getmAvailableBikes() > 0) {
+            bikeStation.setmAvailableBikes(bikeStation.getmAvailableBikes() - 1);
 
             marker.setSnippet(bikeStation.getAvailabilityMessage());
             marker.setIcon(getAvailabilityColor(bikeStation));
 
             Toast.makeText(getApplicationContext(),
-                    String.format("Bike taken from '%s' station", bikeStation.getAddress()),
+                    String.format("Bike taken from '%s' station", bikeStation.getmAddress()),
                     Toast.LENGTH_LONG).
                     show();
         } else {
@@ -284,14 +284,14 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     }
 
     private void leaveBike(BikeStation bikeStation, Marker marker) {
-        if(bikeStation.getAvailableBikes() != bikeStation.getTotalBikes()) { //TODO: De momento sólo cuento disponibles, a ver qué pasa con las rotas y las reservas
-            bikeStation.setAvailableBikes(bikeStation.getAvailableBikes() + 1);
+        if(bikeStation.getmAvailableBikes() != bikeStation.getmTotalBikes()) { //TODO: De momento sólo cuento disponibles, a ver qué pasa con las rotas y las reservas
+            bikeStation.setmAvailableBikes(bikeStation.getmAvailableBikes() + 1);
 
             marker.setSnippet(bikeStation.getAvailabilityMessage());
             marker.setIcon(getAvailabilityColor(bikeStation));
 
             Toast.makeText(getApplicationContext(),
-                    String.format("Bike leaved in '%s' station", bikeStation.getAddress()),
+                    String.format("Bike leaved in '%s' station", bikeStation.getmAddress()),
                     Toast.LENGTH_LONG).
                     show();
         } else {

@@ -100,8 +100,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
             public void onClick(View v) {
                 // Returning to the maps activity with chosen coordinates
                 Bundle bundle = new Bundle();
-                bundle.putDouble(BUNDLE_LAT, actual.getLatitude());
-                bundle.putDouble(BUNDLE_LONG, actual.getLongitude());
+                bundle.putDouble(BUNDLE_LAT, actual.getmLatitude());
+                bundle.putDouble(BUNDLE_LONG, actual.getmLongitude());
 
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra(EXTRA_RESULT, bundle);
@@ -121,23 +121,25 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
     private void setChildData(View convertView, BikeStation actual) { //TODO: meter el dateStamp de la última reserva
         TextView tv_ListChild;
-
         tv_ListChild = (TextView) convertView.findViewById(R.id.textView_totalNumber);
-        tv_ListChild.setText(Integer.toString(actual.getTotalBikes()));
+        tv_ListChild.setText(String.format("%d", actual.getmTotalBikes()));
         tv_ListChild = (TextView) convertView.findViewById(R.id.textView_availableNumber);
-        tv_ListChild.setText(Integer.toString(actual.getAvailableBikes()));
+        tv_ListChild.setText(String.format("%d", actual.getmAvailableBikes()));
+
         //Color for available bikes number
-        if(actual.getAvailableBikes() == 0)
+        if(actual.getmAvailableBikes() == 0)
             tv_ListChild.setTextColor(Color.RED);
-        else if (actual.getTotalBikes() - actual.getAvailableBikes() > actual.getAvailableBikes())
+        else if (actual.getmTotalBikes() - actual.getmAvailableBikes() > actual.getmAvailableBikes())
             tv_ListChild.setTextColor(Color.rgb(255, 128, 0)); //Orange
         else
             tv_ListChild.setTextColor(Color.rgb(0, 102, 0)); // Dark green
+
         tv_ListChild = (TextView) convertView.findViewById(R.id.textView_reservedNumber);
-        tv_ListChild.setText(Integer.toString(actual.getReservedBikes()));
+        tv_ListChild.setText(String.format("%d", actual.getmReservedBikes()));
         tv_ListChild = (TextView) convertView.findViewById(R.id.textView_brokenNumber);
-        tv_ListChild.setText(Integer.toString(actual.getBrokenBikes()));
+        tv_ListChild.setText(String.format("%d", actual.getmBrokenBikes()));
+
         tv_ListChild = (TextView) convertView.findViewById(R.id.textView_coordinates);
-        tv_ListChild.setText(String.format("%f, %f", actual.getLatitude(), actual.getLongitude()));
+        tv_ListChild.setText(String.format("%f, %f", actual.getmLatitude(), actual.getmLongitude()));
     }
 }

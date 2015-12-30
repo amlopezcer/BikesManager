@@ -46,7 +46,7 @@ public class ListActivity extends AppCompatActivity {
 
         for(int i = 0; i < bikeStationList.size(); i++) {
             bikeStation = bikeStationList.get(i);
-            mListDataHeader.add(bikeStation.getAddress());
+            mListDataHeader.add(bikeStation.getmAddress());
             mListDataChild.put(mListDataHeader.get(i), bikeStation);
         }
     }
