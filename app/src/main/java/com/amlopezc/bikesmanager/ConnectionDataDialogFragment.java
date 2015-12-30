@@ -1,6 +1,5 @@
 package com.amlopezc.bikesmanager;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -8,38 +7,21 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-
+import android.widget.Toast;
 
 
 public class ConnectionDataDialogFragment extends DialogFragment {
 
-    /**
-     * Interface to be implemented in the host activity to receive event callbacks
-     */
-    public interface connectionDialogListener {
-        public void onDialogPositiveClick(DialogFragment dialog);
-    }
+    private EditText mEditText_user;
+    private EditText mEditText_server;
+    private EditText mEditText_port;
 
-    // Instance of the interface to deliver action events
-    connectionDialogListener mListener;
-
-    // Instantiate the connectionDialogListener
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        // Verify that the host activity implements the callback interface
-        try {
-            // Instantiate the connectionDialogListener so we can send events to the host
-            mListener = (connectionDialogListener) activity;
-        } catch (ClassCastException e) {
-            // The activity doesn't implement the interface, throw exception
-            throw new ClassCastException(activity.toString()
-                    + " must implement connectionDialogListener");
-        }
-    }
+    private SharedPreferences mDefaultSharedPreferences;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -50,61 +32,78 @@ public class ConnectionDataDialogFragment extends DialogFragment {
         final LayoutInflater inflater = getActivity().getLayoutInflater();
         final View view = inflater.inflate(R.layout.dialog_connection_data, null);
 
-        fillData(view);
+        mEditText_user = (EditText) view.findViewById(R.id.editText_userName);
+        mEditText_server = (EditText) view.findViewById(R.id.editText_serverAddress);
+        mEditText_port = (EditText) view.findViewById(R.id.editText_serverPort);
+
+        mDefaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        fillData();
 
         builder.setMessage("Set connection data")
                 .setView(view)
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Set", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // Getting and setting data
-                        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                        EditText et;
+                        String data = mEditText_user.getText().toString();
+                        mDefaultSharedPreferences.edit()
+                                .putString(SettingsActivityFragment.KEY_PREF_SYNC_USER, data)
+                                .apply();
 
-                        et = (EditText) view.findViewById(R.id.editText_userName);
-                        String data = et.getText().toString();
-                        sharedPreferences.edit().putString(SettingsActivityFragment.KEY_PREF_SYNC_USER, data).apply();
+                        data = mEditText_server.getText().toString();
+                        mDefaultSharedPreferences.edit()
+                                .putString(SettingsActivityFragment.KEY_PREF_SYNC_SERVER, data)
+                                .apply();
 
-                        et = (EditText) view.findViewById(R.id.editText_serverAddress);
-                        data = et.getText().toString();
-                        sharedPreferences.edit().putString(SettingsActivityFragment.KEY_PREF_SYNC_SERVER, data).apply();
-
-                        et = (EditText) view.findViewById(R.id.editText_serverPort);
-                        data = et.getText().toString();
-                        sharedPreferences.edit().putString(SettingsActivityFragment.KEY_PREF_SYNC_PORT, data).apply();
+                        data = mEditText_port.getText().toString();
+                        mDefaultSharedPreferences.edit()
+                                .putString(SettingsActivityFragment.KEY_PREF_SYNC_PORT, data)
+                                .apply();
                     }
                 });
 
-       /* ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE)
-                .setEnabled(false);*/
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
 
-        return builder.create();
+        final TextWatcher watcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                        .setEnabled(!mEditText_user.getText().toString().trim().isEmpty() &&
+                                !mEditText_server.getText().toString().trim().isEmpty() &&
+                                !mEditText_port.getText().toString().trim().isEmpty());
+            }
+        };
+
+        mEditText_user.addTextChangedListener(watcher);
+        mEditText_server.addTextChangedListener(watcher);
+        mEditText_port.addTextChangedListener(watcher);
+
+        return dialog;
     }
 
-    private void fillData(View view) {
-        SharedPreferences shp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        EditText editText;
+    private void fillData() {
+        String userName = mDefaultSharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_USER, "");
+        setFields(mEditText_user, userName);
+        String serverAddress = mDefaultSharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_SERVER, "");
+        setFields(mEditText_server, serverAddress);
+        String serverPort = mDefaultSharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_PORT, "");
 
-        editText = (EditText) view.findViewById(R.id.editText_userName);
-        String userName = shp.getString(SettingsActivityFragment.KEY_PREF_SYNC_USER, "");
-        setFields(editText, userName);
-        editText = (EditText) view.findViewById(R.id.editText_serverAddress);
-        String serverAddress = shp.getString(SettingsActivityFragment.KEY_PREF_SYNC_SERVER, "");
-        setFields(editText, serverAddress);
-        editText = (EditText) view.findViewById(R.id.editText_serverPort);
-        String serverPort = shp.getString(SettingsActivityFragment.KEY_PREF_SYNC_PORT, "");
-        setFields(editText, serverPort);
+        Toast.makeText(getActivity(), "Valor: " + serverPort + " ...", Toast.LENGTH_LONG).show();
+
+        setFields(mEditText_port, serverPort);
     }
 
     private void setFields(EditText editText, String data) {
-        if(!data.isEmpty())
+        if(!data.trim().isEmpty())
             editText.setText(data);
     }
-
-
-
-
-
-
-
 
 }

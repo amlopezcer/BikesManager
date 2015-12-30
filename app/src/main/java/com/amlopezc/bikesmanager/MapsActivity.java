@@ -9,7 +9,6 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.amlopezc.bikesmanager.entity.BikeStation;
@@ -31,8 +30,7 @@ import java.util.Map;
 import com.cocosw.bottomsheet.BottomSheet;
 
 
-public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarkerClickListener,
-        ConnectionDataDialogFragment.connectionDialogListener {
+public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarkerClickListener {
 
     //Constants for intents
     public final static String EXTRA_STATIONS = "STATIONS";
@@ -58,6 +56,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         setUpMapIfNeeded();
         mMap.setOnMarkerClickListener(this);
 
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
     }
 
     private void initData() { //TODO: Eliminar al coger del servidor
@@ -88,12 +87,18 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
         //Ensuring connection data is set
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
         String userName = sharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_USER, "");
         String serverAddress = sharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_SERVER, "");
         String serverPort = sharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_PORT, "");
 
-        if(userName.isEmpty() || serverAddress.isEmpty() || serverPort.isEmpty())
+        if(userName.trim().isEmpty() || serverAddress.trim().isEmpty() || serverPort.trim().isEmpty())
             showConnectionDataDialog();
+    }
+
+    private void showConnectionDataDialog() {
+        DialogFragment dialog = new ConnectionDataDialogFragment();
+        dialog.show(getFragmentManager(), "ConnectionDialogFragment");
     }
 
     @Override
@@ -313,21 +318,6 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                     Toast.LENGTH_SHORT).
                     show();
         }
-    }
-
-    private void showConnectionDataDialog() {
-        DialogFragment dialog = new ConnectionDataDialogFragment();
-        dialog.show(getFragmentManager(), "ConnectionDialogFragment");
-    }
-
-    @Override
-    public void onDialogPositiveClick(DialogFragment dialog) {
-        /*EditText et = (EditText) findViewById(R.id.editText_userName);
-        String s = et.getText().toString();
-
-        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();*/
-
-
     }
 
 }

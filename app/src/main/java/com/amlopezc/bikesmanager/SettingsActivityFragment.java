@@ -20,6 +20,8 @@ public class SettingsActivityFragment extends PreferenceFragment implements
 
         SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
         updateSummaryText(sharedPreferences, KEY_PREF_SYNC_USER);
+        updateSummaryText(sharedPreferences, KEY_PREF_SYNC_SERVER);
+        updateSummaryText(sharedPreferences, KEY_PREF_SYNC_PORT);
     }
 
     @Override
@@ -38,18 +40,40 @@ public class SettingsActivityFragment extends PreferenceFragment implements
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if(key.equals(KEY_PREF_SYNC_USER))
-            updateSummaryText(sharedPreferences, key);
+
+        updateSummaryText(sharedPreferences, key);
     }
 
     private void updateSummaryText(SharedPreferences sharedPreferences, String key) {
-        final String templateText = "User name to data connection: %s%s%s";
-        EditTextPreference editTextPref = (EditTextPreference) findPreference(key);
-        String userNameString = sharedPreferences.getString(key, "");
 
-        if(userNameString.isEmpty())
-            editTextPref.setSummary(String.format(templateText, "", "not defined", ""));
-        else
-            editTextPref.setSummary(String.format(templateText, "'", userNameString, "'"));
+        EditTextPreference editTextPref = (EditTextPreference) findPreference(key);
+        String dataString = sharedPreferences.getString(key, "");
+        final String template = "%s for data connection: %s%s%s";
+
+        if (dataString.trim().isEmpty()) {
+            switch (key) {
+                case KEY_PREF_SYNC_USER:
+                    editTextPref.setSummary(String.format(template, "User name", "", "not defined", ""));
+                    break;
+                case KEY_PREF_SYNC_SERVER:
+                    editTextPref.setSummary(String.format(template, "Server address", "", "not defined", ""));
+                    break;
+                case KEY_PREF_SYNC_PORT:
+                    editTextPref.setSummary(String.format(template, "Server port", "", "not defined", ""));
+                    break;
+            }
+        } else {
+            switch (key) {
+                case KEY_PREF_SYNC_USER:
+                    editTextPref.setSummary(String.format(template, "User name", "'", dataString, "'"));
+                    break;
+                case KEY_PREF_SYNC_SERVER:
+                    editTextPref.setSummary(String.format(template, "Server address", "'", dataString, "'"));
+                    break;
+                case KEY_PREF_SYNC_PORT:
+                    editTextPref.setSummary(String.format(template, "Server port", "'", dataString, "'"));
+                    break;
+            }
+        }
     }
 }
