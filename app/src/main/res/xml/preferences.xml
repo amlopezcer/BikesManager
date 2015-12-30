@@ -9,8 +9,14 @@
 
         <EditTextPreference
             android:key="server_address"
-            android:title="Server"
+            android:title="Server address"
             android:defaultValue=""/>
+
+        <EditTextPreference
+            android:key="server_port"
+            android:inputType="number"
+            android:title="Server port"
+            android:defaultValue="8080"/> <!-- Default port in Glassfish -->
     </PreferenceCategory>
 
 </PreferenceScreen>

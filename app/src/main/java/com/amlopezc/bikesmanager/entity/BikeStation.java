@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 
 public class BikeStation extends JSONBean implements Parcelable {
 
-    //TODO: Repasar cómo quedará esto finalmente para generar la base de datos final en condiciones
+    //TODO: Repasar cómo quedará esto finalmente para generar la base de datos final en condiciones; habrá que cambiar el PArcelable también. A ver el tema del tipo de dato del TimeStamp
 
     //General Data
     @JsonProperty
@@ -153,6 +153,11 @@ public class BikeStation extends JSONBean implements Parcelable {
     public int getmReservedBikes() {
         return mReservedBikes;
     }
+
+    @Override
+    public int getServerId() {
+        return mServerId;
+    }
     //</editor-fold>
 
     //<editor-fold desc="SET">
@@ -215,6 +220,13 @@ public class BikeStation extends JSONBean implements Parcelable {
         this.mReservedBikes = mReservedBikes;
         support.firePropertyChange("mReservedBikes", oldValue, mReservedBikes);
     }
+
+    @Override
+    public void setServerId(int serverId) {
+        int oldValue = this.mServerId;
+        this.mServerId = serverId;
+        support.firePropertyChange("mServerId", oldValue, serverId);
+    }
     //</editor-fold>
 
     //<editor-fold desc="EQUALS & HASHCODE">
@@ -261,6 +273,8 @@ public class BikeStation extends JSONBean implements Parcelable {
     public String getAvailabilityMessage() {
         return String.format("%d/%d", getmAvailableBikes(), getmTotalBikes());
     }
+
+
 
 
 

@@ -1,5 +1,6 @@
 package com.amlopezc.bikesmanager;
 
+import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,6 +9,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.amlopezc.bikesmanager.entity.BikeStation;
@@ -29,7 +31,8 @@ import java.util.Map;
 import com.cocosw.bottomsheet.BottomSheet;
 
 
-public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarkerClickListener{
+public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarkerClickListener,
+        ConnectionDataDialogFragment.connectionDialogListener {
 
     //Constants for intents
     public final static String EXTRA_STATIONS = "STATIONS";
@@ -54,6 +57,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         initData(); //temp
         setUpMapIfNeeded();
         mMap.setOnMarkerClickListener(this);
+
     }
 
     private void initData() { //TODO: Eliminar al coger del servidor
@@ -81,6 +85,15 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     protected void onResume() {
         super.onResume();
         setUpMapIfNeeded();
+
+        //Ensuring connection data is set
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String userName = sharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_USER, "");
+        String serverAddress = sharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_SERVER, "");
+        String serverPort = sharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_PORT, "");
+
+        if(userName.isEmpty() || serverAddress.isEmpty() || serverPort.isEmpty())
+            showConnectionDataDialog();
     }
 
     @Override
@@ -300,6 +313,21 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                     Toast.LENGTH_SHORT).
                     show();
         }
+    }
+
+    private void showConnectionDataDialog() {
+        DialogFragment dialog = new ConnectionDataDialogFragment();
+        dialog.show(getFragmentManager(), "ConnectionDialogFragment");
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
+        /*EditText et = (EditText) findViewById(R.id.editText_userName);
+        String s = et.getText().toString();
+
+        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();*/
+
+
     }
 
 }

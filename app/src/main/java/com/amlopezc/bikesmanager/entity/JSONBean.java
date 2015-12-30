@@ -1,5 +1,7 @@
 package com.amlopezc.bikesmanager.entity;
 
+import android.os.Parcelable;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.hash.HashCode;
@@ -10,7 +12,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-public class JSONBean implements PropertyChangeListener {
+public abstract class JSONBean implements PropertyChangeListener, Parcelable {
 
     /**
      * Property to identify changes within the bean
@@ -21,7 +23,6 @@ public class JSONBean implements PropertyChangeListener {
     protected JSONBean() {
         support.addPropertyChangeListener(this);
     }
-
 
     //<editor-fold desc="PROPERTY CHANGE SUPPORT">
     @JsonIgnore
@@ -48,5 +49,10 @@ public class JSONBean implements PropertyChangeListener {
     }
 
     public String getMd5(){return md5;}
+
+    public abstract int getServerId();
+
+    public abstract void setServerId(int serverId);
+
 
 }

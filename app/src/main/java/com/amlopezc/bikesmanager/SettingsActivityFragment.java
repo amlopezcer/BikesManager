@@ -9,7 +9,9 @@ import android.preference.PreferenceFragment;
 public class SettingsActivityFragment extends PreferenceFragment implements
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private final String KEY_PREF_SYNC_USER = "username";
+    public static final String KEY_PREF_SYNC_USER = "username";
+    public static final String KEY_PREF_SYNC_SERVER = "server_address";
+    public static final String KEY_PREF_SYNC_PORT = "server_port";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,9 +43,9 @@ public class SettingsActivityFragment extends PreferenceFragment implements
     }
 
     private void updateSummaryText(SharedPreferences sharedPreferences, String key) {
+        final String templateText = "User name to data connection: %s%s%s";
         EditTextPreference editTextPref = (EditTextPreference) findPreference(key);
         String userNameString = sharedPreferences.getString(key, "");
-        final String templateText = "User name to data connection: %s%s%s";
 
         if(userNameString.isEmpty())
             editTextPref.setSummary(String.format(templateText, "", "not defined", ""));
