@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.amlopezc.bikesmanager.entity.BikeStation;
+import com.amlopezc.bikesmanager.net.HttpTry;
 import com.amlopezc.bikesmanager.util.ExpandableListAdapter;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -57,6 +58,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         mMap.setOnMarkerClickListener(this);
 
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+
+
+
     }
 
     private void initData() { //TODO: Eliminar al coger del servidor
@@ -132,6 +136,12 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                 intent.putIntegerArrayListExtra(EXTRA_DATA, prepareChartIntentData());
                 startActivity(intent);
                 return true;
+            case R.id.action_refresh:
+                //Toast.makeText(this, "REFRESH", Toast.LENGTH_SHORT).show();
+                HttpTry httpTry = new HttpTry(getApplicationContext());
+                httpTry.myClickHandler();
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
