@@ -12,7 +12,9 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.amlopezc.bikesmanager.entity.BikeStation;
-import com.amlopezc.bikesmanager.net.HttpTry;
+import com.amlopezc.bikesmanager.net.HttpDispatcher;
+import com.amlopezc.bikesmanager.net.HttpGetWorker;
+import com.amlopezc.bikesmanager.util.AsyncTaskListener;
 import com.amlopezc.bikesmanager.util.ExpandableListAdapter;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -31,7 +33,8 @@ import java.util.Map;
 import com.cocosw.bottomsheet.BottomSheet;
 
 
-public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarkerClickListener {
+public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarkerClickListener,
+        AsyncTaskListener<String> {
 
     //Constants for intents
     public final static String EXTRA_STATIONS = "STATIONS";
@@ -137,9 +140,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                 startActivity(intent);
                 return true;
             case R.id.action_refresh:
-                //Toast.makeText(this, "REFRESH", Toast.LENGTH_SHORT).show();
-                HttpTry httpTry = new HttpTry(getApplicationContext());
-                httpTry.myClickHandler();
+                HttpDispatcher dispatcher = new HttpDispatcher(this);
+                dispatcher.doGet(this);
+
                 return true;
 
             default:
@@ -332,4 +335,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         }
     }
 
+    @Override
+    public void processResult(String result) {
+        Toast.makeText(this, "completo GET: " + result, Toast.LENGTH_LONG).show();
+    }
 }
