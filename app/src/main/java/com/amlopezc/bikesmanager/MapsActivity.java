@@ -244,12 +244,14 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                 Double longCoord = bundle.getDouble(ExpandableListAdapter.BUNDLE_LONG);
                 LatLng marker = new LatLng(latCoord, longCoord);
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker, 15));
+                break;
             case SETTINGS_REQUEST_CODE: //Configuration data :TODO: son pruebas, eliminar más adelante
                 SharedPreferences sharedPreferences = PreferenceManager.
                         getDefaultSharedPreferences(this);
                 String username = sharedPreferences.getString("username", null);
                 String msg = String.format("Datos del usuario '%s' guardados", username);
                 Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+                break;
         }
     }
 
