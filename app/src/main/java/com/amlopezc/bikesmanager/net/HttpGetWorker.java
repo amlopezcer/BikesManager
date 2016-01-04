@@ -4,23 +4,22 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
-
-import com.amlopezc.bikesmanager.util.ApplicationContextProvider;
 import com.amlopezc.bikesmanager.util.AsyncTaskListener;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 
 
 public class HttpGetWorker extends AsyncTask<String, Void, String> {
 
-    private HashSet<AsyncTaskListener> listeners;
+    private HashSet<AsyncTaskListener<String>> listeners;
     final ProgressDialog progressDialog;
 
     public HttpGetWorker(Context context) {
@@ -49,22 +48,19 @@ public class HttpGetWorker extends AsyncTask<String, Void, String> {
     // onPostExecute process the results of the AsyncTask.
     @Override
     protected void onPostExecute(String result) {
-        for(AsyncTaskListener listener : listeners) {
+        for(AsyncTaskListener<String> listener : listeners) {
             listener.processResult(result);
         }
-
         progressDialog.dismiss();
     }
 
-    public void addAsyncTaskListener(AsyncTaskListener listener) {
+    public void addAsyncTaskListener(AsyncTaskListener<String> listener) {
         if (listeners == null) listeners = new HashSet<>();
         listeners.add(listener);
     }
 
     private String process(String myUrl) throws IOException {
         InputStream is = null;
-        // Only display the first 20 characters of the retrieved web page content.
-        int len = 20;
         try {
             URL url = new URL(myUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -77,8 +73,7 @@ public class HttpGetWorker extends AsyncTask<String, Void, String> {
             int response = conn.getResponseCode();
             Log.d("HttpGetWorker", "The response is: " + response);
             is = conn.getInputStream();
-            String data = readIt(is, len);
-            return data;
+            return readIt(is);
         } finally {
             if (is != null) {
                 is.close();
@@ -87,12 +82,16 @@ public class HttpGetWorker extends AsyncTask<String, Void, String> {
     }
 
     // Reads an InputStream and converts it to a String.
-    public String readIt(InputStream stream, int len) throws IOException {
-        Reader reader;
-        reader = new InputStreamReader(stream, "UTF-8");
-        char[] buffer = new char[len];
-        reader.read(buffer);
-        return new String(buffer);
+    public String readIt(InputStream stream)  throws IOException {
+        StringBuilder sb = new StringBuilder();
+        BufferedReader br = new BufferedReader(new InputStreamReader(stream));
+        String read;
+        try {
+            while ((read = br.readLine()) != null) { sb.append(read); }
+            return sb.toString();
+        }finally {
+            br.close();
+        }
     }
 
 }

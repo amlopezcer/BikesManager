@@ -17,7 +17,7 @@ public abstract class JSONBean implements PropertyChangeListener, Parcelable {
     /**
      * Property to identify changes within the bean
      */
-    @JsonProperty
+    @JsonProperty("md5")
     protected String md5;
 
     protected JSONBean() {
@@ -39,10 +39,10 @@ public abstract class JSONBean implements PropertyChangeListener, Parcelable {
 
     @Override
     public void propertyChange(PropertyChangeEvent event) {
-        procesarHashMD5();
+        processHashMD5();
     }
 
-    private void procesarHashMD5() {
+    public void processHashMD5() {
         HashFunction hashFunction = Hashing.md5();
         HashCode hashCode = hashFunction.hashInt(hashCode());
         md5 = hashCode.toString();

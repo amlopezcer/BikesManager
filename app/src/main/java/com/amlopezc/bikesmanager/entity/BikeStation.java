@@ -4,41 +4,47 @@ package com.amlopezc.bikesmanager.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import java.sql.Timestamp;
 
+@JsonPropertyOrder({"address", "available", "broken", "latitude", "longitude", "md5", "reserved", "serverId", "timestampBike", "total" })
 public class BikeStation extends JSONBean implements Parcelable {
 
-    //TODO: Repasar cómo quedará esto finalmente para generar la base de datos final en condiciones; habrá que cambiar el PArcelable también. A ver el tema del tipo de dato del TimeStamp
+    //TODO: Repasar cómo quedará esto finalmente para generar la base de datos final en condiciones; habrá que cambiar el PArcelable también. A ver el tema del tipo de dato del TimeStamp. El JsonProperty es para el renombrado, tendré que poner el nombre de la BBDD
 
     //General Data
-    @JsonProperty
+    @JsonProperty("serverId")
     private int mId;
-    @JsonProperty
+    @JsonProperty("address")
     private String mAddress;
-    @JsonProperty
+
+    @JsonIgnore
     private int mServerId;
-    @JsonProperty
+    @JsonIgnore
     private String mUser;
-    @JsonProperty
-    private Timestamp mTimeStamp;
+    @JsonProperty("timestampBike")
+    private String mTimeStamp;
 
     // Coordinates
-    @JsonProperty
+    @JsonProperty("latitude")
     private double mLatitude;
-    @JsonProperty
+    @JsonProperty("longitude")
     private double mLongitude;
 
     //Station numbers
-    @JsonProperty
+    @JsonProperty("total")
     private int mTotalBikes;
-    @JsonProperty
+    @JsonProperty("available")
     private int mAvailableBikes;
-    @JsonProperty
+    @JsonProperty("broken")
     private int mBrokenBikes;
-    @JsonProperty
+    @JsonProperty("reserved")
     private int mReservedBikes;
+
+    public BikeStation(){}
 
     public BikeStation(double mLatitude, double mLongitude, int mId, String mAddress,
                        int mTotalBikes, int mAvailableBikes, int mBrokenBikes, int mReservedBikes) {
@@ -50,9 +56,10 @@ public class BikeStation extends JSONBean implements Parcelable {
         this.mAvailableBikes = mAvailableBikes;
         this.mBrokenBikes = mBrokenBikes;
         this.mReservedBikes = mReservedBikes;
+        processHashMD5();
     }
 
-    public BikeStation(double mLatitude, double mLongitude, int mId, String mAddress,
+    /*public BikeStation(double mLatitude, double mLongitude, int mId, String mAddress,
                        Timestamp mTimeStamp, String mUser, int mTotalBikes, int mAvailableBikes,
                        int mBrokenBikes, int mReservedBikes) {
         this.mLatitude = mLatitude;
@@ -65,7 +72,8 @@ public class BikeStation extends JSONBean implements Parcelable {
         this.mAvailableBikes = mAvailableBikes;
         this.mBrokenBikes = mBrokenBikes;
         this.mReservedBikes = mReservedBikes;
-    }
+        processHashMD5();
+    }*/
 
     //<editor-fold desc="PARCELABLE INTERFACE SUPPORT">
     public static final Creator<BikeStation> CREATOR = new Creator<BikeStation>() {
@@ -89,6 +97,7 @@ public class BikeStation extends JSONBean implements Parcelable {
         this.mAvailableBikes = in.readInt();
         this.mBrokenBikes = in.readInt();
         this.mReservedBikes = in.readInt();
+        processHashMD5();
     }
 
     @Override
@@ -134,7 +143,7 @@ public class BikeStation extends JSONBean implements Parcelable {
         return mUser;
     }
 
-    public Timestamp getmTimeStamp() {
+    public String getmTimeStamp() {
         return mTimeStamp;
     }
 
@@ -179,8 +188,8 @@ public class BikeStation extends JSONBean implements Parcelable {
         support.firePropertyChange("mUser", oldValue, mUser);
     }
 
-    public void setmTimeStamp(Timestamp mTimeStamp) {
-        Timestamp oldValue = this.mTimeStamp;
+    public void setmTimeStamp(String mTimeStamp) {
+        String oldValue = this.mTimeStamp;
         this.mTimeStamp = mTimeStamp;
         support.firePropertyChange("mTimeStamp", oldValue, mTimeStamp);
     }
@@ -256,8 +265,8 @@ public class BikeStation extends JSONBean implements Parcelable {
         long temp;
         result = mId;
         result = 31 * result + mAddress.hashCode();
-        result = 31 * result + mUser.hashCode();
-        result = 31 * result + (mTimeStamp != null ? mTimeStamp.hashCode() : 0);
+//        result = 31 * result + mUser.hashCode();
+//        result = 31 * result + (mTimeStamp != null ? mTimeStamp.hashCode() : 0);
         temp = Double.doubleToLongBits(mLatitude);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         temp = Double.doubleToLongBits(mLongitude);

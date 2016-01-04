@@ -7,15 +7,19 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.amlopezc.bikesmanager.entity.BikeStation;
 import com.amlopezc.bikesmanager.net.HttpDispatcher;
-import com.amlopezc.bikesmanager.net.HttpGetWorker;
 import com.amlopezc.bikesmanager.util.AsyncTaskListener;
 import com.amlopezc.bikesmanager.util.ExpandableListAdapter;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -28,11 +32,12 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.cocosw.bottomsheet.BottomSheet;
 
-
+//TODO: cambiar los IDs de los puestos, que sea el ID y no la calle
 public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarkerClickListener,
         AsyncTaskListener<String> {
 
@@ -43,48 +48,30 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     private final int SETTINGS_REQUEST_CODE = 0;
     private final int LIST_REQUEST_CODE = 1;
 
-
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-
-    private HashMap<String, BikeStation> mStations = new HashMap<>();
+    private HashMap<String, BikeStation> mStations;
+    private HttpDispatcher dispatcher;
 
     // Create a LatLngBounds that includes Madrid.
-    public final LatLngBounds MADRID = new LatLngBounds(new LatLng(40.38, -3.72),
-            new LatLng(40.48, -3.67));
+    public final LatLngBounds MADRID  = new LatLngBounds(new LatLng(40.38, -3.72), new LatLng(40.48, -3.67));
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        initData(); //temp
+        initData();
         setUpMapIfNeeded();
         mMap.setOnMarkerClickListener(this);
-
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-
-
-
     }
 
-    private void initData() { //TODO: Eliminar al coger del servidor
-        String key;
+    private void initData() {
+        mStations = new HashMap<>();
+        dispatcher = new HttpDispatcher(this);
+    }
 
-        key = "Av. Alberto Alcocer, 162";
-        mStations.put(key, new BikeStation(40.45, -3.68, 1, key, 10, 6, 0, 3));
-        key = "Av. General Perón, 38";
-        mStations.put(key, new BikeStation(40.45, -3.69, 2, key, 10, 10, 0, 0));
-        key = "Calle de Alcalá, 75";
-        mStations.put(key, new BikeStation(40.42, -3.68, 3, key, 10, 1, 0, 5));
-        key = "Puerta del Sol";
-        mStations.put(key, new BikeStation(40.41, -3.70, 4, key, 10, 5, 0, 0));
-        key = "Plaza de la Cebada, 10";
-        mStations.put(key, new BikeStation(40.41, -3.71, 5, key, 10, 4, 0, 0));
-        key = "Calle Bailén, 9";
-        mStations.put(key, new BikeStation(40.42, -3.71, 6, key, 10, 7, 2, 0));
-        key = "Calle Gran Vía, 46";
-        mStations.put(key, new BikeStation(40.42, -3.70, 7, key, 10, 6, 1, 0));
-        key = "Estación de Atocha";
-        mStations.put(key, new BikeStation(40.40, -3.69, 8, key, 10, 0, 0, 0));
+    private void fetchUpdatedServerData() {
+        dispatcher.doGet(this);
     }
 
     @Override
@@ -101,6 +88,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
         if(userName.trim().isEmpty() || serverAddress.trim().isEmpty() || serverPort.trim().isEmpty())
             showConnectionDataDialog();
+
+        //Fetch updated server data related to the bike stations
+        fetchUpdatedServerData();
     }
 
     private void showConnectionDataDialog() {
@@ -140,11 +130,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                 startActivity(intent);
                 return true;
             case R.id.action_refresh:
-                HttpDispatcher dispatcher = new HttpDispatcher(this);
-                dispatcher.doGet(this);
-
+                fetchUpdatedServerData();
                 return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -210,37 +197,32 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         }
     }
 
-    /**
-     * This is where we can add markers or lines, add listeners or move the camera. In this case, we
-     * just add a marker near Africa.
-     * <p/>
-     * This should only be called once and when we are sure that {@link #mMap} is not null.
-     */
     private void setUpMap() {
-        // Add stations
-        addMarkers(); // TODO: Sacar los puestos del servidor
         mMap.getUiSettings().setZoomControlsEnabled(true);
-        // Set the camera to the greatest possible zoom level that includes the bounds
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(MADRID.getCenter(), 12));
     }
 
-    private void addMarkers() { //TODO: Hay un error al volver, no guarda los cambios, cogiendolo del servidor se debería arreglar.
+    private void updateMarkers() { //TODO: Hay un error al volver, no guarda los cambios, cogiendolo del servidor se debería arreglar.
+        mMap.clear();
         for (Map.Entry<String, BikeStation> entry : mStations.entrySet())
-            mMap.addMarker(new MarkerOptions().
-                    position(new LatLng(entry.getValue().getmLatitude(),
-                            entry.getValue().getmLongitude())).
-                    title(entry.getKey()).
-                    snippet(entry.getValue().getAvailabilityMessage()).
-                    icon(getAvailabilityColor(entry.getValue())));
+            mMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(
+                            entry.getValue().getmLatitude(),
+                            entry.getValue().getmLongitude()))
+                    .title(entry.getKey())
+                    .snippet(entry.getValue().getAvailabilityMessage())
+                    .icon(getAvailabilityColor(entry.getValue())));
     }
 
     private BitmapDescriptor getAvailabilityColor(BikeStation bikeStation) {
+        int disp = bikeStation.getmTotalBikes()/bikeStation.getmAvailableBikes();
+
         if(bikeStation.getmAvailableBikes() == 0)
             return BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
-        else if (bikeStation.getmAvailableBikes() < 5)
-            return BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW);
-        else
+        else if (disp <= 2)
             return BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
+        else
+            return BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW);
     }
 
     @Override
@@ -282,10 +264,10 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case R.id.menu_takeBike:
-                                takeBike(bikeStation, marker);
+                                takeBike(bikeStation, marker); //TODO: hacer un GET indivudual
                                 break;
                             case R.id.menu_leaveBike:
-                                leaveBike(bikeStation, marker);
+                                leaveBike(bikeStation, marker); //TODO: hacer un GET indivudual
                                 break;
                             case R.id.menu_reportBike:
                                 Toast.makeText(getApplicationContext(), "report", Toast.LENGTH_SHORT).show();
@@ -337,6 +319,24 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
     @Override
     public void processResult(String result) {
-        Toast.makeText(this, "completo GET: " + result, Toast.LENGTH_LONG).show();
+       try {
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
+            mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+
+            List<BikeStation> bikeStationList = mapper.readValue(result, new TypeReference<List<BikeStation>>() {});
+            String key;
+            mStations = new HashMap<>();
+            for(BikeStation bikeStation : bikeStationList) {
+                key = bikeStation.getmAddress();
+                mStations.put(key, bikeStation);
+            }
+            updateMarkers();
+        } catch (Exception e){
+            Log.e("JSON", e.getLocalizedMessage(), e);
+            Toast.makeText(this, "Error al sincronizar con el servidor", Toast.LENGTH_SHORT).show();
+        }
+
+        //Toast.makeText(this, "Sincronización completa", Toast.LENGTH_SHORT).show();
     }
 }
