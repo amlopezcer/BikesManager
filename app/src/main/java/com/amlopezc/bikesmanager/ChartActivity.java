@@ -1,13 +1,20 @@
 package com.amlopezc.bikesmanager;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.amlopezc.bikesmanager.entity.BikeStation;
+import com.amlopezc.bikesmanager.net.HttpDispatcher;
+import com.amlopezc.bikesmanager.util.AsyncTaskListener;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.Entry;
@@ -21,8 +28,9 @@ import com.github.mikephil.charting.utils.ViewPortHandler;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.List;
 
-public class ChartActivity extends AppCompatActivity {
+public class ChartActivity extends AppCompatActivity implements AsyncTaskListener<String>{
     //TODO: mostrar los datos en % ?
 
     private PieChart mChart;
@@ -37,13 +45,11 @@ public class ChartActivity extends AppCompatActivity {
 
         //Setting the chart
         mChart.setDescription(null);
-
         mChart.setHoleColorTransparent(true);
-
-        mChart.setDrawSliceText(false);
-
+        mChart.setDrawSliceText(true);
         mChart.setRotationAngle(0);
         mChart.setRotationEnabled(true);
+        mChart.setUsePercentValues(true);
 
         //Adding a listener
         mChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
@@ -54,31 +60,115 @@ public class ChartActivity extends AppCompatActivity {
 
                 Toast.makeText(getApplicationContext(),
                         String.format("%s: %d", mXVals.get(entry.getXIndex()), (int) entry.getVal()),
-                        Toast.LENGTH_SHORT).
+                        Toast.LENGTH_LONG).
                         show();
             }
 
             @Override
-            public void onNothingSelected() {}
+            public void onNothingSelected() {
+            }
         });
 
-        addData();
-
-        Legend l = mChart.getLegend();
-        l.setPosition(Legend.LegendPosition.BELOW_CHART_CENTER);
-        l.setTextSize(10f);
     }
 
-    private void addData() {
-        int totalBikes;
-        Intent intent = getIntent();
+    @Override
+    protected void onResume() {
+        super.onResume();
 
-        ArrayList<Integer> intentData = intent.getIntegerArrayListExtra(MapsActivity.EXTRA_DATA);
-        totalBikes = intentData.get(0);
+        fetchUpdatedServerData();
+    }
+
+    private void fetchUpdatedServerData() {
+        HttpDispatcher dispatcher = new HttpDispatcher(this);
+        dispatcher.doGet(this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_chart, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks
+        int id = item.getItemId();
+
+        if (id == R.id.action_refresh) {
+            fetchUpdatedServerData();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    //Private class to set the value formatter  for my DataSet
+    private class MyValueFormatter implements ValueFormatter {
+
+        private DecimalFormat mFormat;
+
+        public MyValueFormatter() {
+            mFormat = new DecimalFormat("##.#");
+        }
+
+        @Override
+        public String getFormattedValue(float value, Entry entry, int dataSetIndex,
+                                        ViewPortHandler viewPortHandler) {
+           return String.format("%s %s", mFormat.format(value), "%");
+        }
+    }
+
+    @Override
+    public void processResult(String result) {
+        try {
+            ObjectMapper mapper = setObjectMapper();
+            List<BikeStation> bikeStationList = mapper.readValue(result, new TypeReference<List<BikeStation>>() {});
+            ArrayList<Integer> data = readData(bikeStationList);
+            updateLocalLayout(data);
+        } catch (Exception e){
+            Log.e("JSON", e.getLocalizedMessage(), e);
+            Toast.makeText(this, "Error al sincronizar con el servidor", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private ObjectMapper setObjectMapper() {
+        return  new ObjectMapper()
+                .setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE)
+                .setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+    }
+
+    private ArrayList<Integer> readData(List<BikeStation> bikeStationList) {
+        int total = 0;
+        int available = 0;
+        int broken = 0;
+        int reserved = 0;
+
+        for(BikeStation bikeStation : bikeStationList) {
+            total += bikeStation.getmTotalBikes();
+            available += bikeStation.getmAvailableBikes();
+            broken += bikeStation.getmBrokenBikes();
+            reserved += bikeStation.getmReservedBikes();
+        }
+
+        int occupied = total - available - broken - reserved;
+
+        ArrayList<Integer> data = new ArrayList<>();
+        data.add(total);
+        data.add(available);
+        data.add(broken);
+        data.add(reserved);
+        data.add(occupied);
+
+        return data;
+    }
+
+    private void updateLocalLayout(ArrayList<Integer> data) {
+        int totalBikes = data.get(0);
 
         ArrayList<Entry> yData = new ArrayList<>();
-        for(int i = 1; i < intentData.size(); i++)  //don't want to show total bikes
-            yData.add(new Entry(intentData.get(i), i-1));
+        for(int i = 1; i < data.size(); i++)  //don't want to show total bikes
+            yData.add(new Entry(data.get(i), i-1));
 
         mXVals = new ArrayList<>();
         mXVals.add("Available");
@@ -111,49 +201,18 @@ public class ChartActivity extends AppCompatActivity {
         pieData.setValueTextColor(Color.WHITE);
 
         mChart.setCenterText(String.format("Total bikes: %d", totalBikes));
-        mChart.setCenterTextColor(Color.rgb(0, 60, 245)); //dark blue
+        mChart.setCenterTextColor(Color.rgb(60, 145, 210)); //grey - blue
         mChart.setCenterTextSize(16f);
 
         mChart.setData(pieData);
         mChart.highlightValues(null);
         mChart.invalidate();
+
+        Legend l = mChart.getLegend();
+        l.setPosition(Legend.LegendPosition.RIGHT_OF_CHART);
+        /*l.setTextSize(10f);
+        l.setTextColor(Color.DKGRAY);*/
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_chart, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_refresh) {
-            Toast.makeText(this, "Refresh", Toast.LENGTH_SHORT).show();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    private class MyValueFormatter implements ValueFormatter {
-
-        private DecimalFormat mFormat;
-
-        public MyValueFormatter() {
-            mFormat = new DecimalFormat("#####"); // no decimals
-        }
-
-        @Override
-        public String getFormattedValue(float value, Entry entry, int dataSetIndex,
-                                        ViewPortHandler viewPortHandler) {
-           return mFormat.format(value);
-        }
-    }
 }

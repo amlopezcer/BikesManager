@@ -13,6 +13,8 @@ import android.widget.TextView;
 import com.amlopezc.bikesmanager.R;
 import com.amlopezc.bikesmanager.entity.BikeStation;
 
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 
@@ -119,27 +121,50 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         return true;
     }
 
-    private void setChildData(View convertView, BikeStation actual) { //TODO: meter el dateStamp de la última reserva
-        TextView tv_ListChild;
-        tv_ListChild = (TextView) convertView.findViewById(R.id.textView_totalNumber);
-        tv_ListChild.setText(String.format("%d", actual.getmTotalBikes()));
-        tv_ListChild = (TextView) convertView.findViewById(R.id.textView_availableNumber);
-        tv_ListChild.setText(String.format("%d", actual.getmAvailableBikes()));
+    private void setChildData(View convertView, BikeStation bikeStation) {
+        TextView tv_listChild;
 
+        tv_listChild = (TextView) convertView.findViewById(R.id.textView_totalNumber);
+        tv_listChild.setText(String.format("%d", bikeStation.getmTotalBikes()));
+
+        tv_listChild = (TextView) convertView.findViewById(R.id.textView_availableNumber);
+        tv_listChild.setText(String.format("%d", bikeStation.getmAvailableBikes()));
         //Color for available bikes number
-        if(actual.getmAvailableBikes() == 0)
-            tv_ListChild.setTextColor(Color.RED);
-        else if (actual.getmTotalBikes() - actual.getmAvailableBikes() > actual.getmAvailableBikes())
-            tv_ListChild.setTextColor(Color.rgb(255, 128, 0)); //Orange
+        setAvailabilityColor(bikeStation, tv_listChild);
+
+        tv_listChild = (TextView) convertView.findViewById(R.id.textView_reservedNumber);
+        tv_listChild.setText(String.format("%d", bikeStation.getmReservedBikes()));
+
+        tv_listChild = (TextView) convertView.findViewById(R.id.textView_brokenNumber);
+        tv_listChild.setText(String.format("%d", bikeStation.getmBrokenBikes()));
+
+        tv_listChild = (TextView) convertView.findViewById(R.id.textView_coordinates);
+        tv_listChild.setText(String.format("%.4f, %.4f", bikeStation.getmLatitude(), bikeStation.getmLongitude()));
+
+        tv_listChild = (TextView) convertView.findViewById(R.id.textView_lastBookingData);
+        tv_listChild.setText(String.format("%s", setTimeStampFormat(bikeStation.getmTimeStamp())));
+    }
+
+    private void setAvailabilityColor(BikeStation bikeStation, TextView textView) {
+        if(bikeStation.getmAvailableBikes() == 0)
+            textView.setTextColor(Color.RED);
+        else if (bikeStation.getmTotalBikes() - bikeStation.getmAvailableBikes() > bikeStation.getmAvailableBikes())
+            textView.setTextColor(Color.rgb(255, 128, 0)); //Orange
         else
-            tv_ListChild.setTextColor(Color.rgb(0, 102, 0)); // Dark green
+            textView.setTextColor(Color.rgb(0, 102, 0)); // Dark green
+    }
 
-        tv_ListChild = (TextView) convertView.findViewById(R.id.textView_reservedNumber);
-        tv_ListChild.setText(String.format("%d", actual.getmReservedBikes()));
-        tv_ListChild = (TextView) convertView.findViewById(R.id.textView_brokenNumber);
-        tv_ListChild.setText(String.format("%d", actual.getmBrokenBikes()));
+    private String setTimeStampFormat(String string) {
+        String year = string.substring(0, 4);
+        String month = string.substring(5, 7);
+        String day = string.substring(8, 10);
 
-        tv_ListChild = (TextView) convertView.findViewById(R.id.textView_coordinates);
-        tv_ListChild.setText(String.format("%f, %f", actual.getmLatitude(), actual.getmLongitude()));
+        String hour = string.substring(11,13);
+        String minutes = string.substring(14,16);
+        String seconds = string.substring(17,19);
+
+        return String.format("%s:%s:%s | %s-%s-%s",
+                hour, minutes, seconds,
+                day, month, year);
     }
 }

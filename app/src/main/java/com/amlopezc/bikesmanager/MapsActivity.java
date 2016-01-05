@@ -37,12 +37,10 @@ import java.util.Map;
 
 import com.cocosw.bottomsheet.BottomSheet;
 
-//TODO: cambiar los IDs de los puestos, que sea el ID y no la calle
 public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarkerClickListener,
         AsyncTaskListener<String> {
 
     //Constants for intents
-    public final static String EXTRA_STATIONS = "STATIONS";
     public final static String EXTRA_DATA = "DATA";
 
     private final int SETTINGS_REQUEST_CODE = 0;
@@ -50,7 +48,6 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private HashMap<String, BikeStation> mStations;
-    private HttpDispatcher dispatcher;
 
     // Create a LatLngBounds that includes Madrid.
     public final LatLngBounds MADRID  = new LatLngBounds(new LatLng(40.38, -3.72), new LatLng(40.48, -3.67));
@@ -59,38 +56,35 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        initData();
+
+        mStations = new HashMap<>();
+
         setUpMapIfNeeded();
         mMap.setOnMarkerClickListener(this);
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
     }
 
-    private void initData() {
-        mStations = new HashMap<>();
-        dispatcher = new HttpDispatcher(this);
-    }
-
-    private void fetchUpdatedServerData() {
-        dispatcher.doGet(this);
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
+
         setUpMapIfNeeded();
 
         //Ensuring connection data is set
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
         String userName = sharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_USER, "");
         String serverAddress = sharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_SERVER, "");
         String serverPort = sharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_PORT, "");
-
         if(userName.trim().isEmpty() || serverAddress.trim().isEmpty() || serverPort.trim().isEmpty())
             showConnectionDataDialog();
 
         //Fetch updated server data related to the bike stations
         fetchUpdatedServerData();
+    }
+
+    private void fetchUpdatedServerData() {
+        HttpDispatcher dispatcher = new HttpDispatcher(this);
+        dispatcher.doGet(this);
     }
 
     private void showConnectionDataDialog() {
@@ -107,10 +101,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-
+        // Action bar item click handler
         Intent intent;
 
         switch(item.getItemId()){
@@ -121,12 +112,10 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                 return true;
             case R.id.action_list:
                 intent = new Intent(this, ListActivity.class);
-                intent.putParcelableArrayListExtra(EXTRA_STATIONS, prepareListIntentData());
                 startActivityForResult(intent, LIST_REQUEST_CODE);
                 return true;
             case R.id.action_chart:
                 intent = new Intent(this, ChartActivity.class);
-                intent.putIntegerArrayListExtra(EXTRA_DATA, prepareChartIntentData());
                 startActivity(intent);
                 return true;
             case R.id.action_refresh:
@@ -135,38 +124,6 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    private ArrayList<BikeStation> prepareListIntentData() {
-        ArrayList<BikeStation> stations = new ArrayList<>();
-        for (Map.Entry<String, BikeStation> entry : mStations.entrySet())
-            stations.add(entry.getValue());
-        return stations;
-    }
-
-    private ArrayList<Integer> prepareChartIntentData() {
-        int total = 0;
-        int available = 0;
-        int broken = 0;
-        int reserved = 0;
-
-        for (Map.Entry<String, BikeStation> entry : mStations.entrySet()) {
-            total += entry.getValue().getmTotalBikes();
-            available += entry.getValue().getmAvailableBikes();
-            broken += entry.getValue().getmBrokenBikes();
-            reserved += entry.getValue().getmReservedBikes();
-        }
-
-        int occupied = total - available - broken - reserved;
-
-        ArrayList<Integer> data = new ArrayList<>();
-        data.add(total);
-        data.add(available);
-        data.add(broken);
-        data.add(reserved);
-        data.add(occupied);
-
-        return data;
     }
 
     /**
@@ -202,7 +159,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(MADRID.getCenter(), 12));
     }
 
-    private void updateMarkers() { //TODO: Hay un error al volver, no guarda los cambios, cogiendolo del servidor se debería arreglar.
+    private void updateMarkers() {
         mMap.clear();
         for (Map.Entry<String, BikeStation> entry : mStations.entrySet())
             mMap.addMarker(new MarkerOptions()
@@ -215,14 +172,12 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     }
 
     private BitmapDescriptor getAvailabilityColor(BikeStation bikeStation) {
-        int disp = bikeStation.getmTotalBikes()/bikeStation.getmAvailableBikes();
-
         if(bikeStation.getmAvailableBikes() == 0)
             return BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
-        else if (disp <= 2)
-            return BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
-        else
+        else if (bikeStation.getmTotalBikes() - bikeStation.getmAvailableBikes() > bikeStation.getmAvailableBikes())
             return BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW);
+        else
+            return BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
     }
 
     @Override
@@ -320,23 +275,30 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     @Override
     public void processResult(String result) {
        try {
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
-            mapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-
+            ObjectMapper mapper = setObjectMapper();
             List<BikeStation> bikeStationList = mapper.readValue(result, new TypeReference<List<BikeStation>>() {});
-            String key;
-            mStations = new HashMap<>();
-            for(BikeStation bikeStation : bikeStationList) {
-                key = bikeStation.getmAddress();
-                mStations.put(key, bikeStation);
-            }
-            updateMarkers();
+            readData(bikeStationList);
+            updateLocalLayout();
         } catch (Exception e){
             Log.e("JSON", e.getLocalizedMessage(), e);
             Toast.makeText(this, "Error al sincronizar con el servidor", Toast.LENGTH_SHORT).show();
         }
+    }
 
-        //Toast.makeText(this, "Sincronización completa", Toast.LENGTH_SHORT).show();
+    private void updateLocalLayout() {
+        updateMarkers();
+    }
+
+    private ObjectMapper setObjectMapper() {
+        return  new ObjectMapper()
+                .setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE)
+                .setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+    }
+
+    private void readData(List<BikeStation> bikeStationList) {
+        mStations = new HashMap<>();
+        String headerTemplate = "%d - %s";
+        for(BikeStation bikeStation : bikeStationList)
+            mStations.put(String.format(headerTemplate, bikeStation.getmId(), bikeStation.getmAddress()), bikeStation);
     }
 }

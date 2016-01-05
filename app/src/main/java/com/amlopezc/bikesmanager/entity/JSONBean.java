@@ -54,5 +54,4 @@ public abstract class JSONBean implements PropertyChangeListener, Parcelable {
 
     public abstract void setServerId(int serverId);
 
-
 }

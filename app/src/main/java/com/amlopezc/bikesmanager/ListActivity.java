@@ -1,54 +1,45 @@
 package com.amlopezc.bikesmanager;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
 import com.amlopezc.bikesmanager.entity.BikeStation;
+import com.amlopezc.bikesmanager.net.HttpDispatcher;
+import com.amlopezc.bikesmanager.util.AsyncTaskListener;
 import com.amlopezc.bikesmanager.util.ExpandableListAdapter;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class ListActivity extends AppCompatActivity {
+public class ListActivity extends AppCompatActivity implements AsyncTaskListener<String> {
 
     private List<String> mListDataHeader;
     private HashMap<String, BikeStation> mListDataChild;
+    private ExpandableListView mExpandableListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
 
-        ExpandableListAdapter mExpandableListAdapter;
-        ExpandableListView mExpandableListView;
-
         mExpandableListView = (ExpandableListView) findViewById(R.id.expListView_list);
-        prepareListData();
-        mExpandableListAdapter = new ExpandableListAdapter(this, mListDataHeader, mListDataChild);
-        mExpandableListView.setAdapter(mExpandableListAdapter);
     }
 
-    private void prepareListData() {
-        mListDataHeader = new ArrayList<>();
-        mListDataChild = new HashMap<>();
+    @Override
+    protected void onResume() {
+        super.onResume();
 
-        Intent intent = getIntent();
-        ArrayList<BikeStation> bikeStationList = intent.getParcelableArrayListExtra(
-                MapsActivity.EXTRA_STATIONS);
-
-        BikeStation bikeStation;
-
-        for(int i = 0; i < bikeStationList.size(); i++) {
-            bikeStation = bikeStationList.get(i);
-            mListDataHeader.add(bikeStation.getmAddress());
-            mListDataChild.put(mListDataHeader.get(i), bikeStation);
-        }
+        fetchUpdatedServerData();
     }
 
     @Override
@@ -60,19 +51,63 @@ public class ListActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+        // Action bar item click handler
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_refresh) {
-            Toast.makeText(this, "Refresh", Toast.LENGTH_SHORT).show();
+            fetchUpdatedServerData();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+    private void fetchUpdatedServerData() {
+        HttpDispatcher dispatcher = new HttpDispatcher(this);
+        dispatcher.doGet(this);
+    }
+
+    @Override
+    public void processResult(String result) {
+        try {
+            ObjectMapper mapper = setObjectMapper();
+            List<BikeStation> bikeStationList = mapper.readValue(result, new TypeReference<List<BikeStation>>() {});
+            readData(bikeStationList);
+            updateLocalLayout();
+        } catch (Exception e){
+            Log.e("JSON", e.getLocalizedMessage(), e);
+            Toast.makeText(this, "Error al sincronizar con el servidor", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private ObjectMapper setObjectMapper() {
+        return  new ObjectMapper()
+                .setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE)
+                .setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+    }
+
+    private void readData(List<BikeStation> bikeStationList) {
+        String headerTemplate = "%d - %s";
+        mListDataHeader = new ArrayList<>();
+        mListDataChild = new HashMap<>();
+        int i = 0;
+
+        for(BikeStation bikeStation : bikeStationList) {
+            mListDataHeader.add(String.format(headerTemplate, bikeStation.getmId(), bikeStation.getmAddress()));
+            mListDataChild.put(mListDataHeader.get(i), bikeStation);
+            i++;
+        }
+    }
+
+    private void updateLocalLayout() {
+        updateExpandableList();
+    }
+
+    private void updateExpandableList() {
+        ExpandableListAdapter expandableListAdapter = new ExpandableListAdapter(this, mListDataHeader, mListDataChild);
+        mExpandableListView.setAdapter(expandableListAdapter);
+    }
+
 
 
 }

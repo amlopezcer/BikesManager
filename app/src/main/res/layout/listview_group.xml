@@ -9,8 +9,7 @@
         android:layout_height="?android:attr/listPreferredItemHeight"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textStyle="bold"
-        android:gravity="center"
+        android:gravity="center_vertical|start"
         android:paddingLeft="?android:attr/expandableListPreferredItemPaddingLeft" />
-
 
 </LinearLayout>
