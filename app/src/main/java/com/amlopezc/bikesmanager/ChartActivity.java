@@ -11,8 +11,6 @@ import android.widget.Toast;
 import com.amlopezc.bikesmanager.entity.BikeStation;
 import com.amlopezc.bikesmanager.net.HttpDispatcher;
 import com.amlopezc.bikesmanager.util.AsyncTaskListener;
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.mikephil.charting.charts.PieChart;
@@ -35,6 +33,7 @@ public class ChartActivity extends AppCompatActivity implements AsyncTaskListene
 
     private PieChart mChart;
     private ArrayList<String> mXVals;
+    private HttpDispatcher dispatcher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +41,7 @@ public class ChartActivity extends AppCompatActivity implements AsyncTaskListene
         setContentView(R.layout.activity_chart);
 
         mChart = (PieChart) findViewById(R.id.chart_pieChart);
+        dispatcher = new HttpDispatcher(this);
 
         //Setting the chart
         mChart.setDescription(null);
@@ -68,7 +68,6 @@ public class ChartActivity extends AppCompatActivity implements AsyncTaskListene
             public void onNothingSelected() {
             }
         });
-
     }
 
     @Override
@@ -79,7 +78,6 @@ public class ChartActivity extends AppCompatActivity implements AsyncTaskListene
     }
 
     private void fetchUpdatedServerData() {
-        HttpDispatcher dispatcher = new HttpDispatcher(this);
         dispatcher.doGet(this);
     }
 
@@ -120,22 +118,20 @@ public class ChartActivity extends AppCompatActivity implements AsyncTaskListene
     }
 
     @Override
-    public void processResult(String result) {
-        try {
-            ObjectMapper mapper = setObjectMapper();
-            List<BikeStation> bikeStationList = mapper.readValue(result, new TypeReference<List<BikeStation>>() {});
-            ArrayList<Integer> data = readData(bikeStationList);
-            updateLocalLayout(data);
-        } catch (Exception e){
-            Log.e("JSON", e.getLocalizedMessage(), e);
-            Toast.makeText(this, "Error al sincronizar con el servidor", Toast.LENGTH_SHORT).show();
+    public void processResult(String result, int operation) {
+        switch (operation) {
+            case HttpDispatcher.OPERATION_GET:
+                try {
+                    ObjectMapper mapper = dispatcher.getMapper();
+                    List<BikeStation> bikeStationList = mapper.readValue(result, new TypeReference<List<BikeStation>>() {});
+                    ArrayList<Integer> data = readData(bikeStationList);
+                    updateLocalLayout(data);
+                } catch (Exception e) {
+                    Log.e("JSON", e.getLocalizedMessage(), e);
+                    Toast.makeText(this, "Error al sincronizar con el servidor", Toast.LENGTH_SHORT).show();
+                }
+                break;
         }
-    }
-
-    private ObjectMapper setObjectMapper() {
-        return  new ObjectMapper()
-                .setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE)
-                .setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
     }
 
     private ArrayList<Integer> readData(List<BikeStation> bikeStationList) {

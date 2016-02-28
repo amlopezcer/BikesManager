@@ -16,8 +16,6 @@ import com.amlopezc.bikesmanager.entity.BikeStation;
 import com.amlopezc.bikesmanager.net.HttpDispatcher;
 import com.amlopezc.bikesmanager.util.AsyncTaskListener;
 import com.amlopezc.bikesmanager.util.ExpandableListAdapter;
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -30,7 +28,6 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,17 +37,16 @@ import com.cocosw.bottomsheet.BottomSheet;
 public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarkerClickListener,
         AsyncTaskListener<String> {
 
-    //Constants for intents
-    public final static String EXTRA_DATA = "DATA";
-
     private final int SETTINGS_REQUEST_CODE = 0;
     private final int LIST_REQUEST_CODE = 1;
 
+    //LatLngBounds that includes Madrid.
+    private final LatLngBounds MADRID  = new LatLngBounds(new LatLng(40.38, -3.72), new LatLng(40.48, -3.67));
+
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private HashMap<String, BikeStation> mStations;
+    private HttpDispatcher dispatcher;
 
-    // Create a LatLngBounds that includes Madrid.
-    public final LatLngBounds MADRID  = new LatLngBounds(new LatLng(40.38, -3.72), new LatLng(40.48, -3.67));
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +54,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         setContentView(R.layout.activity_maps);
 
         mStations = new HashMap<>();
+        dispatcher = new HttpDispatcher(this);
 
         setUpMapIfNeeded();
         mMap.setOnMarkerClickListener(this);
@@ -83,7 +80,6 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     }
 
     private void fetchUpdatedServerData() {
-        HttpDispatcher dispatcher = new HttpDispatcher(this);
         dispatcher.doGet(this);
     }
 
@@ -207,8 +203,6 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
     @Override
     public boolean onMarkerClick(final Marker marker) {
-        final BikeStation bikeStation = mStations.get(marker.getTitle());
-
         new BottomSheet.Builder(this).
                 title(marker.getTitle()).
                 grid().
@@ -219,10 +213,10 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case R.id.menu_takeBike:
-                                takeBike(bikeStation, marker); //TODO: hacer un GET indivudual
+                                takeBike(marker); //TODO: hacer un GET indivudual
                                 break;
                             case R.id.menu_leaveBike:
-                                leaveBike(bikeStation, marker); //TODO: hacer un GET indivudual
+                                leaveBike(marker); //TODO: hacer un GET indivudual
                                 break;
                             case R.id.menu_reportBike:
                                 Toast.makeText(getApplicationContext(), "report", Toast.LENGTH_SHORT).show();
@@ -230,69 +224,60 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                         }
                     }
                 }).show();
-
         return false;
     }
 
-    private void takeBike(BikeStation bikeStation, Marker marker) {
+    private void takeBike(Marker marker) {
+        fetchUpdatedServerData();
+        BikeStation bikeStation = mStations.get(marker.getTitle());
+
         if(bikeStation.getmAvailableBikes() > 0) {
             bikeStation.setmAvailableBikes(bikeStation.getmAvailableBikes() - 1);
-
-            marker.setSnippet(bikeStation.getAvailabilityMessage());
-            marker.setIcon(getAvailabilityColor(bikeStation));
-
-            Toast.makeText(getApplicationContext(),
-                    String.format("Bike taken from '%s' station", bikeStation.getmAddress()),
-                    Toast.LENGTH_LONG).
-                    show();
-        } else {
-            Toast.makeText(getApplicationContext(),
-                    "No available bikes",
-                    Toast.LENGTH_SHORT).
-                    show();
-        }
+            bikeStation.setServerId(bikeStation.getmId());
+            dispatcher.doPut(this, bikeStation);
+        } else
+            Toast.makeText(this, "No available bikes", Toast.LENGTH_SHORT).show();
     }
 
-    private void leaveBike(BikeStation bikeStation, Marker marker) {
+    private void leaveBike(Marker marker) {
+        fetchUpdatedServerData();
+        BikeStation bikeStation = mStations.get(marker.getTitle());
+
         if(bikeStation.getmAvailableBikes() != bikeStation.getmTotalBikes()) { //TODO: De momento sólo cuento disponibles, a ver qué pasa con las rotas y las reservas
             bikeStation.setmAvailableBikes(bikeStation.getmAvailableBikes() + 1);
-
-            marker.setSnippet(bikeStation.getAvailabilityMessage());
-            marker.setIcon(getAvailabilityColor(bikeStation));
-
-            Toast.makeText(getApplicationContext(),
-                    String.format("Bike leaved in '%s' station", bikeStation.getmAddress()),
-                    Toast.LENGTH_LONG).
-                    show();
-        } else {
-            Toast.makeText(getApplicationContext(),
-                    "Station full",
-                    Toast.LENGTH_SHORT).
-                    show();
-        }
+            bikeStation.setServerId(bikeStation.getmId());
+            dispatcher.doPut(this, bikeStation);
+        } else
+            Toast.makeText(this, "Station full", Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void processResult(String result) {
-       try {
-            ObjectMapper mapper = setObjectMapper();
-            List<BikeStation> bikeStationList = mapper.readValue(result, new TypeReference<List<BikeStation>>() {});
-            readData(bikeStationList);
-            updateLocalLayout();
-        } catch (Exception e){
-            Log.e("JSON", e.getLocalizedMessage(), e);
-            Toast.makeText(this, "Error al sincronizar con el servidor", Toast.LENGTH_SHORT).show();
+    public void processResult(String result, int operation) {
+        switch (operation) {
+            case HttpDispatcher.OPERATION_GET:
+                try {
+                    ObjectMapper mapper = dispatcher.getMapper();
+                    List<BikeStation> bikeStationList = mapper.readValue(result,
+                            new TypeReference<List<BikeStation>>() {});
+                    readData(bikeStationList);
+                    updateLocalLayout();
+                } catch (Exception e) {
+                    Log.e("JSON (GET result)", e.getLocalizedMessage(), e);
+                    Toast.makeText(this, "Error al sincronizar con el servidor", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case HttpDispatcher.OPERATION_PUT:
+                if (result.startsWith("2"))
+                    Toast.makeText(this, "Operación realizada con éxito", Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(this, "Error al sincronizar con el servidor", Toast.LENGTH_SHORT).show();
+                fetchUpdatedServerData();
+                break;
         }
     }
 
     private void updateLocalLayout() {
         updateMarkers();
-    }
-
-    private ObjectMapper setObjectMapper() {
-        return  new ObjectMapper()
-                .setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE)
-                .setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
     }
 
     private void readData(List<BikeStation> bikeStationList) {

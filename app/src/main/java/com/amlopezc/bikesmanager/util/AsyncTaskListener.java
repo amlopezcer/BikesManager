@@ -6,6 +6,5 @@ package com.amlopezc.bikesmanager.util;
  */
 public interface AsyncTaskListener<T> {
 
-
-    void processResult(T result);
+    void processResult(T result, int operation);
 }

@@ -12,8 +12,6 @@ import com.amlopezc.bikesmanager.entity.BikeStation;
 import com.amlopezc.bikesmanager.net.HttpDispatcher;
 import com.amlopezc.bikesmanager.util.AsyncTaskListener;
 import com.amlopezc.bikesmanager.util.ExpandableListAdapter;
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -26,6 +24,7 @@ public class ListActivity extends AppCompatActivity implements AsyncTaskListener
     private List<String> mListDataHeader;
     private HashMap<String, BikeStation> mListDataChild;
     private ExpandableListView mExpandableListView;
+    private HttpDispatcher dispatcher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +32,7 @@ public class ListActivity extends AppCompatActivity implements AsyncTaskListener
         setContentView(R.layout.activity_list);
 
         mExpandableListView = (ExpandableListView) findViewById(R.id.expListView_list);
+        dispatcher = new HttpDispatcher(this);
     }
 
     @Override
@@ -63,27 +63,25 @@ public class ListActivity extends AppCompatActivity implements AsyncTaskListener
     }
 
     private void fetchUpdatedServerData() {
-        HttpDispatcher dispatcher = new HttpDispatcher(this);
         dispatcher.doGet(this);
     }
 
     @Override
-    public void processResult(String result) {
-        try {
-            ObjectMapper mapper = setObjectMapper();
-            List<BikeStation> bikeStationList = mapper.readValue(result, new TypeReference<List<BikeStation>>() {});
-            readData(bikeStationList);
-            updateLocalLayout();
-        } catch (Exception e){
-            Log.e("JSON", e.getLocalizedMessage(), e);
-            Toast.makeText(this, "Error al sincronizar con el servidor", Toast.LENGTH_SHORT).show();
+    public void processResult(String result, int operation) {
+        switch (operation) {
+            case HttpDispatcher.OPERATION_GET:
+                try {
+                    ObjectMapper mapper = dispatcher.getMapper();
+                    List<BikeStation> bikeStationList = mapper.readValue(result, new TypeReference<List<BikeStation>>() {
+                    });
+                    readData(bikeStationList);
+                    updateLocalLayout();
+                } catch (Exception e) {
+                    Log.e("JSON", e.getLocalizedMessage(), e);
+                    Toast.makeText(this, "Error al sincronizar con el servidor", Toast.LENGTH_SHORT).show();
+                }
+                break;
         }
-    }
-
-    private ObjectMapper setObjectMapper() {
-        return  new ObjectMapper()
-                .setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE)
-                .setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
     }
 
     private void readData(List<BikeStation> bikeStationList) {

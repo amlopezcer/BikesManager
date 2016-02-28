@@ -5,23 +5,32 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.amlopezc.bikesmanager.entity.JSONBean;
 import com.amlopezc.bikesmanager.util.AsyncTaskListener;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashSet;
 
-
-public class HttpGetWorker extends AsyncTask<String, Void, String> {
+public class HttpPutWorker  extends AsyncTask<String, Void, String> {
 
     private HashSet<AsyncTaskListener<String>> listeners;
-    final ProgressDialog progressDialog;
+    private final ProgressDialog progressDialog;
+    private JSONBean bean;
+    private ObjectMapper mapper;
 
-    public HttpGetWorker(Context context) { progressDialog = new ProgressDialog(context); }
+    public HttpPutWorker(Context context, JSONBean bean, ObjectMapper mapper) {
+        progressDialog = new ProgressDialog(context);
+        this.bean = bean;
+        this.mapper = mapper;
+    }
 
     @Override
     protected void onPreExecute() {
@@ -46,7 +55,7 @@ public class HttpGetWorker extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String result) {
         for(AsyncTaskListener<String> listener : listeners) {
-            listener.processResult(result, HttpDispatcher.OPERATION_GET);
+            listener.processResult(result, HttpDispatcher.OPERATION_PUT);
         }
         progressDialog.dismiss();
     }
@@ -57,40 +66,32 @@ public class HttpGetWorker extends AsyncTask<String, Void, String> {
     }
 
     private String process(String myUrl) throws IOException {
-        InputStream is = null;
+        OutputStreamWriter osw = null;
         HttpURLConnection conn = null;
         try {
             URL url = new URL(myUrl);
             conn = (HttpURLConnection) url.openConnection();
             //Set connection
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+            conn.setRequestMethod("PUT");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Accept", "application/json");
             conn.setReadTimeout(10000 /* milliseconds */);
             conn.setConnectTimeout(15000 /* milliseconds */);
-            conn.setRequestMethod("GET");
-            conn.setDoInput(true);
-            // Get data
-            conn.connect();
+            //Send data
+            osw = new OutputStreamWriter(conn.getOutputStream());
+            osw.write(mapper.writeValueAsString(bean));
+            osw.flush();
+            osw.close();
             int response = conn.getResponseCode();
             Log.d(this.getClass().getCanonicalName(), "The response is: " + response);
-            is = conn.getInputStream();
-            return readIt(is);
+            return Integer.toString(response);
         } finally {
-            if (is != null)
-                is.close();
+            if(osw != null)
+                osw.close();
             if (conn != null)
                 conn.disconnect();
-        }
-    }
-
-    // Reads an InputStream and converts it to a String.
-    private String readIt(InputStream stream)  throws IOException {
-        StringBuilder sb = new StringBuilder();
-        BufferedReader br = new BufferedReader(new InputStreamReader(stream));
-        String read;
-        try {
-            while ((read = br.readLine()) != null) { sb.append(read); }
-            return sb.toString();
-        }finally {
-            br.close();
         }
     }
 
