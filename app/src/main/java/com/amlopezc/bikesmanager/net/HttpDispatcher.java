@@ -35,7 +35,6 @@ public class HttpDispatcher {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         SERVER_ADDRESS = sharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_SERVER, "");
         SERVER_PORT = sharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_PORT, "");
-        //REGISTRY_OWNER = sharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_USER, ""); // Esto posiblemente vaya fuera
 
         this.context = context;
 
@@ -48,6 +47,7 @@ public class HttpDispatcher {
     public void doGet(AsyncTaskListener listener) {
         String url = String.format(BASE_URL_ADDRESS, SERVER_ADDRESS, SERVER_PORT);
         if (isOnline()) {
+            Log.i(this.getClass().getCanonicalName(), "online");
             HttpGetWorker worker = new HttpGetWorker(context);
             worker.addAsyncTaskListener(listener);
             worker.execute(url);
@@ -56,10 +56,11 @@ public class HttpDispatcher {
         }
     }
 
-    public void doPut(AsyncTaskListener listener, JSONBean bean) {
+    public void doPut(AsyncTaskListener listener, JSONBean bean, String method) {
         StringBuilder builder = new StringBuilder(String.format(BASE_URL_ADDRESS, SERVER_ADDRESS, SERVER_PORT));
-        String url = builder.append("/").append(bean.getServerId()).toString(); //ID to update
+        String url = builder.append("/").append(method).append("/").append(bean.getServerId()).toString(); //ID to update
         if (isOnline()) {
+            Log.i(this.getClass().getCanonicalName(), "online");
             HttpPutWorker worker = new HttpPutWorker(context, bean, mapper);
             worker.addAsyncTaskListener(listener);
             worker.execute(url);
@@ -75,6 +76,6 @@ public class HttpDispatcher {
         return networkInfo != null && networkInfo.isConnected();
     }
 
-    public ObjectMapper getMapper() {return mapper; };
+    public ObjectMapper getMapper() { return mapper; }
 
 }

@@ -59,22 +59,6 @@ public class BikeStation extends JSONBean implements Parcelable {
         processHashMD5();
     }
 
-    /*public BikeStation(double mLatitude, double mLongitude, int mId, String mAddress,
-                       Timestamp mTimeStamp, String mUser, int mTotalBikes, int mAvailableBikes,
-                       int mBrokenBikes, int mReservedBikes) {
-        this.mLatitude = mLatitude;
-        this.mLongitude = mLongitude;
-        this.mId = mId;
-        this.mAddress = mAddress;
-        this.mTimeStamp = mTimeStamp;
-        this.mUser = mUser;
-        this.mTotalBikes = mTotalBikes;
-        this.mAvailableBikes = mAvailableBikes;
-        this.mBrokenBikes = mBrokenBikes;
-        this.mReservedBikes = mReservedBikes;
-        processHashMD5();
-    }*/
-
     //<editor-fold desc="PARCELABLE INTERFACE SUPPORT">
     public static final Creator<BikeStation> CREATOR = new Creator<BikeStation>() {
         @Override

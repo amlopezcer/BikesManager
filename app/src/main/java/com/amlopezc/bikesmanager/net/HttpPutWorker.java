@@ -10,7 +10,6 @@ import com.amlopezc.bikesmanager.util.AsyncTaskListener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.BufferedReader;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -66,6 +65,7 @@ public class HttpPutWorker  extends AsyncTask<String, Void, String> {
     }
 
     private String process(String myUrl) throws IOException {
+        InputStream is = null;
         OutputStreamWriter osw = null;
         HttpURLConnection conn = null;
         try {
@@ -85,13 +85,29 @@ public class HttpPutWorker  extends AsyncTask<String, Void, String> {
             osw.flush();
             osw.close();
             int response = conn.getResponseCode();
-            Log.d(this.getClass().getCanonicalName(), "The response is: " + response);
-            return Integer.toString(response);
+            Log.i(this.getClass().getCanonicalName(), "The response is: " + response);
+            is = conn.getInputStream();
+            return readIt(is);
         } finally {
             if(osw != null)
                 osw.close();
+            if (is != null)
+                is.close();
             if (conn != null)
                 conn.disconnect();
+        }
+    }
+
+    // Reads an InputStream and converts it to a String.
+    private String readIt(InputStream stream)  throws IOException {
+        StringBuilder sb = new StringBuilder();
+        BufferedReader br = new BufferedReader(new InputStreamReader(stream));
+        String read;
+        try {
+            while ((read = br.readLine()) != null) { sb.append(read); }
+            return sb.toString();
+        }finally {
+            br.close();
         }
     }
 

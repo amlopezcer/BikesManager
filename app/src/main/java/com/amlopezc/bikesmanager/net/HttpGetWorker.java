@@ -70,7 +70,7 @@ public class HttpGetWorker extends AsyncTask<String, Void, String> {
             // Get data
             conn.connect();
             int response = conn.getResponseCode();
-            Log.d(this.getClass().getCanonicalName(), "The response is: " + response);
+            Log.i(this.getClass().getCanonicalName(), "The response is: " + response);
             is = conn.getInputStream();
             return readIt(is);
         } finally {

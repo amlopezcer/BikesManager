@@ -86,7 +86,7 @@
         android:textAppearance="?android:attr/textAppearanceListItem"
         android:layout_below="@id/textView_coordinates"
         android:layout_marginTop="@dimen/listView_figuresMargin"
-        android:text="@string/listViewItem_textView_lastBooking"/>
+        android:text="@string/listViewItem_textView_lastMod"/>
 
     <TextView android:id="@+id/textView_lastBookingData"
         android:layout_width="wrap_content"

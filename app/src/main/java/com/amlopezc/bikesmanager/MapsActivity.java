@@ -28,8 +28,13 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import com.cocosw.bottomsheet.BottomSheet;
@@ -39,6 +44,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
     private final int SETTINGS_REQUEST_CODE = 0;
     private final int LIST_REQUEST_CODE = 1;
+    private final String OP_TAKE = "take";
+    private final String OP_LEAVE = "leave";
+
 
     //LatLngBounds that includes Madrid.
     private final LatLngBounds MADRID  = new LatLngBounds(new LatLng(40.38, -3.72), new LatLng(40.48, -3.67));
@@ -203,6 +211,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
     @Override
     public boolean onMarkerClick(final Marker marker) {
+
+
         new BottomSheet.Builder(this).
                 title(marker.getTitle()).
                 grid().
@@ -213,13 +223,13 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case R.id.menu_takeBike:
-                                takeBike(marker); //TODO: hacer un GET indivudual
+                                modifyBike(marker, OP_TAKE); //TODO: hacer un GET indivudual?
                                 break;
                             case R.id.menu_leaveBike:
-                                leaveBike(marker); //TODO: hacer un GET indivudual
+                                modifyBike(marker, OP_LEAVE); //TODO: hacer un GET indivudual?
                                 break;
                             case R.id.menu_reportBike:
-                                Toast.makeText(getApplicationContext(), "report", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), "Report", Toast.LENGTH_SHORT).show();
                                 break;
                         }
                     }
@@ -227,32 +237,47 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         return false;
     }
 
-    private void takeBike(Marker marker) {
+    private void modifyBike(Marker marker, String operation) {
         fetchUpdatedServerData();
         BikeStation bikeStation = mStations.get(marker.getTitle());
 
-        if(bikeStation.getmAvailableBikes() > 0) {
-            bikeStation.setmAvailableBikes(bikeStation.getmAvailableBikes() - 1);
+        boolean isOperationPossible = false;
+
+        switch (operation) {
+            case OP_TAKE:
+                isOperationPossible = bikeStation.getmAvailableBikes() > 0;
+                if(isOperationPossible)
+                    bikeStation.setmAvailableBikes(bikeStation.getmAvailableBikes() - 1);
+                break;
+            case OP_LEAVE:
+                isOperationPossible = (bikeStation.getmAvailableBikes() + bikeStation.getmBrokenBikes() + bikeStation.getmReservedBikes()) < bikeStation.getmTotalBikes();
+                if(isOperationPossible)
+                    bikeStation.setmAvailableBikes(bikeStation.getmAvailableBikes() + 1);
+                break;
+        }
+
+        if(isOperationPossible) {
+            bikeStation.setmTimeStamp(getCurrentDateFormatted());
             bikeStation.setServerId(bikeStation.getmId());
-            dispatcher.doPut(this, bikeStation);
+            dispatcher.doPut(this, bikeStation, operation);
         } else
-            Toast.makeText(this, "No available bikes", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "El estado de la estación no permite completar la operación", Toast.LENGTH_SHORT).show();
+
     }
 
-    private void leaveBike(Marker marker) {
-        fetchUpdatedServerData();
-        BikeStation bikeStation = mStations.get(marker.getTitle());
-
-        if(bikeStation.getmAvailableBikes() != bikeStation.getmTotalBikes()) { //TODO: De momento sólo cuento disponibles, a ver qué pasa con las rotas y las reservas
-            bikeStation.setmAvailableBikes(bikeStation.getmAvailableBikes() + 1);
-            bikeStation.setServerId(bikeStation.getmId());
-            dispatcher.doPut(this, bikeStation);
-        } else
-            Toast.makeText(this, "Station full", Toast.LENGTH_SHORT).show();
+    private String getCurrentDateFormatted() {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
+        Calendar cal = Calendar.getInstance();
+        StringBuilder builder = new StringBuilder(dateFormat.format(cal.getTime()));
+        return builder.append("T").append(timeFormat.format(cal.getTime())).append("+01:00").toString();
     }
 
     @Override
     public void processResult(String result, int operation) {
+        final String SERVER_RESPONSE_OK = "SERVER_OK";
+        final String SERVER_RESPONSE_KO = "SERVER_KO";
+
         switch (operation) {
             case HttpDispatcher.OPERATION_GET:
                 try {
@@ -266,9 +291,12 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                     Toast.makeText(this, "Error al sincronizar con el servidor", Toast.LENGTH_SHORT).show();
                 }
                 break;
+
             case HttpDispatcher.OPERATION_PUT:
-                if (result.startsWith("2"))
+                if (result.equals(SERVER_RESPONSE_OK))
                     Toast.makeText(this, "Operación realizada con éxito", Toast.LENGTH_SHORT).show();
+                else if (result.equals(SERVER_RESPONSE_KO))
+                    Toast.makeText(this, "El estado de la estación no permite completar la operación", Toast.LENGTH_SHORT).show();
                 else
                     Toast.makeText(this, "Error al sincronizar con el servidor", Toast.LENGTH_SHORT).show();
                 fetchUpdatedServerData();

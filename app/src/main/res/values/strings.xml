@@ -17,7 +17,7 @@
     <string name="listViewItem_textView_available">Available:</string>
     <string name="listViewItem_textView_reserved">Reserved:</string>
     <string name="listViewItem_textView_broken">Broken:</string>
-    <string name="listViewItem_textView_lastBooking">Last Booking:</string>
+    <string name="listViewItem_textView_lastMod">Last modification:</string>
     <string name="title_activity_chart">ChartActivity</string>
     <string name="hello_world">Hello world!</string>
 
