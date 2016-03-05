@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.amlopezc.bikesmanager.R;
 import com.amlopezc.bikesmanager.util.AsyncTaskListener;
 
 import java.io.BufferedReader;
@@ -19,14 +20,18 @@ import java.util.HashSet;
 public class HttpGetWorker extends AsyncTask<String, Void, String> {
 
     private HashSet<AsyncTaskListener<String>> listeners;
-    final ProgressDialog progressDialog;
+    private final ProgressDialog progressDialog;
+    private final Context context;
 
-    public HttpGetWorker(Context context) { progressDialog = new ProgressDialog(context); }
+    public HttpGetWorker(Context context) {
+        this.context = context;
+        progressDialog = new ProgressDialog(context);
+    }
 
     @Override
     protected void onPreExecute() {
-        progressDialog.setTitle("Esperar...");
-        progressDialog.setMessage("Sincronizando...");
+        progressDialog.setTitle(i18n(R.string.progress_title));
+        progressDialog.setMessage(i18n(R.string.progress_body));
         progressDialog.setIndeterminate(true);
         progressDialog.show();
     }
@@ -38,7 +43,7 @@ public class HttpGetWorker extends AsyncTask<String, Void, String> {
             return process(urls[0]);
         } catch (IOException ioe) {
             Log.e(this.getClass().getCanonicalName(), ioe.getLocalizedMessage(), ioe);
-            return "Unable to retrieve web page. URL may be invalid.";
+            return "Unable to retrieve web page. URL may be invalid";
         }
     }
 
@@ -92,6 +97,10 @@ public class HttpGetWorker extends AsyncTask<String, Void, String> {
         }finally {
             br.close();
         }
+    }
+
+    private String i18n(int resourceId, Object ... formatArgs) {
+        return context.getResources().getString(resourceId, formatArgs);
     }
 
 }

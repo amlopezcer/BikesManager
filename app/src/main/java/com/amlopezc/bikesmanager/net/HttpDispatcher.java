@@ -9,6 +9,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.amlopezc.bikesmanager.R;
 import com.amlopezc.bikesmanager.SettingsActivityFragment;
 import com.amlopezc.bikesmanager.entity.JSONBean;
 import com.amlopezc.bikesmanager.util.AsyncTaskListener;
@@ -33,8 +34,8 @@ public class HttpDispatcher {
 
     public HttpDispatcher(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        SERVER_ADDRESS = sharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_SERVER, "");
-        SERVER_PORT = sharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_PORT, "");
+        SERVER_ADDRESS = sharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_SERVER, "192.168.1.142"); //Default Values
+        SERVER_PORT = sharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_PORT, "8080"); //Default Values
 
         this.context = context;
 
@@ -47,12 +48,15 @@ public class HttpDispatcher {
     public void doGet(AsyncTaskListener listener) {
         String url = String.format(BASE_URL_ADDRESS, SERVER_ADDRESS, SERVER_PORT);
         if (isOnline()) {
-            Log.i(this.getClass().getCanonicalName(), "online");
+            Log.d(this.getClass().getCanonicalName(), "Connected");
             HttpGetWorker worker = new HttpGetWorker(context);
             worker.addAsyncTaskListener(listener);
             worker.execute(url);
         } else {
-            Toast.makeText(context, "offline", Toast.LENGTH_SHORT).show();
+            Log.d(this.getClass().getCanonicalName(), "Not connected");
+            Toast.makeText(context,
+                    i18n(R.string.toast_unable_connection),
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -60,12 +64,15 @@ public class HttpDispatcher {
         StringBuilder builder = new StringBuilder(String.format(BASE_URL_ADDRESS, SERVER_ADDRESS, SERVER_PORT));
         String url = builder.append("/").append(method).append("/").append(bean.getServerId()).toString(); //ID to update
         if (isOnline()) {
-            Log.i(this.getClass().getCanonicalName(), "online");
+            Log.d(this.getClass().getCanonicalName(), "Connected");
             HttpPutWorker worker = new HttpPutWorker(context, bean, mapper);
             worker.addAsyncTaskListener(listener);
             worker.execute(url);
         } else {
-            Toast.makeText(context, "offline", Toast.LENGTH_SHORT).show();
+            Log.d(this.getClass().getCanonicalName(), "Not connected");
+            Toast.makeText(context,
+                    i18n(R.string.toast_unable_connection),
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -77,5 +84,9 @@ public class HttpDispatcher {
     }
 
     public ObjectMapper getMapper() { return mapper; }
+
+    private String i18n(int resourceId, Object ... formatArgs) {
+        return context.getString(resourceId, formatArgs);
+    }
 
 }

@@ -5,23 +5,23 @@
     tools:context=".MainActivity">
 
     <item android:id="@+id/action_list"
-        android:title="@string/action_list"
         android:icon="@drawable/ic_action_list"
+        android:title="@string/item_text_list"
         app:showAsAction="ifRoom" />
 
     <item android:id="@+id/action_chart"
-        android:title="@string/action_chart"
         android:icon="@drawable/ic_action_pie_chart"
+        android:title="@string/item_text_chart"
         app:showAsAction="ifRoom" />
 
     <item android:id="@+id/action_refresh"
         android:icon="@drawable/ic_action_refresh"
-        android:title="Refresh"
+        android:title="@string/item_text_refresh"
         app:showAsAction="ifRoom" />
 
     <item android:id="@+id/action_settings"
-        android:title="@string/action_settings"
         android:icon="@drawable/ic_settings"
+        android:title="@string/item_text_settings"
         app:showAsAction="ifRoom" />
 
 </menu>

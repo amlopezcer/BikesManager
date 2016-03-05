@@ -48,32 +48,39 @@ public class SettingsActivityFragment extends PreferenceFragment implements
 
         EditTextPreference editTextPref = (EditTextPreference) findPreference(key);
         String dataString = sharedPreferences.getString(key, "");
-        final String template = "%s for data connection: %s%s%s";
+        final String userName = i18n(R.string.text_user_name);
+        final String serverAddress = i18n(R.string.text_server_address);
+        final String serverPort = i18n(R.string.text_server_port);
+        final String notDefined = i18n(R.string.text_not_defined);
 
         if (dataString.trim().isEmpty()) {
             switch (key) {
                 case KEY_PREF_SYNC_USER:
-                    editTextPref.setSummary(String.format(template, "User name", "", "not defined", ""));
+                    editTextPref.setSummary(i18n(R.string.template_text, userName, "", notDefined, ""));
                     break;
                 case KEY_PREF_SYNC_SERVER:
-                    editTextPref.setSummary(String.format(template, "Server address", "", "not defined", ""));
+                    editTextPref.setSummary(i18n(R.string.template_text, serverAddress, "", notDefined, ""));
                     break;
                 case KEY_PREF_SYNC_PORT:
-                    editTextPref.setSummary(String.format(template, "Server port", "", "not defined", ""));
+                    editTextPref.setSummary(i18n(R.string.template_text, serverPort, "", notDefined, ""));
                     break;
             }
         } else {
             switch (key) {
                 case KEY_PREF_SYNC_USER:
-                    editTextPref.setSummary(String.format(template, "User name", "'", dataString, "'"));
+                    editTextPref.setSummary(i18n(R.string.template_text, userName, "'", dataString, "'"));
                     break;
                 case KEY_PREF_SYNC_SERVER:
-                    editTextPref.setSummary(String.format(template, "Server address", "'", dataString, "'"));
+                    editTextPref.setSummary(i18n(R.string.template_text, serverAddress, "'", dataString, "'"));
                     break;
                 case KEY_PREF_SYNC_PORT:
-                    editTextPref.setSummary(String.format(template, "Server port", "'", dataString, "'"));
+                    editTextPref.setSummary(i18n(R.string.template_text, serverPort, "'", dataString, "'"));
                     break;
             }
         }
+    }
+
+    private String i18n(int resourceId, Object ... formatArgs) {
+        return getResources().getString(resourceId, formatArgs);
     }
 }

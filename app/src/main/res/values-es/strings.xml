@@ -1,0 +1,66 @@
+<resources>
+
+    <!-- General -->
+    <string name="app_name">Bikes Manager</string>
+    <string name="title_activity_maps">Bikes Manager</string>
+    <string name="title_activity_chart">ChartActivity</string>
+    <string name="title_activity_list">ListActivity</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Common toasts -->
+    <string name="toast_sync_error">Error al sincronizar con el servidor</string>
+
+    <!-- Common texts-->
+    <string name="text_available">Disponibles</string>
+    <string name="text_broken">Averiadas</string>
+    <string name="text_reserved">Reservadas</string>
+    <string name="text_occupied">Ocupadas</string>
+    <string name="text_total">Total</string>
+    <string name="text_set">Establecer</string>
+    <string name="text_no">No</string>
+    <string name="text_yes">Sí</string>
+    <string name="text_user_name">Nombre de usuario</string>
+    <string name="text_server_address">Dirección de servidor</string>
+    <string name="text_server_port">Puerto del servidor</string>
+    <string name="text_not_defined">no definido</string>
+
+    <!-- ChartActivity.java -->
+    <string name="chart_total_msg">Bicicletas totales: %1$d</string>
+
+    <!-- ConnectionDataDialogFragment.java -->
+    <string name="builder_msg">Establecer datos de conexión</string>
+
+    <!-- MapsActivity.java -->
+    <string name="toast_user_settings">Datos del usuario \'%1$s\' guardados</string>
+    <string name="toast_operation_impossible">La disponibilidad de la estación no permite completar la operación</string>
+    <string name="toast_operation_succeed">Operación completada</string>
+
+    <!-- SettingsActivityFragment.java -->
+    <string name="template_text">%1$s para la conexión: %2$s%3$s%4$s</string>
+
+    <!-- HttpDispatcher.java -->
+    <string name="toast_unable_connection">Error al conectar con el servidor</string>
+
+    <!-- HttpWorkers .java -->
+    <string name="progress_title">Esperar&#8230;</string> <!-- "&#8230;" = "..." -->
+    <string name="progress_body">Sincronizando&#8230;</string>
+
+    <!-- listview_item.xml -->
+    <string name="textView_lastMod">Última modificación:</string>
+    <string name="button_showInMap">Mostrar en el mapa</string>
+
+    <!-- menus .xml -->
+    <string name="item_text_refresh">Actualizar</string>
+
+    <!-- menu_bottomsheet.xml -->
+    <string name="item_text_take">Coger bici</string>
+    <string name="item_text_leave">Dejar bici</string>
+    <string name="item_text_report">Reportar error</string>
+
+    <!-- menu_main.xml -->
+    <string name="item_text_list">Lista</string>
+    <string name="item_text_chart">Gráfico</string>
+    <string name="item_text_settings">Configuración</string>
+
+</resources>
+

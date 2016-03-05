@@ -1,28 +1,65 @@
 <resources>
+
     <!-- General -->
     <string name="app_name">Bikes Manager</string>
     <string name="title_activity_maps">Bikes Manager</string>
-    <string name="action_settings">Settings</string>
-
-    <!-- DEFINIR -->
-    <string name="action_list">List</string>
-    <string name="action_chart">Chart</string>
-
-    <!-- DEFINIR -->
-    <string name="title_activity_list">ListActivity</string>
-
-    <!-- DEFINIR -->
-    <string name="listViewItem_button_showInMap">Show in map</string>
-    <string name="listViewItem_textView_total">Total:</string>
-    <string name="listViewItem_textView_available">Available:</string>
-    <string name="listViewItem_textView_reserved">Reserved:</string>
-    <string name="listViewItem_textView_broken">Broken:</string>
-    <string name="listViewItem_textView_lastMod">Last modification:</string>
     <string name="title_activity_chart">ChartActivity</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_list">ListActivity</string>
+    <string name="title_activity_settings">Settings</string>
 
-    <!-- Preference Fragment -->
-    <!-- ... -->
+    <!-- Common toasts -->
+    <string name="toast_sync_error">Error while sync with the server</string>
 
+    <!-- Common texts-->
+    <string name="text_available">Available</string>
+    <string name="text_broken">Broken</string>
+    <string name="text_reserved">Reserved</string>
+    <string name="text_occupied">Occupied</string>
+    <string name="text_total">Total</string>
+    <string name="text_set">Set</string>
+    <string name="text_no">No</string>
+    <string name="text_yes">Yes</string>
+    <string name="text_user_name">User name</string>
+    <string name="text_server_address">Server address</string>
+    <string name="text_server_port">Server port</string>
+    <string name="text_not_defined">not defined</string>
+
+    <!-- ChartActivity.java -->
+    <string name="chart_total_msg">Total bikes: %1$d</string>
+
+    <!-- ConnectionDataDialogFragment.java -->
+    <string name="builder_msg">Set connection data</string>
+
+    <!-- MapsActivity.java -->
+    <string name="toast_user_settings">\'%1$s\' user data saved</string>
+    <string name="toast_operation_impossible">Station availability don\'t allow to complete the operation</string>
+    <string name="toast_operation_succeed">Operation completed</string>
+
+    <!-- SettingsActivityFragment.java -->
+    <string name="template_text">%1$s for connection: %2$s%3$s%4$s</string>
+
+    <!-- HttpDispatcher.java -->
+    <string name="toast_unable_connection">Unable to establish connection</string>
+
+    <!-- HttpWorkers .java -->
+    <string name="progress_title">Wait&#8230;</string> <!-- "&#8230;" = "..." -->
+    <string name="progress_body">Synchronizing&#8230;</string>
+
+    <!-- listview_item.xml -->
+    <string name="textView_lastMod">Last modification:</string>
+    <string name="button_showInMap">Show in map</string>
+
+    <!-- menus .xml -->
+    <string name="item_text_refresh">Refresh</string>
+
+    <!-- menu_bottomsheet.xml -->
+    <string name="item_text_take">Take bike</string>
+    <string name="item_text_leave">Leave bike</string>
+    <string name="item_text_report">Report error</string>
+
+    <!-- menu_main.xml -->
+    <string name="item_text_list">List</string>
+    <string name="item_text_chart">Chart</string>
+    <string name="item_text_settings">Settings</string>
 
 </resources>

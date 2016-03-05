@@ -16,7 +16,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceListItem"
-                android:text="@string/listViewItem_textView_total" />
+                android:text="@string/text_total" />
             <TextView android:id="@+id/textView_totalNumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -30,7 +30,7 @@
                 android:layout_marginLeft="@dimen/listView_figuresMargin"
                 android:layout_marginStart="@dimen/listView_figuresMargin"
                 android:textAppearance="?android:attr/textAppearanceListItem"
-                android:text="@string/listViewItem_textView_available"/>
+                android:text="@string/text_available"/>
             <TextView android:id="@+id/textView_availableNumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -48,7 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceListItem"
-                android:text="@string/listViewItem_textView_reserved"/>
+                android:text="@string/text_reserved"/>
             <TextView android:id="@+id/textView_reservedNumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
                 android:layout_marginLeft="@dimen/listView_figuresMargin"
                 android:layout_marginStart="@dimen/listView_figuresMargin"
                 android:textAppearance="?android:attr/textAppearanceListItem"
-                android:text="@string/listViewItem_textView_broken"/>
+                android:text="@string/text_broken"/>
             <TextView android:id="@+id/textView_brokenNumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -86,7 +86,7 @@
         android:textAppearance="?android:attr/textAppearanceListItem"
         android:layout_below="@id/textView_coordinates"
         android:layout_marginTop="@dimen/listView_figuresMargin"
-        android:text="@string/listViewItem_textView_lastMod"/>
+        android:text="@string/textView_lastMod"/>
 
     <TextView android:id="@+id/textView_lastBookingData"
         android:layout_width="wrap_content"
@@ -105,7 +105,7 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@id/textView_lastBooking"
         android:layout_marginTop="@dimen/listView_figuresMargin"
-        android:text="@string/listViewItem_button_showInMap"
+        android:text="@string/button_showInMap"
         style="?android:attr/borderlessButtonStyle"
         android:textColor="#2E7D32"/>
 

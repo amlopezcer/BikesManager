@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.amlopezc.bikesmanager.R;
 import com.amlopezc.bikesmanager.entity.JSONBean;
 import com.amlopezc.bikesmanager.util.AsyncTaskListener;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,19 +23,21 @@ public class HttpPutWorker  extends AsyncTask<String, Void, String> {
 
     private HashSet<AsyncTaskListener<String>> listeners;
     private final ProgressDialog progressDialog;
+    private final Context context;
     private JSONBean bean;
     private ObjectMapper mapper;
 
     public HttpPutWorker(Context context, JSONBean bean, ObjectMapper mapper) {
         progressDialog = new ProgressDialog(context);
+        this.context = context;
         this.bean = bean;
         this.mapper = mapper;
     }
 
     @Override
     protected void onPreExecute() {
-        progressDialog.setTitle("Esperar...");
-        progressDialog.setMessage("Sincronizando...");
+        progressDialog.setTitle(i18n(R.string.progress_title));
+        progressDialog.setMessage(i18n(R.string.progress_body));
         progressDialog.setIndeterminate(true);
         progressDialog.show();
     }
@@ -110,5 +113,10 @@ public class HttpPutWorker  extends AsyncTask<String, Void, String> {
             br.close();
         }
     }
+
+    private String i18n(int resourceId, Object ... formatArgs) {
+        return context.getResources().getString(resourceId, formatArgs);
+    }
+
 
 }

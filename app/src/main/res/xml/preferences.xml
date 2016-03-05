@@ -5,12 +5,12 @@
         <EditTextPreference
             android:key="username"
             android:title="User name"
-            android:defaultValue=""/>
+            android:defaultValue="User"/>
 
         <EditTextPreference
             android:key="server_address"
             android:title="Server address"
-            android:defaultValue=""/>
+            android:defaultValue="192.168.1.142"/>
 
         <EditTextPreference
             android:key="server_port"

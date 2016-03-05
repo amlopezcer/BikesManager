@@ -8,19 +8,19 @@
         android:id="@+id/editText_userName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="User name" />
+        android:hint="@string/text_user_name" />
 
     <EditText
         android:id="@+id/editText_serverAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Server address" />
+        android:hint="@string/text_server_address" />
 
     <EditText
         android:id="@+id/editText_serverPort"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="number"
-        android:hint="Server port" />
+        android:hint="@string/text_server_port" />
 
 </LinearLayout>

@@ -3,15 +3,15 @@
 
     <item
         android:id="@+id/menu_takeBike"
-        android:title="Take bike"
+        android:title="@string/item_text_take"
         android:icon="@drawable/ic_action_add_circle" />
     <item
         android:id="@+id/menu_leaveBike"
-        android:title="Leave bike"
+        android:title="@string/item_text_leave"
         android:icon="@drawable/ic_action_remove_circle" />
     <item
         android:id="@+id/menu_reportBike"
-        android:title="Report error"
+        android:title="@string/item_text_report"
         android:icon="@drawable/ic_action_error" />
 
 </menu>

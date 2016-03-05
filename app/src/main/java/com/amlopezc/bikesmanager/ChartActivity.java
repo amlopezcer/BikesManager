@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChartActivity extends AppCompatActivity implements AsyncTaskListener<String>{
-    //TODO: mostrar los datos en % ?
 
     private PieChart mChart;
     private ArrayList<String> mXVals;
@@ -60,13 +59,11 @@ public class ChartActivity extends AppCompatActivity implements AsyncTaskListene
 
                 Toast.makeText(getApplicationContext(),
                         String.format("%s: %d", mXVals.get(entry.getXIndex()), (int) entry.getVal()),
-                        Toast.LENGTH_LONG).
-                        show();
+                        Toast.LENGTH_LONG).show();
             }
 
             @Override
-            public void onNothingSelected() {
-            }
+            public void onNothingSelected() {}
         });
     }
 
@@ -127,8 +124,11 @@ public class ChartActivity extends AppCompatActivity implements AsyncTaskListene
                     ArrayList<Integer> data = readData(bikeStationList);
                     updateLocalLayout(data);
                 } catch (Exception e) {
-                    Log.e("JSON", e.getLocalizedMessage(), e);
-                    Toast.makeText(this, "Error al sincronizar con el servidor", Toast.LENGTH_SHORT).show();
+                    String msg = getClass().getCanonicalName();
+                    Log.e("[GET Result]" + getClass().getCanonicalName(), e.getLocalizedMessage(), e);
+                    Toast.makeText(this,
+                            i18n(R.string.toast_sync_error),
+                            Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -167,10 +167,10 @@ public class ChartActivity extends AppCompatActivity implements AsyncTaskListene
             yData.add(new Entry(data.get(i), i-1));
 
         mXVals = new ArrayList<>();
-        mXVals.add("Available");
-        mXVals.add("Broken");
-        mXVals.add("Reserved");
-        mXVals.add("Occupied");
+        mXVals.add(i18n(R.string.text_available));
+        mXVals.add(i18n(R.string.text_broken));
+        mXVals.add(i18n(R.string.text_reserved));
+        mXVals.add(i18n(R.string.text_occupied));
 
         PieDataSet pieDataSet = new PieDataSet(yData, "");
         pieDataSet.setSliceSpace(2);
@@ -196,7 +196,7 @@ public class ChartActivity extends AppCompatActivity implements AsyncTaskListene
         pieData.setValueTextSize(12f);
         pieData.setValueTextColor(Color.WHITE);
 
-        mChart.setCenterText(String.format("Total bikes: %d", totalBikes));
+        mChart.setCenterText(i18n(R.string.chart_total_msg, totalBikes));
         mChart.setCenterTextColor(Color.rgb(60, 145, 210)); //grey - blue
         mChart.setCenterTextSize(16f);
 
@@ -210,5 +210,8 @@ public class ChartActivity extends AppCompatActivity implements AsyncTaskListene
         l.setTextColor(Color.DKGRAY);*/
     }
 
+    private String i18n(int resourceId, Object ... formatArgs) {
+        return getResources().getString(resourceId, formatArgs);
+    }
 
 }

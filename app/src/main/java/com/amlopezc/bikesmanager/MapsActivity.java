@@ -82,9 +82,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         String serverPort = sharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_PORT, "");
         if(userName.trim().isEmpty() || serverAddress.trim().isEmpty() || serverPort.trim().isEmpty())
             showConnectionDataDialog();
-
-        //Fetch updated server data related to the bike stations
-        fetchUpdatedServerData();
+        else //Fetch updated server data related to the bike stations
+            fetchUpdatedServerData();
     }
 
     private void fetchUpdatedServerData() {
@@ -203,8 +202,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                 SharedPreferences sharedPreferences = PreferenceManager.
                         getDefaultSharedPreferences(this);
                 String username = sharedPreferences.getString("username", null);
-                String msg = String.format("Datos del usuario '%s' guardados", username);
-                Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,
+                        i18n(R.string.toast_user_settings, username),
+                        Toast.LENGTH_SHORT).show();
                 break;
         }
     }
@@ -229,7 +229,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                                 modifyBike(marker, OP_LEAVE); //TODO: hacer un GET indivudual?
                                 break;
                             case R.id.menu_reportBike:
-                                Toast.makeText(getApplicationContext(), "Report", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(),
+                                        "Report",
+                                        Toast.LENGTH_SHORT).show();
                                 break;
                         }
                     }
@@ -261,8 +263,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
             bikeStation.setServerId(bikeStation.getmId());
             dispatcher.doPut(this, bikeStation, operation);
         } else
-            Toast.makeText(this, "El estado de la estación no permite completar la operación", Toast.LENGTH_SHORT).show();
-
+            Toast.makeText(this,
+                    i18n(R.string.toast_operation_impossible),
+                    Toast.LENGTH_SHORT).show();
     }
 
     private String getCurrentDateFormatted() {
@@ -287,18 +290,31 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                     readData(bikeStationList);
                     updateLocalLayout();
                 } catch (Exception e) {
-                    Log.e("JSON (GET result)", e.getLocalizedMessage(), e);
-                    Toast.makeText(this, "Error al sincronizar con el servidor", Toast.LENGTH_SHORT).show();
+                    Log.e("[GET Result]" + getClass().getCanonicalName(), e.getLocalizedMessage(), e);
+                    Toast.makeText(this,
+                            i18n(R.string.toast_sync_error),
+                            Toast.LENGTH_SHORT).show();
                 }
                 break;
 
             case HttpDispatcher.OPERATION_PUT:
-                if (result.equals(SERVER_RESPONSE_OK))
-                    Toast.makeText(this, "Operación realizada con éxito", Toast.LENGTH_SHORT).show();
-                else if (result.equals(SERVER_RESPONSE_KO))
-                    Toast.makeText(this, "El estado de la estación no permite completar la operación", Toast.LENGTH_SHORT).show();
-                else
-                    Toast.makeText(this, "Error al sincronizar con el servidor", Toast.LENGTH_SHORT).show();
+                switch (result) {
+                    case SERVER_RESPONSE_OK:
+                        Toast.makeText(this,
+                                i18n(R.string.toast_operation_succeed),
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    case SERVER_RESPONSE_KO:
+                        Toast.makeText(this,
+                                i18n(R.string.toast_operation_impossible),
+                                Toast.LENGTH_SHORT).show();
+                        break;
+                    default:
+                        Toast.makeText(this,
+                                i18n(R.string.toast_sync_error),
+                                Toast.LENGTH_SHORT).show();
+                }
+
                 fetchUpdatedServerData();
                 break;
         }
@@ -313,5 +329,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         String headerTemplate = "%d - %s";
         for(BikeStation bikeStation : bikeStationList)
             mStations.put(String.format(headerTemplate, bikeStation.getmId(), bikeStation.getmAddress()), bikeStation);
+    }
+
+    private String i18n(int resourceId, Object ... formatArgs) {
+        return getResources().getString(resourceId, formatArgs);
     }
 }

@@ -77,8 +77,10 @@ public class ListActivity extends AppCompatActivity implements AsyncTaskListener
                     readData(bikeStationList);
                     updateLocalLayout();
                 } catch (Exception e) {
-                    Log.e("JSON", e.getLocalizedMessage(), e);
-                    Toast.makeText(this, "Error al sincronizar con el servidor", Toast.LENGTH_SHORT).show();
+                    Log.e("[GET Result]" + getClass().getCanonicalName(), e.getLocalizedMessage(), e);
+                    Toast.makeText(this,
+                            i18n(R.string.toast_sync_error),
+                            Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -106,6 +108,8 @@ public class ListActivity extends AppCompatActivity implements AsyncTaskListener
         mExpandableListView.setAdapter(expandableListAdapter);
     }
 
-
+    private String i18n(int resourceId, Object ... formatArgs) {
+        return getResources().getString(resourceId, formatArgs);
+    }
 
 }

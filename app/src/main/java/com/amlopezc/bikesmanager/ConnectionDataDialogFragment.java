@@ -40,9 +40,9 @@ public class ConnectionDataDialogFragment extends DialogFragment {
 
         fillData();
 
-        builder.setMessage("Set connection data")
+        builder.setMessage(i18n(R.string.builder_msg))
                 .setView(view)
-                .setPositiveButton("Set", new DialogInterface.OnClickListener() {
+                .setPositiveButton(i18n(R.string.text_set), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // Getting and setting data
                         String data = mEditText_user.getText().toString();
@@ -95,15 +95,16 @@ public class ConnectionDataDialogFragment extends DialogFragment {
         String serverAddress = mDefaultSharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_SERVER, "");
         setFields(mEditText_server, serverAddress);
         String serverPort = mDefaultSharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_PORT, "");
-
-        Toast.makeText(getActivity(), "Valor: " + serverPort + " ...", Toast.LENGTH_LONG).show();
-
         setFields(mEditText_port, serverPort);
     }
 
     private void setFields(EditText editText, String data) {
         if(!data.trim().isEmpty())
             editText.setText(data);
+    }
+
+    private String i18n(int resourceId, Object ... formatArgs) {
+        return getResources().getString(resourceId, formatArgs);
     }
 
 }
