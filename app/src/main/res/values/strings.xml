@@ -23,6 +23,7 @@
     <string name="text_server_address">Server address</string>
     <string name="text_server_port">Server port</string>
     <string name="text_not_defined">not defined</string>
+    <string name="text_fare">Fare:</string>
 
     <!-- ChartActivity.java -->
     <string name="chart_total_msg">Total bikes: %1$d</string>

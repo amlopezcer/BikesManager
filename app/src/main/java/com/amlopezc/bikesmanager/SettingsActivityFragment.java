@@ -6,9 +6,15 @@ import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.PreferenceFragment;
 
+/**
+ * Shows the layout to set connection data with the server: IP + Port (+ user, useless nowadays).
+ * Data is stored in a SharedPreferences instance.
+ */
+
 public class SettingsActivityFragment extends PreferenceFragment implements
         SharedPreferences.OnSharedPreferenceChangeListener {
 
+    // Constants for the data managed here: user + ip + port
     public static final String KEY_PREF_SYNC_USER = "username";
     public static final String KEY_PREF_SYNC_SERVER = "server_address";
     public static final String KEY_PREF_SYNC_PORT = "server_port";
@@ -18,6 +24,7 @@ public class SettingsActivityFragment extends PreferenceFragment implements
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
 
+        //Setting default data
         SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
         updateSummaryText(sharedPreferences, KEY_PREF_SYNC_USER);
         updateSummaryText(sharedPreferences, KEY_PREF_SYNC_SERVER);
@@ -40,14 +47,14 @@ public class SettingsActivityFragment extends PreferenceFragment implements
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-
         updateSummaryText(sharedPreferences, key);
     }
 
+    //Just formatting an updated tag with data provided
     private void updateSummaryText(SharedPreferences sharedPreferences, String key) {
-
         EditTextPreference editTextPref = (EditTextPreference) findPreference(key);
         String dataString = sharedPreferences.getString(key, "");
+
         final String userName = i18n(R.string.text_user_name);
         final String serverAddress = i18n(R.string.text_server_address);
         final String serverPort = i18n(R.string.text_server_port);
@@ -80,6 +87,7 @@ public class SettingsActivityFragment extends PreferenceFragment implements
         }
     }
 
+    //Internationalization method
     private String i18n(int resourceId, Object ... formatArgs) {
         return getResources().getString(resourceId, formatArgs);
     }

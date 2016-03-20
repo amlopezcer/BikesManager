@@ -16,6 +16,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashSet;
 
+/**
+ * Performs a HTTP GET
+ */
 
 public class HttpGetWorker extends AsyncTask<String, Void, String> {
 
@@ -28,6 +31,7 @@ public class HttpGetWorker extends AsyncTask<String, Void, String> {
         progressDialog = new ProgressDialog(context);
     }
 
+    //Starting a progress dialog for user feedback
     @Override
     protected void onPreExecute() {
         progressDialog.setTitle(i18n(R.string.progress_title));
@@ -36,9 +40,10 @@ public class HttpGetWorker extends AsyncTask<String, Void, String> {
         progressDialog.show();
     }
 
+    //Processing data in background
     @Override
     protected String doInBackground(String... urls) {
-        // params comes from the execute() call: params[0] is the url.
+        // params comes from the execute() call in the dispatcher; params[0] is the url.
         try {
             return process(urls[0]);
         } catch (IOException ioe) {
@@ -47,7 +52,7 @@ public class HttpGetWorker extends AsyncTask<String, Void, String> {
         }
     }
 
-    // onPostExecute process the results of the AsyncTask.
+    //Notifying task termination
     @Override
     protected void onPostExecute(String result) {
         for(AsyncTaskListener<String> listener : listeners) {
@@ -61,13 +66,14 @@ public class HttpGetWorker extends AsyncTask<String, Void, String> {
         listeners.add(listener);
     }
 
+    //Process server data in order to send it to the caller activity
     private String process(String myUrl) throws IOException {
         InputStream is = null;
         HttpURLConnection conn = null;
         try {
             URL url = new URL(myUrl);
             conn = (HttpURLConnection) url.openConnection();
-            //Set connection
+            //Set connection stuff
             conn.setReadTimeout(10000 /* milliseconds */);
             conn.setConnectTimeout(15000 /* milliseconds */);
             conn.setRequestMethod("GET");
@@ -99,6 +105,7 @@ public class HttpGetWorker extends AsyncTask<String, Void, String> {
         }
     }
 
+    //Internationalization method
     private String i18n(int resourceId, Object ... formatArgs) {
         return context.getResources().getString(resourceId, formatArgs);
     }

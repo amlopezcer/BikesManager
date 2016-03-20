@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 @JsonPropertyOrder({"address", "available", "broken", "latitude", "longitude", "md5", "reserved", "serverId", "timestampBike", "total" })
 public class BikeStation extends JSONBean implements Parcelable {
 
-    //TODO: Repasar cómo quedará esto finalmente para generar la base de datos final en condiciones; habrá que cambiar el PArcelable también. A ver el tema del tipo de dato del TimeStamp. El JsonProperty es para el renombrado, tendré que poner el nombre de la BBDD
+    //TODO: Repasar cómo quedará esto finalmente para generar la base de datos final en condiciones; habrá que cambiar el PArcelable también. El JsonProperty es para el renombrado, tendré que poner el nombre de la BBDD
 
     //General Data
     @JsonProperty("serverId")
@@ -266,9 +266,5 @@ public class BikeStation extends JSONBean implements Parcelable {
     public String getAvailabilityMessage() {
         return String.format("%d/%d", getmAvailableBikes(), getmTotalBikes());
     }
-
-
-
-
 
 }

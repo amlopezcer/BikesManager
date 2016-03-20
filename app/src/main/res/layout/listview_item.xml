@@ -73,28 +73,56 @@
         </TableRow>
     </TableLayout>
 
+    <!--
     <TextView android:id="@+id/textView_coordinates"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceListItem"
         android:layout_below="@id/tableLayout_data"
-        android:layout_marginTop="@dimen/listView_figuresMargin" />
+        android:layout_marginTop="@dimen/listView_figuresMargin" /> -->
 
-    <TextView android:id="@+id/textView_lastBooking"
+    <TableLayout android:id="@+id/tableLayout_fare"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tableLayout_data"
+        android:layout_marginTop="@dimen/listView_figuresMargin"
+        android:layout_centerHorizontal="true">
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView android:id="@+id/textView_fare"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceListItem"
+                android:text="@string/text_fare" />
+
+            <TextView android:id="@+id/textView_fareNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/itemList_TextNumberMargin"
+                android:layout_marginStart="@dimen/itemList_TextNumberMargin"
+                android:textAppearance="?android:attr/textAppearanceListItem"
+                android:layout_gravity="end" />
+        </TableRow>
+    </TableLayout>
+
+    <TextView android:id="@+id/textView_lastMod"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceListItem"
-        android:layout_below="@id/textView_coordinates"
+        android:layout_below="@id/tableLayout_fare"
         android:layout_marginTop="@dimen/listView_figuresMargin"
         android:text="@string/textView_lastMod"/>
 
-    <TextView android:id="@+id/textView_lastBookingData"
+    <TextView android:id="@+id/textView_lastModData"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceListItem"
-        android:layout_toRightOf="@id/textView_lastBooking"
-        android:layout_toEndOf="@id/textView_lastBooking"
-        android:layout_below="@id/textView_coordinates"
+        android:layout_toRightOf="@id/textView_lastMod"
+        android:layout_toEndOf="@id/textView_lastMod"
+        android:layout_below="@id/tableLayout_fare"
         android:layout_marginTop="@dimen/listView_figuresMargin"
         android:layout_marginLeft="@dimen/itemList_TextNumberMargin"
         android:layout_marginStart="@dimen/itemList_TextNumberMargin" />
@@ -103,10 +131,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/textView_lastBooking"
+        android:layout_below="@id/textView_lastMod"
         android:layout_marginTop="@dimen/listView_figuresMargin"
         android:text="@string/button_showInMap"
         style="?android:attr/borderlessButtonStyle"
-        android:textColor="#2E7D32"/>
+        android:textColor="#2E7D32"/> <!-- Some green -->
+
 
 </RelativeLayout>

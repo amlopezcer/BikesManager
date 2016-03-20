@@ -19,6 +19,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashSet;
 
+/**
+ * Performs a HTTP PUT
+ */
+
 public class HttpPutWorker  extends AsyncTask<String, Void, String> {
 
     private HashSet<AsyncTaskListener<String>> listeners;
@@ -34,6 +38,7 @@ public class HttpPutWorker  extends AsyncTask<String, Void, String> {
         this.mapper = mapper;
     }
 
+    //Starting a progress dialog for user feedback
     @Override
     protected void onPreExecute() {
         progressDialog.setTitle(i18n(R.string.progress_title));
@@ -42,6 +47,8 @@ public class HttpPutWorker  extends AsyncTask<String, Void, String> {
         progressDialog.show();
     }
 
+
+    //Processing data in background
     @Override
     protected String doInBackground(String... urls) {
         // params comes from the execute() call: params[0] is the url.
@@ -53,7 +60,7 @@ public class HttpPutWorker  extends AsyncTask<String, Void, String> {
         }
     }
 
-    // onPostExecute process the results of the AsyncTask.
+    //Notifying task termination
     @Override
     protected void onPostExecute(String result) {
         for(AsyncTaskListener<String> listener : listeners) {
@@ -67,6 +74,7 @@ public class HttpPutWorker  extends AsyncTask<String, Void, String> {
         listeners.add(listener);
     }
 
+    //Process server data in order to send it to the caller activity
     private String process(String myUrl) throws IOException {
         InputStream is = null;
         OutputStreamWriter osw = null;
@@ -74,7 +82,7 @@ public class HttpPutWorker  extends AsyncTask<String, Void, String> {
         try {
             URL url = new URL(myUrl);
             conn = (HttpURLConnection) url.openConnection();
-            //Set connection
+            //Set connection stuff
             conn.setDoOutput(true);
             conn.setDoInput(true);
             conn.setRequestMethod("PUT");
@@ -87,6 +95,7 @@ public class HttpPutWorker  extends AsyncTask<String, Void, String> {
             osw.write(mapper.writeValueAsString(bean));
             osw.flush();
             osw.close();
+            //Get response
             int response = conn.getResponseCode();
             Log.i(this.getClass().getCanonicalName(), "The response is: " + response);
             is = conn.getInputStream();
@@ -101,7 +110,7 @@ public class HttpPutWorker  extends AsyncTask<String, Void, String> {
         }
     }
 
-    // Reads an InputStream and converts it to a String.
+    // Reads an InputStream and converts it to a String
     private String readIt(InputStream stream)  throws IOException {
         StringBuilder sb = new StringBuilder();
         BufferedReader br = new BufferedReader(new InputStreamReader(stream));
@@ -114,6 +123,7 @@ public class HttpPutWorker  extends AsyncTask<String, Void, String> {
         }
     }
 
+    //Internationalization method
     private String i18n(int resourceId, Object ... formatArgs) {
         return context.getResources().getString(resourceId, formatArgs);
     }

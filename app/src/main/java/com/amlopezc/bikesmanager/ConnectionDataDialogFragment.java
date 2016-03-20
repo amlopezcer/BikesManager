@@ -14,8 +14,14 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+/**
+ * Shows the dialog to set connection data (IP + port) if any of them is not
+ */
 
 public class ConnectionDataDialogFragment extends DialogFragment {
+
+    //For MapsActivity when calling and showing this dialog
+    public static final String CLASS_ID = "ConnectionDialogFragment";
 
     private EditText mEditText_user;
     private EditText mEditText_server;
@@ -38,13 +44,13 @@ public class ConnectionDataDialogFragment extends DialogFragment {
 
         mDefaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        fillData();
+        fillData(); //Get default data
 
         builder.setMessage(i18n(R.string.builder_msg))
                 .setView(view)
                 .setPositiveButton(i18n(R.string.text_set), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        // Getting and setting data
+                        // Getting and setting data when "set" button is clicked
                         String data = mEditText_user.getText().toString();
                         mDefaultSharedPreferences.edit()
                                 .putString(SettingsActivityFragment.KEY_PREF_SYNC_USER, data)
@@ -64,8 +70,9 @@ public class ConnectionDataDialogFragment extends DialogFragment {
 
         final AlertDialog dialog = builder.create();
         dialog.show();
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false); //"set" is disabled by default.
 
+        //Code to enable "Set" button only when all data have been provided
         final TextWatcher watcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -82,6 +89,7 @@ public class ConnectionDataDialogFragment extends DialogFragment {
             }
         };
 
+        //All text fields must be completed to enable "Set", so the TextWatcher is listening to all of them
         mEditText_user.addTextChangedListener(watcher);
         mEditText_server.addTextChangedListener(watcher);
         mEditText_port.addTextChangedListener(watcher);
@@ -89,6 +97,7 @@ public class ConnectionDataDialogFragment extends DialogFragment {
         return dialog;
     }
 
+    //Get default data from the SharedPreferences, if any
     private void fillData() {
         String userName = mDefaultSharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_USER, "");
         setFields(mEditText_user, userName);
@@ -98,11 +107,13 @@ public class ConnectionDataDialogFragment extends DialogFragment {
         setFields(mEditText_port, serverPort);
     }
 
+    //Set EditText content from default data from the SharedPreferences, if any
     private void setFields(EditText editText, String data) {
         if(!data.trim().isEmpty())
             editText.setText(data);
     }
 
+    //Internationalization method
     private String i18n(int resourceId, Object ... formatArgs) {
         return getResources().getString(resourceId, formatArgs);
     }

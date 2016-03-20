@@ -23,6 +23,7 @@
     <string name="text_server_address">Dirección de servidor</string>
     <string name="text_server_port">Puerto del servidor</string>
     <string name="text_not_defined">no definido</string>
+    <string name="text_fare">Tarifa:</string>
 
     <!-- ChartActivity.java -->
     <string name="chart_total_msg">Bicicletas totales: %1$d</string>
@@ -34,6 +35,7 @@
     <string name="toast_user_settings">Datos del usuario \'%1$s\' guardados</string>
     <string name="toast_operation_impossible">La disponibilidad de la estación no permite completar la operación</string>
     <string name="toast_operation_succeed">Operación completada</string>
+
 
     <!-- SettingsActivityFragment.java -->
     <string name="template_text">%1$s para la conexión: %2$s%3$s%4$s</string>
@@ -61,6 +63,7 @@
     <string name="item_text_list">Lista</string>
     <string name="item_text_chart">Gráfico</string>
     <string name="item_text_settings">Configuración</string>
+
 
 </resources>
 

@@ -19,12 +19,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Shows bike station data as a expandable list
+ */
+
 public class ListActivity extends AppCompatActivity implements AsyncTaskListener<String> {
 
     private List<String> mListDataHeader;
     private HashMap<String, BikeStation> mListDataChild;
     private ExpandableListView mExpandableListView;
-    private HttpDispatcher dispatcher;
+    private HttpDispatcher mHttpDispatcher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,13 +36,14 @@ public class ListActivity extends AppCompatActivity implements AsyncTaskListener
         setContentView(R.layout.activity_list);
 
         mExpandableListView = (ExpandableListView) findViewById(R.id.expListView_list);
-        dispatcher = new HttpDispatcher(this);
+        mHttpDispatcher = new HttpDispatcher(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
+        //Getting update data form the server
         fetchUpdatedServerData();
     }
 
@@ -63,17 +68,18 @@ public class ListActivity extends AppCompatActivity implements AsyncTaskListener
     }
 
     private void fetchUpdatedServerData() {
-        dispatcher.doGet(this);
+        mHttpDispatcher.doGet(this);
     }
 
     @Override
     public void processResult(String result, int operation) {
+        //Process the server response
         switch (operation) {
+            //Update data and layout
             case HttpDispatcher.OPERATION_GET:
                 try {
-                    ObjectMapper mapper = dispatcher.getMapper();
-                    List<BikeStation> bikeStationList = mapper.readValue(result, new TypeReference<List<BikeStation>>() {
-                    });
+                    ObjectMapper mapper = mHttpDispatcher.getMapper();
+                    List<BikeStation> bikeStationList = mapper.readValue(result, new TypeReference<List<BikeStation>>() {});
                     readData(bikeStationList);
                     updateLocalLayout();
                 } catch (Exception e) {
@@ -86,6 +92,7 @@ public class ListActivity extends AppCompatActivity implements AsyncTaskListener
         }
     }
 
+    //Read server data to update current state
     private void readData(List<BikeStation> bikeStationList) {
         String headerTemplate = "%d - %s";
         mListDataHeader = new ArrayList<>();
@@ -99,6 +106,7 @@ public class ListActivity extends AppCompatActivity implements AsyncTaskListener
         }
     }
 
+    //Update layout (expandable list)
     private void updateLocalLayout() {
         updateExpandableList();
     }
@@ -108,6 +116,7 @@ public class ListActivity extends AppCompatActivity implements AsyncTaskListener
         mExpandableListView.setAdapter(expandableListAdapter);
     }
 
+    // Internationalization method
     private String i18n(int resourceId, Object ... formatArgs) {
         return getResources().getString(resourceId, formatArgs);
     }

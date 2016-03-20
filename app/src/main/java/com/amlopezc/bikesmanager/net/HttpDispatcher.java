@@ -17,20 +17,24 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * Manages HTTP connections.
+ */
 
 public class HttpDispatcher {
 
+    //Constants to identify operations in the caller activities (to process the result)
     public static final int OPERATION_GET = 1;
     public static final int OPERATION_PUT = 2;
 
-    private final Context context;
-    // Server developed in NetBeans
+    private final Context context; //Context from the caller Activity, needed for Toasts, progress dialog...
+
+    // Server developed in NetBeans, basic constants to establish connection
     private final String BASE_URL_ADDRESS = "http://%s:%s/BikesManager/rest/entities.bikestation";
     private final String SERVER_ADDRESS;
     private final String SERVER_PORT;
-    //private final String REGISTRY_OWNER; // User
 
-    private ObjectMapper mapper;
+    private ObjectMapper mapper; //To process JSON strings
 
     public HttpDispatcher(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -39,7 +43,7 @@ public class HttpDispatcher {
 
         this.context = context;
 
-        // Deactivate auto-detection, do not use getters or setters, but attributes
+        //Deactivate auto-detection, do not use getters or setters, but attributes of the instance when processing JSON strings
         mapper =  new ObjectMapper()
                 .setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE)
                 .setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
@@ -50,7 +54,7 @@ public class HttpDispatcher {
         if (isOnline()) {
             Log.d(this.getClass().getCanonicalName(), "Connected");
             HttpGetWorker worker = new HttpGetWorker(context);
-            worker.addAsyncTaskListener(listener);
+            worker.addAsyncTaskListener(listener); //Register the listener to be aware of the task termination
             worker.execute(url);
         } else {
             Log.d(this.getClass().getCanonicalName(), "Not connected");
@@ -66,7 +70,7 @@ public class HttpDispatcher {
         if (isOnline()) {
             Log.d(this.getClass().getCanonicalName(), "Connected");
             HttpPutWorker worker = new HttpPutWorker(context, bean, mapper);
-            worker.addAsyncTaskListener(listener);
+            worker.addAsyncTaskListener(listener);//Register the listener to be aware of the task termination
             worker.execute(url);
         } else {
             Log.d(this.getClass().getCanonicalName(), "Not connected");
@@ -76,6 +80,7 @@ public class HttpDispatcher {
         }
     }
 
+    //Checking whether net is reachable
     private boolean isOnline () {
         ConnectivityManager connMgr = (ConnectivityManager)
                 context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -85,6 +90,7 @@ public class HttpDispatcher {
 
     public ObjectMapper getMapper() { return mapper; }
 
+    //Internationalization method
     private String i18n(int resourceId, Object ... formatArgs) {
         return context.getString(resourceId, formatArgs);
     }

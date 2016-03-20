@@ -13,14 +13,16 @@ import android.widget.TextView;
 import com.amlopezc.bikesmanager.R;
 import com.amlopezc.bikesmanager.entity.BikeStation;
 
-import java.sql.Time;
-import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Support code to show and manage an expandable list
+ */
+
 public class ExpandableListAdapter extends BaseExpandableListAdapter {
 
-    //intent and bundle
+    //Intents and bundles constants
     public static final String EXTRA_RESULT = "COORDINATES";
     public static final int OK_RESULT_CODE = 1;
     public static final String BUNDLE_LAT = "LAT";
@@ -100,7 +102,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Returning to the maps activity with chosen coordinates
+                // Returning to the maps activity with the chosen coordinates
                 Bundle bundle = new Bundle();
                 bundle.putDouble(BUNDLE_LAT, actual.getmLatitude());
                 bundle.putDouble(BUNDLE_LONG, actual.getmLongitude());
@@ -138,17 +140,23 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         tv_listChild = (TextView) convertView.findViewById(R.id.textView_brokenNumber);
         tv_listChild.setText(String.format("%d", bikeStation.getmBrokenBikes()));
 
-        tv_listChild = (TextView) convertView.findViewById(R.id.textView_coordinates);
-        tv_listChild.setText(String.format("%.4f, %.4f", bikeStation.getmLatitude(), bikeStation.getmLongitude()));
+        /*tv_listChild = (TextView) convertView.findViewById(R.id.textView_coordinates);
+        tv_listChild.setText(String.format("%.4f, %.4f", bikeStation.getmLatitude(), bikeStation.getmLongitude()));*/
 
-        tv_listChild = (TextView) convertView.findViewById(R.id.textView_lastBookingData);
+        tv_listChild = (TextView) convertView.findViewById(R.id.textView_fareNumber);
+        tv_listChild.setText(String.format("%.2f", BikesOpsSupport.getCurrentFare(bikeStation)));
+        setAvailabilityColor(bikeStation, tv_listChild);
+
+        tv_listChild = (TextView) convertView.findViewById(R.id.textView_lastModData);
         tv_listChild.setText(String.format("%s", setTimeStampFormat(bikeStation.getmTimeStamp())));
     }
 
     private void setAvailabilityColor(BikeStation bikeStation, TextView textView) {
-        if(bikeStation.getmAvailableBikes() == 0)
+        int availability = BikesOpsSupport.getStationAvailability(bikeStation);
+
+        if(availability == 0)
             textView.setTextColor(Color.RED);
-        else if (bikeStation.getmTotalBikes() - bikeStation.getmAvailableBikes() > bikeStation.getmAvailableBikes())
+        else if (availability < 50)
             textView.setTextColor(Color.rgb(255, 128, 0)); //Orange
         else
             textView.setTextColor(Color.rgb(0, 102, 0)); // Dark green
