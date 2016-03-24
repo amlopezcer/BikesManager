@@ -101,6 +101,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
         return true;
     }
 
@@ -198,6 +199,10 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     //Processing intents responses
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        fetchUpdatedServerData();
+        //Ensuring there is something to read
+        if (data == null)
+            return;
         switch (requestCode) {
             case LIST_REQUEST_CODE:
                 /**
@@ -225,29 +230,28 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     //Managing the click on the marker to do whatever with the station selected with a BottomSheet
     @Override
     public boolean onMarkerClick(final Marker marker) {
-        new BottomSheet.Builder(this).
+        new BottomSheet.Builder(this, R.style.BottomSheet_StyleDialog).
                 title(marker.getTitle()).
                 grid().
                 sheet(R.menu.menu_bottomsheet).
-                darkTheme(). //TODO: personalizar
                 listener(new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case R.id.menu_takeBike:
-                        modifyBike(marker, BikesOpsSupport.OP_TAKE_BIKE); //TODO: hacer un GET indivudual?
-                        break;
-                    case R.id.menu_leaveBike:
-                        modifyBike(marker, BikesOpsSupport.OP_LEAVE_BIKE); //TODO: hacer un GET indivudual?
-                        break;
-                    case R.id.menu_reportBike: //Implement this feature
-                        Toast.makeText(getApplicationContext(),
-                                "Report",
-                                Toast.LENGTH_SHORT).show();
-                        break;
-                }
-            }
-        }).show();
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case R.id.menu_takeBike:
+                                modifyBike(marker, BikesOpsSupport.OP_TAKE_BIKE); //TODO: hacer un GET indivudual?
+                                break;
+                            case R.id.menu_leaveBike:
+                                modifyBike(marker, BikesOpsSupport.OP_LEAVE_BIKE); //TODO: hacer un GET indivudual?
+                                break;
+                            case R.id.menu_reportBike: //Implement this feature
+                                Toast.makeText(getApplicationContext(),
+                                        "Report",
+                                        Toast.LENGTH_SHORT).show();
+                                break;
+                        }
+                    }
+                }).show();
         return false;
     }
 

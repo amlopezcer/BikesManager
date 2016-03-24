@@ -5,8 +5,16 @@
     android:layout_height="match_parent"
     tools:context="com.amlopezc.bikesmanager.ListActivityFragment">
 
+    <AutoCompleteTextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/autocomplete_stations"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:padding="10dp"/>
+
     <ExpandableListView android:id="@+id/expListView_list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"/>
 
 </LinearLayout>

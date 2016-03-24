@@ -140,9 +140,6 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         tv_listChild = (TextView) convertView.findViewById(R.id.textView_brokenNumber);
         tv_listChild.setText(String.format("%d", bikeStation.getmBrokenBikes()));
 
-        /*tv_listChild = (TextView) convertView.findViewById(R.id.textView_coordinates);
-        tv_listChild.setText(String.format("%.4f, %.4f", bikeStation.getmLatitude(), bikeStation.getmLongitude()));*/
-
         tv_listChild = (TextView) convertView.findViewById(R.id.textView_fareNumber);
         tv_listChild.setText(String.format("%.2f", BikesOpsSupport.getCurrentFare(bikeStation)));
         setAvailabilityColor(bikeStation, tv_listChild);

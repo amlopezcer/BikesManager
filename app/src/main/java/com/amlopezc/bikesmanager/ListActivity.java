@@ -2,9 +2,13 @@ package com.amlopezc.bikesmanager;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
@@ -104,6 +108,14 @@ public class ListActivity extends AppCompatActivity implements AsyncTaskListener
             mListDataChild.put(mListDataHeader.get(i), bikeStation);
             i++;
         }
+
+        // Get a reference to the AutoCompleteTextView in the layout
+        AutoCompleteTextView textView = (AutoCompleteTextView) findViewById(R.id.autocomplete_stations);
+        // Create the adapter and set it to the AutoCompleteTextView
+        ArrayAdapter<String> adapter =
+                new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mListDataHeader);
+        textView.setAdapter(adapter);
+        textView.clearFocus();
     }
 
     //Update layout (expandable list)
@@ -114,6 +126,12 @@ public class ListActivity extends AppCompatActivity implements AsyncTaskListener
     private void updateExpandableList() {
         ExpandableListAdapter expandableListAdapter = new ExpandableListAdapter(this, mListDataHeader, mListDataChild);
         mExpandableListView.setAdapter(expandableListAdapter);
+
+        mExpandableListView.requestFocus();
+
+
+        //mExpandableListView.expandGroup(mListDataHeader.indexOf("73 - Plaza de los Astros"));
+
     }
 
     // Internationalization method

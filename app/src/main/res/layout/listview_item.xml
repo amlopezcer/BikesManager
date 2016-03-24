@@ -3,7 +3,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="8dp">
+    android:padding="8dp"
+    android:animateLayoutChanges="true">
 
     <TableLayout android:id="@+id/tableLayout_data"
         android:layout_width="wrap_content"
@@ -73,46 +74,34 @@
         </TableRow>
     </TableLayout>
 
-    <!--
-    <TextView android:id="@+id/textView_coordinates"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceListItem"
-        android:layout_below="@id/tableLayout_data"
-        android:layout_marginTop="@dimen/listView_figuresMargin" /> -->
-
-    <TableLayout android:id="@+id/tableLayout_fare"
+    <TableRow android:id="@+id/tableRow_fare"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tableLayout_data"
         android:layout_marginTop="@dimen/listView_figuresMargin"
         android:layout_centerHorizontal="true">
 
-        <TableRow
+        <TextView android:id="@+id/textView_fare"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceListItem"
+            android:text="@string/text_fare" />
 
-            <TextView android:id="@+id/textView_fare"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceListItem"
-                android:text="@string/text_fare" />
+        <TextView android:id="@+id/textView_fareNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/itemList_TextNumberMargin"
+            android:layout_marginStart="@dimen/itemList_TextNumberMargin"
+            android:textAppearance="?android:attr/textAppearanceListItem"
+            android:layout_gravity="end" />
+    </TableRow>
 
-            <TextView android:id="@+id/textView_fareNumber"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/itemList_TextNumberMargin"
-                android:layout_marginStart="@dimen/itemList_TextNumberMargin"
-                android:textAppearance="?android:attr/textAppearanceListItem"
-                android:layout_gravity="end" />
-        </TableRow>
-    </TableLayout>
 
     <TextView android:id="@+id/textView_lastMod"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceListItem"
-        android:layout_below="@id/tableLayout_fare"
+        android:layout_below="@id/tableRow_fare"
         android:layout_marginTop="@dimen/listView_figuresMargin"
         android:text="@string/textView_lastMod"/>
 
@@ -122,7 +111,7 @@
         android:textAppearance="?android:attr/textAppearanceListItem"
         android:layout_toRightOf="@id/textView_lastMod"
         android:layout_toEndOf="@id/textView_lastMod"
-        android:layout_below="@id/tableLayout_fare"
+        android:layout_below="@id/tableRow_fare"
         android:layout_marginTop="@dimen/listView_figuresMargin"
         android:layout_marginLeft="@dimen/itemList_TextNumberMargin"
         android:layout_marginStart="@dimen/itemList_TextNumberMargin" />
@@ -135,7 +124,6 @@
         android:layout_marginTop="@dimen/listView_figuresMargin"
         android:text="@string/button_showInMap"
         style="?android:attr/borderlessButtonStyle"
-        android:textColor="#2E7D32"/> <!-- Some green -->
-
+        android:textColor="@color/accentColor" />
 
 </RelativeLayout>
