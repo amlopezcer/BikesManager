@@ -2,7 +2,6 @@ package com.amlopezc.bikesmanager;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -10,11 +9,13 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ExpandableListView;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.amlopezc.bikesmanager.entity.BikeStation;
 import com.amlopezc.bikesmanager.net.HttpDispatcher;
 import com.amlopezc.bikesmanager.util.AsyncTaskListener;
+import com.amlopezc.bikesmanager.util.DeviceUtilities;
 import com.amlopezc.bikesmanager.util.ExpandableListAdapter;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,12 +28,14 @@ import java.util.List;
  * Shows bike station data as a expandable list
  */
 
-public class ListActivity extends AppCompatActivity implements AsyncTaskListener<String> {
+public class ListActivity extends AppCompatActivity implements AsyncTaskListener<String>, View.OnClickListener {
 
     private List<String> mListDataHeader;
     private HashMap<String, BikeStation> mListDataChild;
     private ExpandableListView mExpandableListView;
     private HttpDispatcher mHttpDispatcher;
+    private ImageButton mImageButtonSeatch;
+    private AutoCompleteTextView mTextViewSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +44,9 @@ public class ListActivity extends AppCompatActivity implements AsyncTaskListener
 
         mExpandableListView = (ExpandableListView) findViewById(R.id.expListView_list);
         mHttpDispatcher = new HttpDispatcher(this);
+        mImageButtonSeatch = (ImageButton) findViewById(R.id.imgButton_search);
+        mImageButtonSeatch.setOnClickListener(this);
+        mTextViewSearch = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView_stations);
     }
 
     @Override
@@ -60,15 +66,23 @@ public class ListActivity extends AppCompatActivity implements AsyncTaskListener
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        DeviceUtilities.hideSoftKeyboard(this); //Hides the keyboard
+
         // Action bar item click handler
-        int id = item.getItemId();
-
-        if (id == R.id.action_refresh) {
-            fetchUpdatedServerData();
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_refresh:
+                fetchUpdatedServerData();
+                return true;
+            case R.id.action_collapse: //Collapse ExpandableList
+                collapseAll();
+                return true;
+            case R.id.action_expand: //Expand ExpandableList
+                expandAll();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
     private void fetchUpdatedServerData() {
@@ -109,13 +123,15 @@ public class ListActivity extends AppCompatActivity implements AsyncTaskListener
             i++;
         }
 
-        // Get a reference to the AutoCompleteTextView in the layout
-        AutoCompleteTextView textView = (AutoCompleteTextView) findViewById(R.id.autocomplete_stations);
-        // Create the adapter and set it to the AutoCompleteTextView
+        //Set the autoCompleteTextView to allow searches over the list
+        setSearchAutoCompleteTextView();
+    }
+
+    private void setSearchAutoCompleteTextView() {
+        // Create the adapter from my listDataHeader and set it to the AutoCompleteTextView
         ArrayAdapter<String> adapter =
                 new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, mListDataHeader);
-        textView.setAdapter(adapter);
-        textView.clearFocus();
+        mTextViewSearch.setAdapter(adapter);
     }
 
     //Update layout (expandable list)
@@ -126,12 +142,49 @@ public class ListActivity extends AppCompatActivity implements AsyncTaskListener
     private void updateExpandableList() {
         ExpandableListAdapter expandableListAdapter = new ExpandableListAdapter(this, mListDataHeader, mListDataChild);
         mExpandableListView.setAdapter(expandableListAdapter);
+    }
 
-        mExpandableListView.requestFocus();
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()) {
+            case R.id.imgButton_search:
+                searchStation();
+                break;
+        }
+    }
 
+    private void searchStation() {
+        String id = mTextViewSearch.getText().toString().trim();
+        if(id.isEmpty())
+            return; //Nothing to search
 
-        //mExpandableListView.expandGroup(mListDataHeader.indexOf("73 - Plaza de los Astros"));
+        DeviceUtilities.hideSoftKeyboard(this); //Hides the keyboard
 
+        mTextViewSearch.getText().clear();
+
+        int groupPosition = mListDataHeader.indexOf(id);
+        if (groupPosition > 0) { //Something have been found
+            collapseAll();
+            mExpandableListView.setSelectedGroup(groupPosition);
+            mExpandableListView.expandGroup(groupPosition); //Expand the group, now the list has 1 more element
+            mExpandableListView.smoothScrollToPosition(groupPosition + 1); // Navigate to the new element
+        } else {
+            Toast.makeText(this,
+                    i18n(R.string.toast_id_not_found,id),
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void collapseAll() {
+        for(int i = 0; i < mExpandableListView.getExpandableListAdapter().getGroupCount(); i++) {
+            mExpandableListView.collapseGroup(i);
+        }
+    }
+
+    private void expandAll() {
+        for(int i = 0; i < mExpandableListView.getExpandableListAdapter().getGroupCount(); i++) {
+            mExpandableListView.expandGroup(i);
+        }
     }
 
     // Internationalization method

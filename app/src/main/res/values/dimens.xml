@@ -3,6 +3,6 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
-    <dimen name="itemList_TextNumberMargin">5dp</dimen>
-    <dimen name="listView_figuresMargin">15dp</dimen>
+    <dimen name="itemList_TextNumberMargin">4dp</dimen>
+    <dimen name="widgets_standard_margin">16dp</dimen>
 </resources>

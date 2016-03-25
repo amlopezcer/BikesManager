@@ -175,7 +175,7 @@ public class ChartActivity extends AppCompatActivity implements AsyncTaskListene
         setPieDataFormat(pieData);
 
         mChart.setCenterText(i18n(R.string.chart_total_msg, totalBikes));
-        mChart.setCenterTextColor(R.color.primaryTextColor);
+        mChart.setCenterTextColor(R.color.secondaryTextColor);
         //mChart.setCenterTextTypeface(Typeface.DEFAULT_BOLD);
         //mChart.setCenterTextColor(Color.parseColor("#3F51B5"));
 
@@ -219,8 +219,8 @@ public class ChartActivity extends AppCompatActivity implements AsyncTaskListene
     }
 
     private void setLegendFormat(Legend l) {
-        l.setPosition(Legend.LegendPosition.RIGHT_OF_CHART);
-        l.setTextSize(10f);
+        l.setPosition(Legend.LegendPosition.BELOW_CHART_LEFT);
+        l.setTextSize(12f);
         l.setTextColor(R.color.secondaryTextColor);
     }
     //</editor-fold>

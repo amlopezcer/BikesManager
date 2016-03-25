@@ -1,20 +1,38 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relativeLayour_frgamentList"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.amlopezc.bikesmanager.ListActivityFragment">
 
     <AutoCompleteTextView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/autocomplete_stations"
-        android:layout_width="fill_parent"
+        android:id="@+id/autoCompleteTextView_stations"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:padding="10dp"/>
+        android:hint="@string/hint_search"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="@dimen/widgets_standard_margin"
+        android:layout_toLeftOf="@+id/imgButton_search"
+        android:layout_toStartOf="@+id/imgButton_search"
+        />
+
+    <ImageButton android:id="@+id/imgButton_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_search"
+        android:contentDescription="@string/desc_image_button_search"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_alignTop="@+id/autoCompleteTextView_stations"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="@dimen/widgets_standard_margin"
+        android:layout_marginEnd="@dimen/widgets_standard_margin" />
 
     <ExpandableListView android:id="@+id/expListView_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="10dp"/>
+        android:layout_below="@+id/autoCompleteTextView_stations" />
 
-</LinearLayout>
+</RelativeLayout>

@@ -3,6 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.amlopezc.bikesmanager.ListActivity">
 
+    <item android:id="@+id/action_expand"
+        android:icon="@drawable/ic_action_expand"
+        android:title="@string/item_text_expand"
+        app:showAsAction="always" />
+
+    <item android:id="@+id/action_collapse"
+        android:icon="@drawable/ic_action_collapse"
+        android:title="@string/item_text_collapse"
+        app:showAsAction="always" />
+
     <item android:id="@+id/action_refresh"
         android:icon="@drawable/ic_action_refresh"
         android:title="@string/item_text_refresh"

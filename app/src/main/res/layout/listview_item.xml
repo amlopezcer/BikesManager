@@ -28,8 +28,8 @@
             <TextView android:id="@+id/textView_available"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/listView_figuresMargin"
-                android:layout_marginStart="@dimen/listView_figuresMargin"
+                android:layout_marginLeft="@dimen/widgets_standard_margin"
+                android:layout_marginStart="@dimen/widgets_standard_margin"
                 android:textAppearance="?android:attr/textAppearanceListItem"
                 android:text="@string/text_available"/>
             <TextView android:id="@+id/textView_availableNumber"
@@ -60,8 +60,8 @@
             <TextView android:id="@+id/textView_broken"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/listView_figuresMargin"
-                android:layout_marginStart="@dimen/listView_figuresMargin"
+                android:layout_marginLeft="@dimen/widgets_standard_margin"
+                android:layout_marginStart="@dimen/widgets_standard_margin"
                 android:textAppearance="?android:attr/textAppearanceListItem"
                 android:text="@string/text_broken"/>
             <TextView android:id="@+id/textView_brokenNumber"
@@ -78,7 +78,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tableLayout_data"
-        android:layout_marginTop="@dimen/listView_figuresMargin"
+        android:layout_marginTop="@dimen/widgets_standard_margin"
         android:layout_centerHorizontal="true">
 
         <TextView android:id="@+id/textView_fare"
@@ -102,7 +102,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceListItem"
         android:layout_below="@id/tableRow_fare"
-        android:layout_marginTop="@dimen/listView_figuresMargin"
+        android:layout_marginTop="@dimen/widgets_standard_margin"
         android:text="@string/textView_lastMod"/>
 
     <TextView android:id="@+id/textView_lastModData"
@@ -112,7 +112,7 @@
         android:layout_toRightOf="@id/textView_lastMod"
         android:layout_toEndOf="@id/textView_lastMod"
         android:layout_below="@id/tableRow_fare"
-        android:layout_marginTop="@dimen/listView_figuresMargin"
+        android:layout_marginTop="@dimen/widgets_standard_margin"
         android:layout_marginLeft="@dimen/itemList_TextNumberMargin"
         android:layout_marginStart="@dimen/itemList_TextNumberMargin" />
 
@@ -121,7 +121,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_below="@id/textView_lastMod"
-        android:layout_marginTop="@dimen/listView_figuresMargin"
+        android:layout_marginTop="@dimen/widgets_standard_margin"
         android:text="@string/button_showInMap"
         style="?android:attr/borderlessButtonStyle"
         android:textColor="@color/accentColor" />

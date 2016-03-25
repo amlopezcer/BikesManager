@@ -51,17 +51,17 @@ public class ConnectionDataDialogFragment extends DialogFragment {
                 .setPositiveButton(i18n(R.string.text_set), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // Getting and setting data when "set" button is clicked
-                        String data = mEditText_user.getText().toString();
+                        String data = mEditText_user.getText().toString().trim();
                         mDefaultSharedPreferences.edit()
                                 .putString(SettingsActivityFragment.KEY_PREF_SYNC_USER, data)
                                 .apply();
 
-                        data = mEditText_server.getText().toString();
+                        data = mEditText_server.getText().toString().trim();
                         mDefaultSharedPreferences.edit()
                                 .putString(SettingsActivityFragment.KEY_PREF_SYNC_SERVER, data)
                                 .apply();
 
-                        data = mEditText_port.getText().toString();
+                        data = mEditText_port.getText().toString().trim();
                         mDefaultSharedPreferences.edit()
                                 .putString(SettingsActivityFragment.KEY_PREF_SYNC_PORT, data)
                                 .apply();

@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory android:title="Connection data">
+    <PreferenceCategory android:title="@string/title_connection">
         <EditTextPreference
             android:key="username"
-            android:title="User name"
+            android:title="@string/text_user_name"
             android:defaultValue="User"/>
 
         <EditTextPreference
             android:key="server_address"
-            android:title="Server address"
+            android:title="@string/text_server_address"
+            android:inputType="numberDecimal"
+            android:digits="0123456789."
             android:defaultValue="192.168.1.142"/>
 
         <EditTextPreference
             android:key="server_port"
             android:inputType="number"
-            android:title="Server port"
+            android:title="@string/text_server_port"
             android:defaultValue="8080"/> <!-- Default port in Glassfish -->
     </PreferenceCategory>
 

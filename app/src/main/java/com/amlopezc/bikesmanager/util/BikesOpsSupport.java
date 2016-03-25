@@ -9,14 +9,17 @@ import java.util.Calendar;
 import java.util.Locale;
 
 /**
- * Manages station operations
+ * Non-instantiable utility class which manages station operations
  */
-public class BikesOpsSupport {
+public final class BikesOpsSupport {
 
     private static final int BASIC_FARE = 1;   // Basic fare, it will change depending on the availability
 
     public static final String OP_TAKE_BIKE = "take";          //Constant strings for server connection ->
     public static final String OP_LEAVE_BIKE = "leave";        // -> (distinguishes "PUT" method in the URL)
+
+    // Suppress default constructor for non-instantiability
+    private BikesOpsSupport() {}
 
     //Getting current fare for the station, depending on the availability
     public static float getCurrentFare(BikeStation bikeStation) {
