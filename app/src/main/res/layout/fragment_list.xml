@@ -15,8 +15,7 @@
         android:layout_alignParentTop="true"
         android:layout_margin="@dimen/widgets_standard_margin"
         android:layout_toLeftOf="@+id/imgButton_search"
-        android:layout_toStartOf="@+id/imgButton_search"
-        />
+        android:layout_toStartOf="@+id/imgButton_search" />
 
     <ImageButton android:id="@+id/imgButton_search"
         android:layout_width="wrap_content"

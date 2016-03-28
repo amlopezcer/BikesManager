@@ -3,6 +3,7 @@ package com.amlopezc.bikesmanager.util;
 
 import com.amlopezc.bikesmanager.entity.BikeStation;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -13,7 +14,7 @@ import java.util.Locale;
  */
 public final class BikesOpsSupport {
 
-    private static final int BASIC_FARE = 1;   // Basic fare, it will change depending on the availability
+    private static final float BASIC_FARE = 1.00f;   // Basic fare, it will change depending on the availability
 
     public static final String OP_TAKE_BIKE = "take";          //Constant strings for server connection ->
     public static final String OP_LEAVE_BIKE = "leave";        // -> (distinguishes "PUT" method in the URL)
@@ -24,12 +25,23 @@ public final class BikesOpsSupport {
     //Getting current fare for the station, depending on the availability
     public static float getCurrentFare(BikeStation bikeStation) {
         int availability = getStationAvailability(bikeStation);
+        float currentFare;
+
         if(availability == 0)
-            return BASIC_FARE;
+            currentFare = BASIC_FARE;
         else if (availability < 50)
-            return BASIC_FARE * 2;
+            currentFare =  BASIC_FARE * 2;
         else
-            return BASIC_FARE;
+            currentFare =  BASIC_FARE;
+
+        BigDecimal result = round(currentFare,2); //2 decimals
+        return result.floatValue();
+    }
+
+    private static BigDecimal round(float fare, int decimalPlace) {
+        BigDecimal bd = new BigDecimal(Float.toString(fare));
+        bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
+        return bd;
     }
 
     //Getting station availability
@@ -73,6 +85,8 @@ public final class BikesOpsSupport {
         DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
         Calendar cal = Calendar.getInstance();
         StringBuilder builder = new StringBuilder(dateFormat.format(cal.getTime()));
-        return builder.append("T").append(timeFormat.format(cal.getTime())).append("+01:00").toString();
+        return builder.append("T")
+                .append(timeFormat.format(cal.getTime()))
+                .append("+01:00").toString();
     }
 }

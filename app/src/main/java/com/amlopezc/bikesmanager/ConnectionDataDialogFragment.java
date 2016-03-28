@@ -12,7 +12,6 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 /**
  * Shows the dialog to set connection data (IP + port) if any of them is not

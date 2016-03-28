@@ -94,7 +94,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == MY_LOCATION_REQUEST_CODE) {
             if (permissions.length == 1 &&
-                    permissions[0] == Manifest.permission.ACCESS_FINE_LOCATION &&
+                    permissions[0].equals(Manifest.permission.ACCESS_FINE_LOCATION) &&
                     grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 mMap.setMyLocationEnabled(true);
             } else {
@@ -217,7 +217,11 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
     private String setMarkerSnippet(BikeStation bikeStation) {
         StringBuilder builder = new StringBuilder(bikeStation.getAvailabilityMessage());
-        return builder.append(" | ").append(i18n(R.string.text_fare)).append(" ").append(BikesOpsSupport.getCurrentFare(bikeStation)).append("€").toString();
+        return builder.append(" | ")
+                .append(i18n(R.string.text_fare))
+                .append(" ")
+                .append(String.format("%.2f", BikesOpsSupport.getCurrentFare(bikeStation)))
+                .append("€").toString();
     }
 
     //Setting marker colors depending on the availability (green to red)
@@ -364,7 +368,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         mStations = new HashMap<>();
         String headerTemplate = "%d - %s";
         for(BikeStation bikeStation : bikeStationList)
-            mStations.put(String.format(headerTemplate, bikeStation.getmId(), bikeStation.getmAddress()), bikeStation);
+            mStations.put(String.format(headerTemplate, bikeStation.getmId(),
+                    bikeStation.getmAddress()), bikeStation);
     }
 
     //Internationalization method

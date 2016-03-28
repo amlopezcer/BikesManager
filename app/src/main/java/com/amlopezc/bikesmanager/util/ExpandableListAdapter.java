@@ -2,8 +2,8 @@ package com.amlopezc.bikesmanager.util;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
@@ -141,7 +141,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         tv_listChild.setText(String.format("%d", bikeStation.getmBrokenBikes()));
 
         tv_listChild = (TextView) convertView.findViewById(R.id.textView_fareNumber);
-        tv_listChild.setText(String.format("%.2f", BikesOpsSupport.getCurrentFare(bikeStation)));
+        tv_listChild.setText(String.format("%.2f€", BikesOpsSupport.getCurrentFare(bikeStation)));
         setAvailabilityColor(bikeStation, tv_listChild);
 
         tv_listChild = (TextView) convertView.findViewById(R.id.textView_lastModData);
@@ -152,11 +152,11 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         int availability = BikesOpsSupport.getStationAvailability(bikeStation);
 
         if(availability == 0)
-            textView.setTextColor(Color.RED);
+            textView.setTextColor(ContextCompat.getColor(mContext, R.color.red));
         else if (availability < 50)
-            textView.setTextColor(Color.rgb(255, 128, 0)); //Orange
+            textView.setTextColor(ContextCompat.getColor(mContext, R.color.orange));
         else
-            textView.setTextColor(Color.rgb(0, 102, 0)); // Dark green
+            textView.setTextColor(ContextCompat.getColor(mContext, R.color.green));
     }
 
     private String setTimeStampFormat(String string) {

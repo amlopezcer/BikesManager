@@ -66,7 +66,9 @@ public class HttpDispatcher {
 
     public void doPut(AsyncTaskListener listener, JSONBean bean, String method) {
         StringBuilder builder = new StringBuilder(String.format(BASE_URL_ADDRESS, SERVER_ADDRESS, SERVER_PORT));
-        String url = builder.append("/").append(method).append("/").append(bean.getServerId()).toString(); //ID to update
+        String url = builder.append("/")
+                .append(method).append("/")
+                .append(bean.getServerId()).toString(); //ID to update
         if (isOnline()) {
             Log.d(this.getClass().getCanonicalName(), "Connected");
             HttpPutWorker worker = new HttpPutWorker(context, bean, mapper);
