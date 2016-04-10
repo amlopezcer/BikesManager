@@ -26,15 +26,23 @@
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="@string/google_maps_key" />
 
+        <activity android:name=".LoginActivity"
+            android:label="Login"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden"
+            android:theme="@style/Theme.AppCompat.NoActionBar">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+        </activity>
+
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps"
             android:screenOrientation="portrait"
             android:configChanges="orientation|keyboardHidden" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+
         </activity>
         <activity
             android:name=".ListActivity"
@@ -46,6 +54,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.amlopezc.bikesmanager.MapsActivity" />
         </activity>
+
         <activity
             android:name=".ChartActivity"
             android:label="@string/title_activity_chart"
@@ -56,6 +65,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.amlopezc.bikesmanager.MapsActivity" />
         </activity>
+
         <activity android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
             android:parentActivityName=".MapsActivity"
@@ -65,6 +75,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.amlopezc.bikesmanager.MapsActivity" />
         </activity>
+
     </application>
 
 </manifest>

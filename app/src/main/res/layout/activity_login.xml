@@ -1,7 +1,7 @@
 <fragment xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragmentChart"
-    android:name="com.amlopezc.bikesmanager.ChartActivityFragment"
-    tools:layout="@layout/fragment_chart"
+    android:id="@+id/fragmentLogin"
+    android:name="com.amlopezc.bikesmanager.LoginActivityFragment"
+    tools:layout="@layout/fragment_login"
     android:layout_width="match_parent"
     android:layout_height="match_parent" />

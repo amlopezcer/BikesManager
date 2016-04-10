@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.amlopezc.bikesmanager.LoginActivityFragment"
+    android:background="@color/darkPrimaryColor" >
+
+    <TextView android:id="@+id/txt_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="?android:textAppearanceLarge"
+        android:text="@string/app_name"
+        android:textColor="@color/white"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="80dp"
+        />
+
+    <ImageView android:id="@+id/img_launcher"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/widgets_standard_margin"
+        android:layout_marginBottom="24dp"
+        android:layout_below="@+id/txt_title"
+        android:src="@mipmap/ic_launcher" />
+
+    <Button android:id="@+id/button_signUp"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/img_launcher"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="24dp"
+        android:text="Registrarse"
+        android:textAllCaps="false"
+        android:textColor="@color/darkPrimaryColor"
+        android:background="@drawable/custom_button"/>
+
+    <Button android:id="@+id/button_signIn"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/button_signUp"
+        android:layout_marginTop="@dimen/widgets_standard_margin"
+        android:text="Iniciar sesión"
+        android:textAllCaps="false"
+        style="?android:attr/borderlessButtonStyle"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        style="?android:textAppearanceSmall"
+        android:textColor="@color/secondaryTextColor"
+        android:layout_margin="@dimen/widgets_standard_margin"
+        android:text="Version 1.0.0"
+        android:id="@+id/textView2" />
+
+
+</RelativeLayout>

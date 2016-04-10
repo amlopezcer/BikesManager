@@ -124,6 +124,7 @@
         android:layout_below="@id/textView_lastMod"
         android:layout_marginTop="@dimen/widgets_standard_margin"
         android:text="@string/button_showInMap"
+        android:textAllCaps="false"
         style="?android:attr/borderlessButtonStyle"
         android:textColor="@color/accentColor" />
 
