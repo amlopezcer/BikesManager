@@ -12,7 +12,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-public abstract class JSONBean implements PropertyChangeListener, Parcelable {
+public abstract class JSONBean implements PropertyChangeListener /*, Parcelable*/ {
 
     /**
      * Property to identify changes within the bean

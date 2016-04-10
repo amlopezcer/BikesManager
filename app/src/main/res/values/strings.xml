@@ -68,7 +68,7 @@
     <!-- menu_bottomsheet.xml -->
     <string name="item_text_take">Take bike</string>
     <string name="item_text_leave">Leave bike</string>
-    <string name="item_text_report">Report error</string>
+    <string name="item_text_book">Book bike</string>
 
     <!-- menu_main.xml -->
     <string name="item_text_list">List</string>

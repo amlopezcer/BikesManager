@@ -10,8 +10,8 @@
         android:title="@string/item_text_leave"
         android:icon="@drawable/ic_action_remove_circle" />
     <item
-        android:id="@+id/menu_reportBike"
-        android:title="@string/item_text_report"
-        android:icon="@drawable/ic_action_error" />
+        android:id="@+id/menu_bookBike"
+        android:title="@string/item_text_book"
+        android:icon="@drawable/ic_action_clock" />
 
 </menu>

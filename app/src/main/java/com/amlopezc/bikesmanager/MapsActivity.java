@@ -284,9 +284,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                             case R.id.menu_leaveBike:
                                 modifyBike(marker, BikesOpsSupport.OP_LEAVE_BIKE); //TODO: hacer un GET indivudual?
                                 break;
-                            case R.id.menu_reportBike: //Implement this feature
+                            case R.id.menu_bookBike: //Implement this feature
                                 Toast.makeText(getApplicationContext(),
-                                        "Report",
+                                        "Book",
                                         Toast.LENGTH_SHORT).show();
                                 break;
                         }

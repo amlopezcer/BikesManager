@@ -8,10 +8,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-import java.sql.Timestamp;
-
 @JsonPropertyOrder({"address", "available", "broken", "latitude", "longitude", "md5", "reserved", "serverId", "timestampBike", "total" })
-public class BikeStation extends JSONBean implements Parcelable {
+public class BikeStation extends JSONBean /*implements Parcelable*/ {
 
     //TODO: Repasar cómo quedará esto finalmente para generar la base de datos final en condiciones; habrá que cambiar el PArcelable también. El JsonProperty es para el renombrado, tendré que poner el nombre de la BBDD
 
@@ -58,7 +56,7 @@ public class BikeStation extends JSONBean implements Parcelable {
         this.mReservedBikes = mReservedBikes;
         processHashMD5();
     }
-
+/*
     //<editor-fold desc="PARCELABLE INTERFACE SUPPORT">
     public static final Creator<BikeStation> CREATOR = new Creator<BikeStation>() {
         @Override
@@ -100,7 +98,7 @@ public class BikeStation extends JSONBean implements Parcelable {
         dest.writeInt(mBrokenBikes);
         dest.writeInt(mReservedBikes);
     }
-    //</editor-fold>
+    //</editor-fold>*/
 
     //<editor-fold desc="GET">
     public double getmLatitude() {

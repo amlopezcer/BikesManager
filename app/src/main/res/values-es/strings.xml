@@ -68,7 +68,7 @@
     <!-- menu_bottomsheet.xml -->
     <string name="item_text_take">Coger bici</string>
     <string name="item_text_leave">Dejar bici</string>
-    <string name="item_text_report">Reportar error</string>
+    <string name="item_text_book">Reservar bici</string>
 
     <!-- menu_main.xml -->
     <string name="item_text_list">Lista</string>
