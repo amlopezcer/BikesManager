@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="@dimen/activity_margin"
     tools:context="com.amlopezc.bikesmanager.ListActivityFragment">
 
     <AutoCompleteTextView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -13,7 +14,6 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_margin="@dimen/widgets_standard_margin"
         android:layout_toLeftOf="@+id/imgButton_search"
         android:layout_toStartOf="@+id/imgButton_search" />
 
@@ -25,13 +25,12 @@
         style="?android:attr/borderlessButtonStyle"
         android:layout_alignTop="@+id/autoCompleteTextView_stations"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginRight="@dimen/widgets_standard_margin"
-        android:layout_marginEnd="@dimen/widgets_standard_margin" />
+        android:layout_alignParentEnd="true" />
 
     <ExpandableListView android:id="@+id/expListView_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/autoCompleteTextView_stations" />
+        android:layout_below="@+id/autoCompleteTextView_stations"
+        android:layout_marginTop="@dimen/widgets_standard_margin"/>
 
 </RelativeLayout>

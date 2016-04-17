@@ -34,7 +34,7 @@
         android:text="@string/button_sign_up"
         android:textAllCaps="false"
         android:textColor="@color/darkPrimaryColor"
-        android:background="@drawable/custom_button"/>
+        android:background="@drawable/custom_button_signup"/>
 
     <Button android:id="@+id/button_signIn"
         android:layout_width="@dimen/login_buttons_width"

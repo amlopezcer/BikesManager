@@ -6,8 +6,12 @@
         <item name="colorPrimaryDark">@color/darkPrimaryColor</item>
         <item name="android:textColor">@color/primaryTextColor</item>
         <item name="android:textColorSecondary">@color/secondaryTextColor</item>
+        <item name="colorControlNormal">@color/secondaryTextColor</item>
+        <item name="colorControlActivated">@color/accentColor</item>
+        <item name="colorControlHighlight">@color/accentColor</item>
     </style>
 
+    <!-- BottomSheet -->
     <style name="BottomSheet.StyleDialog" parent="BottomSheet.Dialog">
         <item name="android:windowAnimationStyle">@style/BottomSheet.Animation</item>
         <item name="android:textColorPrimary">@color/textIconsColor</item>
@@ -15,5 +19,6 @@
         <item name="android:textColorHint">@color/textIconsColor</item>
         <item name="bs_dialogBackground">@color/primaryColor</item>
     </style>
+
 
 </resources>

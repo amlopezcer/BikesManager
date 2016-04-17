@@ -34,7 +34,6 @@ public class ListActivity extends AppCompatActivity implements AsyncTaskListener
     private HashMap<String, BikeStation> mListDataChild;
     private ExpandableListView mExpandableListView;
     private HttpDispatcher mHttpDispatcher;
-    private ImageButton mImageButtonSeatch;
     private AutoCompleteTextView mTextViewSearch;
 
     @Override
@@ -44,8 +43,8 @@ public class ListActivity extends AppCompatActivity implements AsyncTaskListener
 
         mExpandableListView = (ExpandableListView) findViewById(R.id.expListView_list);
         mHttpDispatcher = new HttpDispatcher(this);
-        mImageButtonSeatch = (ImageButton) findViewById(R.id.imgButton_search);
-        mImageButtonSeatch.setOnClickListener(this);
+        ImageButton imageButtonSearch = (ImageButton) findViewById(R.id.imgButton_search);
+        imageButtonSearch.setOnClickListener(this);
         mTextViewSearch = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView_stations);
     }
 

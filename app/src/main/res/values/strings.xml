@@ -6,6 +6,8 @@
     <string name="title_activity_chart">Status</string>
     <string name="title_activity_list">Detail</string>
     <string name="title_activity_settings">Settings</string>
+    <string name="title_activity_login">Login</string>
+    <string name="title_activity_signup">Sign Up</string>
 
     <!-- Common toasts -->
     <string name="toast_sync_error">Error while sync with the server</string>

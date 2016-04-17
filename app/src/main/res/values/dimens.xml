@@ -3,6 +3,8 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="activity_margin">16dp</dimen>
+
 
     <!-- General -->
     <dimen name="widgets_standard_margin">16dp</dimen>
@@ -11,7 +13,7 @@
     <dimen name="itemList_TextNumberMargin">4dp</dimen>
 
     <!-- Custom button -->
-    <dimen name="custom_button_padding">5dp</dimen>
+    <dimen name="custom_button_padding">4dp</dimen>
     <dimen name="custom_button_stroke_width">1dp</dimen>
     <dimen name="custom_button_corner_radius">3dp</dimen>
 
