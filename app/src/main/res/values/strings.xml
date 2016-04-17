@@ -50,6 +50,12 @@
     <string name="progress_title">Wait&#8230;</string> <!-- "&#8230;" = "..." -->
     <string name="progress_body">Updating…</string>
 
+    <!-- fragment_login.xml -->
+    <string name="desc_image_launcher">App icon</string>
+    <string name="button_sign_up">Sign up</string>
+    <string name="button_sign_in">Sign in</string>
+    <string name="textView_version">Version</string>
+
     <!-- fragment_list.xml -->
     <string name="hint_search">Search</string>
     <string name="desc_image_button_search">Search over station list</string>

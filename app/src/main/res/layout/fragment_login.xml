@@ -6,48 +6,48 @@
     tools:context="com.amlopezc.bikesmanager.LoginActivityFragment"
     android:background="@color/darkPrimaryColor" >
 
-    <TextView android:id="@+id/txt_title"
+    <TextView android:id="@+id/textView_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         style="?android:textAppearanceLarge"
         android:text="@string/app_name"
         android:textColor="@color/white"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="80dp"
-        />
+        android:layout_marginTop="@dimen/login_app_name_margin" />
 
     <ImageView android:id="@+id/img_launcher"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="@dimen/login_image_dimens"
+        android:layout_height="@dimen/login_image_dimens"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/widgets_standard_margin"
-        android:layout_marginBottom="24dp"
-        android:layout_below="@+id/txt_title"
-        android:src="@mipmap/ic_launcher" />
+        android:layout_marginBottom="@dimen/login_widgets_margin"
+        android:layout_below="@+id/textView_title"
+        android:src="@mipmap/ic_launcher"
+        android:contentDescription="@string/desc_image_launcher"/>
 
     <Button android:id="@+id/button_signUp"
-        android:layout_width="150dp"
+        android:layout_width="@dimen/login_buttons_width"
         android:layout_height="wrap_content"
         android:layout_below="@id/img_launcher"
         android:layout_centerInParent="true"
-        android:layout_marginTop="24dp"
-        android:text="Registrarse"
+        android:layout_marginTop="@dimen/login_widgets_margin"
+        android:text="@string/button_sign_up"
         android:textAllCaps="false"
         android:textColor="@color/darkPrimaryColor"
         android:background="@drawable/custom_button"/>
 
     <Button android:id="@+id/button_signIn"
-        android:layout_width="150dp"
+        android:layout_width="@dimen/login_buttons_width"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_below="@id/button_signUp"
         android:layout_marginTop="@dimen/widgets_standard_margin"
-        android:text="Iniciar sesión"
+        android:text="@string/button_sign_in"
         android:textAllCaps="false"
         style="?android:attr/borderlessButtonStyle"
         android:textColor="@color/white" />
 
-    <TextView
+    <TextView android:id="@+id/textView_version_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
@@ -55,9 +55,33 @@
         android:layout_alignParentBottom="true"
         style="?android:textAppearanceSmall"
         android:textColor="@color/secondaryTextColor"
-        android:layout_margin="@dimen/widgets_standard_margin"
-        android:text="Version 1.0.0"
-        android:id="@+id/textView2" />
+        android:layout_marginRight="@dimen/widgets_standard_margin"
+        android:layout_marginEnd="@dimen/widgets_standard_margin"
+        android:layout_marginBottom="@dimen/widgets_standard_margin"
+        android:layout_marginTop="@dimen/widgets_standard_margin"
+        android:layout_marginLeft="@dimen/txt_version_margin"
+        android:layout_marginStart="@dimen/txt_version_margin"
+        android:text="@string/textView_version" />
+
+    <TextView android:id="@+id/textView_version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/textView_version_text"
+        android:layout_toStartOf="@+id/textView_version_text"
+        style="?android:textAppearanceSmall"
+        android:textColor="@color/secondaryTextColor"
+        android:layout_marginLeft="@dimen/widgets_standard_margin"
+        android:layout_marginStart="@dimen/widgets_standard_margin"
+        android:layout_marginBottom="@dimen/widgets_standard_margin"
+        android:layout_marginTop="@dimen/widgets_standard_margin"
+        android:layout_marginRight="@dimen/txt_version_margin"
+        android:layout_marginEnd="@dimen/txt_version_margin"
+        android:text="@string/textView_version" />
+
+
+
+
 
 
 </RelativeLayout>
