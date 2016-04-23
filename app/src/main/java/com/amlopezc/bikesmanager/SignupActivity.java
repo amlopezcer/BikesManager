@@ -13,6 +13,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+
+/**
+ * Registers new users
+ */
 public class SignupActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText editTextFullName, editTextEmail, editTextUsername, editTextPassword;

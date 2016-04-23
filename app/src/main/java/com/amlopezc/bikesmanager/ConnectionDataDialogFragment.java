@@ -20,9 +20,8 @@ import android.widget.EditText;
 public class ConnectionDataDialogFragment extends DialogFragment {
 
     //For MapsActivity when calling and showing this dialog
-    public static final String CLASS_ID = "ConnectionDialogFragment";
+    public static final String CLASS_ID = "ConnectionDataDialogFragment";
 
-    private EditText mEditText_user;
     private EditText mEditText_server;
     private EditText mEditText_port;
 
@@ -37,7 +36,6 @@ public class ConnectionDataDialogFragment extends DialogFragment {
         final LayoutInflater inflater = getActivity().getLayoutInflater();
         final View view = inflater.inflate(R.layout.dialog_connection_data, null);
 
-        mEditText_user = (EditText) view.findViewById(R.id.editText_userName);
         mEditText_server = (EditText) view.findViewById(R.id.editText_serverAddress);
         mEditText_port = (EditText) view.findViewById(R.id.editText_serverPort);
 
@@ -50,12 +48,7 @@ public class ConnectionDataDialogFragment extends DialogFragment {
                 .setPositiveButton(i18n(R.string.text_set), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // Getting and setting data when "set" button is clicked
-                        String data = mEditText_user.getText().toString().trim();
-                        mDefaultSharedPreferences.edit()
-                                .putString(SettingsActivityFragment.KEY_PREF_SYNC_USER, data)
-                                .apply();
-
-                        data = mEditText_server.getText().toString().trim();
+                        String data = mEditText_server.getText().toString().trim();
                         mDefaultSharedPreferences.edit()
                                 .putString(SettingsActivityFragment.KEY_PREF_SYNC_SERVER, data)
                                 .apply();
@@ -64,6 +57,8 @@ public class ConnectionDataDialogFragment extends DialogFragment {
                         mDefaultSharedPreferences.edit()
                                 .putString(SettingsActivityFragment.KEY_PREF_SYNC_PORT, data)
                                 .apply();
+
+                        ((MapsActivity)getActivity()).doPositiveClick(); //To update MapsActivity layout
                     }
                 });
 
@@ -82,14 +77,12 @@ public class ConnectionDataDialogFragment extends DialogFragment {
             @Override
             public void afterTextChanged(Editable s) {
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                        .setEnabled(!mEditText_user.getText().toString().trim().isEmpty() &&
-                                !mEditText_server.getText().toString().trim().isEmpty() &&
+                        .setEnabled(!mEditText_server.getText().toString().trim().isEmpty() &&
                                 !mEditText_port.getText().toString().trim().isEmpty());
             }
         };
 
         //All text fields must be completed to enable "Set", so the TextWatcher is listening to all of them
-        mEditText_user.addTextChangedListener(watcher);
         mEditText_server.addTextChangedListener(watcher);
         mEditText_port.addTextChangedListener(watcher);
 
@@ -98,8 +91,6 @@ public class ConnectionDataDialogFragment extends DialogFragment {
 
     //Get default data from the SharedPreferences, if any
     private void fillData() {
-        String userName = mDefaultSharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_USER, "");
-        setFields(mEditText_user, userName);
         String serverAddress = mDefaultSharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_SERVER, "");
         setFields(mEditText_server, serverAddress);
         String serverPort = mDefaultSharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_PORT, "");

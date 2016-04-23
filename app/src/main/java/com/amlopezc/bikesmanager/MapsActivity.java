@@ -60,8 +60,6 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private HashMap<String, BikeStation> mStations;
-    private HttpDispatcher mHttpDispatcher;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +67,6 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         setContentView(R.layout.activity_maps);
 
         mStations = new HashMap<>();
-        mHttpDispatcher = new HttpDispatcher(this);
 
         setUpMapIfNeeded();
         mMap.setOnMarkerClickListener(this);
@@ -113,23 +110,28 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
         //Ensuring connection data is set, showing ConnectionDataDialog otherwise
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String userName = sharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_USER, "");
         String serverAddress = sharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_SERVER, "");
         String serverPort = sharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_PORT, "");
 
-        if(userName.trim().isEmpty() || serverAddress.trim().isEmpty() || serverPort.trim().isEmpty())
+        if(serverAddress.trim().isEmpty() || serverPort.trim().isEmpty())
             showConnectionDataDialog();
         else //Getting update data form the server
             fetchUpdatedServerData();
     }
 
     private void fetchUpdatedServerData() {
-        mHttpDispatcher.doGet(this);
+        HttpDispatcher httpDispatcher = new HttpDispatcher(this);
+        httpDispatcher.doGet(this);
     }
 
     private void showConnectionDataDialog() {
         DialogFragment dialog = new ConnectionDataDialogFragment();
         dialog.show(getFragmentManager(), ConnectionDataDialogFragment.CLASS_ID);
+    }
+
+    public void doPositiveClick() {
+        Log.i(this.getClass().getCanonicalName(), "Positive button clicked");
+        fetchUpdatedServerData();
     }
 
     @Override
@@ -301,9 +303,10 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         BikeStation bikeStation = BikesOpsSupport.updateBikeStation(operation, mStations.get(marker.getTitle()));
 
         //If the op can be done, update the server
-        if(bikeStation != null)
-            mHttpDispatcher.doPut(this, bikeStation, operation);
-        else
+        if(bikeStation != null) {
+            HttpDispatcher httpDispatcher = new HttpDispatcher(this);
+            httpDispatcher.doPut(this, bikeStation, operation);
+        } else
             Toast.makeText(this,
                     i18n(R.string.toast_operation_impossible),
                     Toast.LENGTH_SHORT).show();
@@ -321,7 +324,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
             //Update data and layout
             case HttpDispatcher.OPERATION_GET:
                 try {
-                    ObjectMapper mapper = mHttpDispatcher.getMapper();
+                    HttpDispatcher httpDispatcher = new HttpDispatcher(this);
+                    ObjectMapper mapper = httpDispatcher.getMapper();
                     List<BikeStation> bikeStationList = mapper.readValue(result,
                             new TypeReference<List<BikeStation>>() {});
                     readData(bikeStationList);

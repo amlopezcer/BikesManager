@@ -38,8 +38,8 @@ public class HttpDispatcher {
 
     public HttpDispatcher(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        SERVER_ADDRESS = sharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_SERVER, "192.168.1.142"); //Default Values
-        SERVER_PORT = sharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_PORT, "8080"); //Default Values
+        SERVER_ADDRESS = sharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_SERVER, "");
+        SERVER_PORT = sharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_PORT, "");
 
         this.context = context;
 
@@ -52,12 +52,12 @@ public class HttpDispatcher {
     public void doGet(AsyncTaskListener listener) {
         String url = String.format(BASE_URL_ADDRESS, SERVER_ADDRESS, SERVER_PORT);
         if (isOnline()) {
-            Log.d(this.getClass().getCanonicalName(), "Connected");
+            Log.i(this.getClass().getCanonicalName(), "Connected");
             HttpGetWorker worker = new HttpGetWorker(context);
             worker.addAsyncTaskListener(listener); //Register the listener to be aware of the task termination
             worker.execute(url);
         } else {
-            Log.d(this.getClass().getCanonicalName(), "Not connected");
+            Log.i(this.getClass().getCanonicalName(), "Not connected");
             Toast.makeText(context,
                     i18n(R.string.toast_unable_connection),
                     Toast.LENGTH_SHORT).show();
@@ -70,12 +70,12 @@ public class HttpDispatcher {
                 .append(method).append("/")
                 .append(bean.getServerId()).toString(); //ID to update
         if (isOnline()) {
-            Log.d(this.getClass().getCanonicalName(), "Connected");
+            Log.i(this.getClass().getCanonicalName(), "Connected");
             HttpPutWorker worker = new HttpPutWorker(context, bean, mapper);
             worker.addAsyncTaskListener(listener);//Register the listener to be aware of the task termination
             worker.execute(url);
         } else {
-            Log.d(this.getClass().getCanonicalName(), "Not connected");
+            Log.i(this.getClass().getCanonicalName(), "Not connected");
             Toast.makeText(context,
                     i18n(R.string.toast_unable_connection),
                     Toast.LENGTH_SHORT).show();

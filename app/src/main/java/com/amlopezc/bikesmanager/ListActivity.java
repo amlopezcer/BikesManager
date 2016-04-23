@@ -33,7 +33,6 @@ public class ListActivity extends AppCompatActivity implements AsyncTaskListener
     private List<String> mListDataHeader;
     private HashMap<String, BikeStation> mListDataChild;
     private ExpandableListView mExpandableListView;
-    private HttpDispatcher mHttpDispatcher;
     private AutoCompleteTextView mTextViewSearch;
 
     @Override
@@ -42,7 +41,6 @@ public class ListActivity extends AppCompatActivity implements AsyncTaskListener
         setContentView(R.layout.activity_list);
 
         mExpandableListView = (ExpandableListView) findViewById(R.id.expListView_list);
-        mHttpDispatcher = new HttpDispatcher(this);
         ImageButton imageButtonSearch = (ImageButton) findViewById(R.id.imgButton_search);
         imageButtonSearch.setOnClickListener(this);
         mTextViewSearch = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView_stations);
@@ -85,7 +83,8 @@ public class ListActivity extends AppCompatActivity implements AsyncTaskListener
     }
 
     private void fetchUpdatedServerData() {
-        mHttpDispatcher.doGet(this);
+        HttpDispatcher httpDispatcher = new HttpDispatcher(this);
+        httpDispatcher.doGet(this);
     }
 
     @Override
@@ -95,7 +94,8 @@ public class ListActivity extends AppCompatActivity implements AsyncTaskListener
             //Update data and layout
             case HttpDispatcher.OPERATION_GET:
                 try {
-                    ObjectMapper mapper = mHttpDispatcher.getMapper();
+                    HttpDispatcher httpDispatcher = new HttpDispatcher(this);
+                    ObjectMapper mapper = httpDispatcher.getMapper();
                     List<BikeStation> bikeStationList = mapper.readValue(result, new TypeReference<List<BikeStation>>() {});
                     readData(bikeStationList);
                     updateLocalLayout();

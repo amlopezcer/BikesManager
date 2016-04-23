@@ -37,7 +37,6 @@ public class ChartActivity extends AppCompatActivity implements AsyncTaskListene
 
     private PieChart mChart;
     private ArrayList<String> mXVals;
-    private HttpDispatcher mHttpDispatcher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +44,6 @@ public class ChartActivity extends AppCompatActivity implements AsyncTaskListene
         setContentView(R.layout.activity_chart);
 
         mChart = (PieChart) findViewById(R.id.chart_pieChart);
-        mHttpDispatcher = new HttpDispatcher(this);
 
         //Setting the chart basic format
         mChart.setDescription(null);
@@ -82,7 +80,8 @@ public class ChartActivity extends AppCompatActivity implements AsyncTaskListene
     }
 
     private void fetchUpdatedServerData() {
-        mHttpDispatcher.doGet(this);
+        HttpDispatcher httpDispatcher = new HttpDispatcher(this);
+        httpDispatcher.doGet(this);
     }
 
     @Override
@@ -112,7 +111,8 @@ public class ChartActivity extends AppCompatActivity implements AsyncTaskListene
             case HttpDispatcher.OPERATION_GET:
                 //Update data and layout
                 try {
-                    ObjectMapper mapper = mHttpDispatcher.getMapper();
+                    HttpDispatcher httpDispatcher = new HttpDispatcher(this);
+                    ObjectMapper mapper = httpDispatcher.getMapper();
                     List<BikeStation> bikeStationList = mapper.readValue(result, new TypeReference<List<BikeStation>>() {});
                     ArrayList<Integer> data = readData(bikeStationList);
                     updateLocalLayout(data);

@@ -3,16 +3,11 @@
 
     <PreferenceCategory android:title="@string/title_connection">
         <EditTextPreference
-            android:key="username"
-            android:title="@string/text_user_name"
-            android:defaultValue="User"/>
-
-        <EditTextPreference
             android:key="server_address"
             android:title="@string/text_server_address"
             android:inputType="numberDecimal"
             android:digits="0123456789."
-            android:defaultValue="192.168.1.142"/>
+            android:defaultValue="192.168.1.120"/>
 
         <EditTextPreference
             android:key="server_port"
