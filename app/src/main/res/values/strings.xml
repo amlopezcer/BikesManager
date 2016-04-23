@@ -21,11 +21,21 @@
     <string name="text_set">Set</string>
     <string name="text_no">No</string>
     <string name="text_yes">Yes</string>
-    <string name="text_user_name">User name</string>
     <string name="text_server_address">Server address</string>
     <string name="text_server_port">Server port</string>
     <string name="text_not_defined">not defined</string>
     <string name="text_fare">Fare:</string>
+    <string name="text_full_name">Full name</string>
+    <string name="text_mail">Email</string>
+    <string name="text_user_name">User name</string>
+    <string name="text_password">Password</string>
+    <string name="text_confirm">Confirm</string>
+
+    <!-- SignupActivity.java -->
+    <string name="text_err_name">Enter your full name</string>
+    <string name="text_err_mail">Enter a valid email address</string>
+    <string name="text_err_username">Enter your user name</string>
+    <string name="text_err_password">Enter the password</string>
 
     <!-- ChartActivity.java -->
     <string name="chart_total_msg">Total bikes: %1$d</string>
@@ -57,6 +67,7 @@
     <string name="button_sign_up">Sign up</string>
     <string name="button_sign_in">Sign in</string>
     <string name="textView_version">Version</string>
+
 
     <!-- fragment_list.xml -->
     <string name="hint_search">Search</string>

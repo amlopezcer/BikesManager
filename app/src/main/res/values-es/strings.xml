@@ -21,11 +21,21 @@
     <string name="text_set">Establecer</string>
     <string name="text_no">No</string>
     <string name="text_yes">Sí</string>
-    <string name="text_user_name">Nombre de usuario</string>
     <string name="text_server_address">Dirección de servidor</string>
     <string name="text_server_port">Puerto del servidor</string>
     <string name="text_not_defined">no definido</string>
     <string name="text_fare">Tarifa:</string>
+    <string name="text_full_name">Nombre completo</string>
+    <string name="text_mail">Email</string>
+    <string name="text_user_name">Nombre de usuario</string>
+    <string name="text_password">Contraseña</string>
+    <string name="text_confirm">Confirmar</string>
+
+    <!-- SignupActivity.java -->
+    <string name="text_err_name">Introducir nombre completo</string>
+    <string name="text_err_mail">Introducir email válido</string>
+    <string name="text_err_username">Introducir nombre de usuario</string>
+    <string name="text_err_password">Introducir contraseña</string>
 
     <!-- ChartActivity.java -->
     <string name="chart_total_msg">Bicis totales: %1$d</string>

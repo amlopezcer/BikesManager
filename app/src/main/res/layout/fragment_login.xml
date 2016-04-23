@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.amlopezc.bikesmanager.LoginActivityFragment"
-    android:background="@color/darkPrimaryColor" >
+    android:background="@color/darkPrimaryColor"
+    android:padding="@dimen/activity_margin">
 
     <TextView android:id="@+id/textView_title"
         android:layout_width="wrap_content"
@@ -55,12 +56,6 @@
         android:layout_alignParentBottom="true"
         style="?android:textAppearanceSmall"
         android:textColor="@color/secondaryTextColor"
-        android:layout_marginRight="@dimen/widgets_standard_margin"
-        android:layout_marginEnd="@dimen/widgets_standard_margin"
-        android:layout_marginBottom="@dimen/widgets_standard_margin"
-        android:layout_marginTop="@dimen/widgets_standard_margin"
-        android:layout_marginLeft="@dimen/txt_version_margin"
-        android:layout_marginStart="@dimen/txt_version_margin"
         android:text="@string/textView_version" />
 
     <TextView android:id="@+id/textView_version"
@@ -71,12 +66,8 @@
         android:layout_toStartOf="@+id/textView_version_text"
         style="?android:textAppearanceSmall"
         android:textColor="@color/secondaryTextColor"
-        android:layout_marginLeft="@dimen/widgets_standard_margin"
-        android:layout_marginStart="@dimen/widgets_standard_margin"
-        android:layout_marginBottom="@dimen/widgets_standard_margin"
-        android:layout_marginTop="@dimen/widgets_standard_margin"
-        android:layout_marginRight="@dimen/txt_version_margin"
-        android:layout_marginEnd="@dimen/txt_version_margin"
+        android:layout_marginRight="@dimen/widgets_standard_margin"
+        android:layout_marginEnd="@dimen/widgets_standard_margin"
         android:text="@string/textView_version" />
 
 
