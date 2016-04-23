@@ -30,6 +30,7 @@
     <string name="text_user_name">User name</string>
     <string name="text_password">Password</string>
     <string name="text_confirm">Confirm</string>
+    <string name="text_ok">Ok</string>
 
     <!-- SignupActivity.java -->
     <string name="text_err_name">Enter your full name</string>
@@ -40,8 +41,11 @@
     <!-- ChartActivity.java -->
     <string name="chart_total_msg">Total bikes: %1$d</string>
 
+    <!-- SigninDialogFragment.java -->
+    <string name="builder_sign_in_msg">Enter user data</string>
+
     <!-- ConnectionDataDialogFragment.java -->
-    <string name="builder_msg">Set connection data</string>
+    <string name="builder_connection_data_msg">Set connection data</string>
 
     <!-- MapsActivity.java -->
     <string name="toast_user_settings">\'%1$s\' user data saved</string>

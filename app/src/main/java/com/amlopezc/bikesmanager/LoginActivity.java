@@ -1,5 +1,6 @@
 package com.amlopezc.bikesmanager;
 
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -48,7 +49,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 intent = new Intent(this, SignupActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.button_signIn: break;
+            case R.id.button_signIn:
+                showConnectionDataDialog();
+                break;
         }
     }
+
+    private void showConnectionDataDialog() {
+        DialogFragment dialog = new SigninDialogFragment();
+        dialog.show(getFragmentManager(), SigninDialogFragment.CLASS_ID);
+    }
+
+    public void doPositiveClick() {
+        Log.i(this.getClass().getCanonicalName(), "Positive button clicked");
+
+    }
+
+
 }

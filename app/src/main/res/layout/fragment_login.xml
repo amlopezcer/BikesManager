@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.amlopezc.bikesmanager.LoginActivityFragment"
-    android:background="@color/darkPrimaryColor"
+    android:background="@color/primaryColor"
     android:padding="@dimen/activity_margin">
 
     <TextView android:id="@+id/textView_title"
@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         style="?android:textAppearanceLarge"
         android:text="@string/app_name"
+
         android:textColor="@color/white"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/login_app_name_margin" />
@@ -69,10 +70,5 @@
         android:layout_marginRight="@dimen/widgets_standard_margin"
         android:layout_marginEnd="@dimen/widgets_standard_margin"
         android:text="@string/textView_version" />
-
-
-
-
-
 
 </RelativeLayout>

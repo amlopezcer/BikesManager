@@ -43,7 +43,7 @@ public class ConnectionDataDialogFragment extends DialogFragment {
 
         fillData(); //Get default data
 
-        builder.setMessage(i18n(R.string.builder_msg))
+        builder.setMessage(i18n(R.string.builder_connection_data_msg))
                 .setView(view)
                 .setPositiveButton(i18n(R.string.text_set), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
