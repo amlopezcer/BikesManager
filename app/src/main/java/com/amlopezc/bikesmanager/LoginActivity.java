@@ -10,6 +10,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.codec.digest.DigestUtils;
 
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
@@ -60,8 +64,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         dialog.show(getFragmentManager(), SigninDialogFragment.CLASS_ID);
     }
 
-    public void doPositiveClick() {
+    public void doPositiveClick(String username, String password) {
         Log.i(this.getClass().getCanonicalName(), "Positive button clicked");
+
+        String passwordSHA1 = new String(Hex.encodeHex(DigestUtils.sha1(password)));
+        Toast.makeText(this, passwordSHA1, Toast.LENGTH_SHORT).show();
+
+        //TODO: Conectarse al servidor y comparar, ale.
+
+        /*
+        Intent intent = new Intent(this, MapsActivity.class);
+        startActivity(intent);
+        */
 
     }
 

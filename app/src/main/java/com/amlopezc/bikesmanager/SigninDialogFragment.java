@@ -43,19 +43,19 @@ public class SigninDialogFragment extends DialogFragment {
                 .setPositiveButton(i18n(R.string.text_ok), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // Getting and setting data when "set" button is clicked
-                        String data1 = mEditTextUsername.getText().toString().trim();
+                        String username = mEditTextUsername.getText().toString().trim();
                         /*mDefaultSharedPreferences.edit()
                                 .putString(SettingsActivityFragment.KEY_PREF_SYNC_SERVER, data)
                                 .apply();*/
 
-                        String data2 = mEditTextPassword.getText().toString().trim();
+                        String password = mEditTextPassword.getText().toString().trim();
                         /*mDefaultSharedPreferences.edit()
                                 .putString(SettingsActivityFragment.KEY_PREF_SYNC_PORT, data)
                                 .apply();*/
 
-                        ((LoginActivity)getActivity()).doPositiveClick(); //...
+                        ((LoginActivity)getActivity()).doPositiveClick(username, password); //...
 
-                        Toast.makeText(getActivity(), data1 + " " + data2, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), username + " " + password, Toast.LENGTH_SHORT).show();
                     }
                 });
 

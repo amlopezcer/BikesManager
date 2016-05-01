@@ -80,7 +80,7 @@ public final class BikesOpsSupport {
     }
 
     //Formatting date data to insert it correctly in the Database, format: yyyy-mm-ddThh:mm:ss+01:00
-    private static String getCurrentDateFormatted() {
+    public static String getCurrentDateFormatted() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
         Calendar cal = Calendar.getInstance();

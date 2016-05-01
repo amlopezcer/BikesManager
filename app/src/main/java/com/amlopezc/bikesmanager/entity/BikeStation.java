@@ -1,15 +1,13 @@
 package com.amlopezc.bikesmanager.entity;
 
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-@JsonPropertyOrder({"address", "available", "broken", "latitude", "longitude", "md5", "reserved", "serverId", "timestampBike", "total" })
-public class BikeStation extends JSONBean /*implements Parcelable*/ {
+@JsonPropertyOrder({"address", "available", "broken", "latitude", "longitude", "md5", "reserved",
+        "serverId", "timestampBike", "total" })
+public class BikeStation extends JSONBean  {
 
     //TODO: Repasar cómo quedará esto finalmente para generar la base de datos final en condiciones; habrá que cambiar el PArcelable también. El JsonProperty es para el renombrado, tendré que poner el nombre de la BBDD
 
@@ -20,7 +18,7 @@ public class BikeStation extends JSONBean /*implements Parcelable*/ {
     private String mAddress;
 
     @JsonIgnore
-    private int mServerId;
+    private int mServerId; //la tengo arriba, esto hay que retocarlo...
     @JsonIgnore
     private String mUser;
     @JsonProperty("timestampBike")
@@ -56,49 +54,6 @@ public class BikeStation extends JSONBean /*implements Parcelable*/ {
         this.mReservedBikes = mReservedBikes;
         processHashMD5();
     }
-/*
-    //<editor-fold desc="PARCELABLE INTERFACE SUPPORT">
-    public static final Creator<BikeStation> CREATOR = new Creator<BikeStation>() {
-        @Override
-        public BikeStation createFromParcel(Parcel in) {
-            return new BikeStation(in);
-        }
-
-        @Override
-        public BikeStation[] newArray(int size) {
-            return new BikeStation[size];
-        }
-    };
-
-    public BikeStation(Parcel in) {
-        this.mLatitude = in.readDouble();
-        this.mLongitude = in.readDouble();
-        this.mId = in.readInt();
-        this.mAddress = in.readString();
-        this.mTotalBikes = in.readInt();
-        this.mAvailableBikes = in.readInt();
-        this.mBrokenBikes = in.readInt();
-        this.mReservedBikes = in.readInt();
-        processHashMD5();
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeDouble(mLatitude);
-        dest.writeDouble(mLongitude);
-        dest.writeInt(mId);
-        dest.writeString(mAddress);
-        dest.writeInt(mTotalBikes);
-        dest.writeInt(mAvailableBikes);
-        dest.writeInt(mBrokenBikes);
-        dest.writeInt(mReservedBikes);
-    }
-    //</editor-fold>*/
 
     //<editor-fold desc="GET">
     public double getmLatitude() {
