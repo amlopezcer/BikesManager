@@ -120,7 +120,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     }
 
     private void fetchUpdatedServerData() {
-        HttpDispatcher httpDispatcher = new HttpDispatcher(this);
+        HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpDispatcher.ENTITY_STATION);
         httpDispatcher.doGet(this);
     }
 
@@ -304,7 +304,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
         //If the op can be done, update the server
         if(bikeStation != null) {
-            HttpDispatcher httpDispatcher = new HttpDispatcher(this);
+            HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpDispatcher.ENTITY_STATION);
             httpDispatcher.doPut(this, bikeStation, operation);
         } else
             Toast.makeText(this,
@@ -324,7 +324,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
             //Update data and layout
             case HttpDispatcher.OPERATION_GET:
                 try {
-                    HttpDispatcher httpDispatcher = new HttpDispatcher(this);
+                    HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpDispatcher.ENTITY_STATION);
                     ObjectMapper mapper = httpDispatcher.getMapper();
                     List<BikeStation> bikeStationList = mapper.readValue(result,
                             new TypeReference<List<BikeStation>>() {});

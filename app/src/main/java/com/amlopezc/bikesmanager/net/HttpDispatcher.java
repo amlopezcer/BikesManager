@@ -23,23 +23,29 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class HttpDispatcher {
 
-    //Constants to identify operations in the caller activities (to process the result)
+    //To identify operations in the caller activities (to process the result)
     public static final int OPERATION_GET = 1;
     public static final int OPERATION_PUT = 2;
+
+    //To select the entity involved and fulfill the URL and the connection
+    public static final String ENTITY_STATION = "bikestation";
+    public static final String ENTITY_USER = "bikeuser";
 
     private final Context context; //Context from the caller Activity, needed for Toasts, progress dialog...
 
     // Server developed in NetBeans, basic constants to establish connection
-    private final String BASE_URL_ADDRESS = "http://%s:%s/BikesManager/rest/entities.bikestation";
+    private final String BASE_URL_ADDRESS = "http://%s:%s/BikesManager/rest/entities.%s";
     private final String SERVER_ADDRESS;
     private final String SERVER_PORT;
+    private final String ENTITY; //bikestation or bikeuser
 
     private ObjectMapper mapper; //To process JSON strings
 
-    public HttpDispatcher(Context context) {
+    public HttpDispatcher(Context context, String entity) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         SERVER_ADDRESS = sharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_SERVER, "");
         SERVER_PORT = sharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_PORT, "");
+        ENTITY = entity;
 
         this.context = context;
 
@@ -50,7 +56,7 @@ public class HttpDispatcher {
     }
 
     public void doGet(AsyncTaskListener listener) {
-        String url = String.format(BASE_URL_ADDRESS, SERVER_ADDRESS, SERVER_PORT);
+        String url = String.format(BASE_URL_ADDRESS, SERVER_ADDRESS, SERVER_PORT, ENTITY);
         if (isOnline()) {
             Log.i(this.getClass().getCanonicalName(), "Connected");
             HttpGetWorker worker = new HttpGetWorker(context);
@@ -65,7 +71,7 @@ public class HttpDispatcher {
     }
 
     public void doPut(AsyncTaskListener listener, JSONBean bean, String method) {
-        StringBuilder builder = new StringBuilder(String.format(BASE_URL_ADDRESS, SERVER_ADDRESS, SERVER_PORT));
+        StringBuilder builder = new StringBuilder(String.format(BASE_URL_ADDRESS, SERVER_ADDRESS, SERVER_PORT, ENTITY));
         String url = builder.append("/")
                 .append(method).append("/")
                 .append(bean.getServerId()).toString(); //ID to update

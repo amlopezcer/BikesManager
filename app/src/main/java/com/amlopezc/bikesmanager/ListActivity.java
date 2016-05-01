@@ -83,7 +83,7 @@ public class ListActivity extends AppCompatActivity implements AsyncTaskListener
     }
 
     private void fetchUpdatedServerData() {
-        HttpDispatcher httpDispatcher = new HttpDispatcher(this);
+        HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpDispatcher.ENTITY_STATION);
         httpDispatcher.doGet(this);
     }
 
@@ -94,7 +94,7 @@ public class ListActivity extends AppCompatActivity implements AsyncTaskListener
             //Update data and layout
             case HttpDispatcher.OPERATION_GET:
                 try {
-                    HttpDispatcher httpDispatcher = new HttpDispatcher(this);
+                    HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpDispatcher.ENTITY_STATION);
                     ObjectMapper mapper = httpDispatcher.getMapper();
                     List<BikeStation> bikeStationList = mapper.readValue(result, new TypeReference<List<BikeStation>>() {});
                     readData(bikeStationList);
