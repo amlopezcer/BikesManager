@@ -37,6 +37,8 @@
     <string name="text_err_mail">Introducir email válido</string>
     <string name="text_err_username">Introducir nombre de usuario</string>
     <string name="text_err_password">Introducir contraseña</string>
+    <string name="toast_user_signup_succeed">Bienvenido</string>
+    <string name="toast_user_signup_error">Nombre de usuario o Email no disponibles</string>
 
     <!-- ChartActivity.java -->
     <string name="chart_total_msg">Bicis totales: %1$d</string>
@@ -50,8 +52,8 @@
 
     <!-- MapsActivity.java -->
     <string name="toast_user_settings">Datos del usuario \'%1$s\' guardados</string>
-    <string name="toast_operation_impossible">La disponibilidad de la estación no permite completar la operación</string>
-    <string name="toast_operation_succeed">Operación completada</string>
+    <string name="toast_bikeop_impossible">La disponibilidad de la estación no permite completar la operación</string>
+    <string name="toast_bikeop_succeed">Operación completada</string>
     <string name="toast_location_not_granted">No es posible determinar su ubicación</string>
 
     <!-- ListActivity.java -->

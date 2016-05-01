@@ -15,7 +15,9 @@ import android.widget.Toast;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 
-
+/**
+ * Launcher activity to sign up or sign in users
+ */
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     @Override
@@ -29,7 +31,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         buttonSignUp.setOnClickListener(this);
         Button buttonSignIn = (Button) findViewById(R.id.button_signIn);
         buttonSignIn.setOnClickListener(this);
-
     }
 
     //Sets version textView with the current app version
@@ -54,21 +55,23 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 startActivity(intent);
                 break;
             case R.id.button_signIn:
-                showConnectionDataDialog();
+                showSigninDataDialog();
                 break;
         }
     }
 
-    private void showConnectionDataDialog() {
+    //Showing the dialog for the user to sign in
+    private void showSigninDataDialog() {
         DialogFragment dialog = new SigninDialogFragment();
         dialog.show(getFragmentManager(), SigninDialogFragment.CLASS_ID);
     }
 
+    //When the user clicks "ok", the app signs him in
     public void doPositiveClick(String username, String password) {
-        Log.i(this.getClass().getCanonicalName(), "Positive button clicked");
 
+        //Encrypt password
         String passwordSHA1 = new String(Hex.encodeHex(DigestUtils.sha1(password)));
-        Toast.makeText(this, passwordSHA1, Toast.LENGTH_SHORT).show();
+
 
         //TODO: Conectarse al servidor y comparar, ale.
 

@@ -59,8 +59,8 @@ public class BikeUser extends JSONBean {
         processHashMD5();
     }
 
-    public BikeUser(int mId, String mUserName, String mPassword, String mFullName, String mEmail) {
-        this.mId = mId;
+    public BikeUser(String mUserName, String mPassword, String mFullName, String mEmail) {
+        this.mId = 0;
         this.mUserName = mUserName;
         this.mPassword = mPassword;
         this.mFullName = mFullName;

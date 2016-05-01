@@ -23,14 +23,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class HttpDispatcher {
 
-    //To identify operations in the caller activities (to process the result)
-    public static final int OPERATION_GET = 1;
-    public static final int OPERATION_PUT = 2;
-
-    //To select the entity involved and fulfill the URL and the connection
-    public static final String ENTITY_STATION = "bikestation";
-    public static final String ENTITY_USER = "bikeuser";
-
     private final Context context; //Context from the caller Activity, needed for Toasts, progress dialog...
 
     // Server developed in NetBeans, basic constants to establish connection
@@ -55,15 +47,21 @@ public class HttpDispatcher {
                 .setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
     }
 
-    public void doGet(AsyncTaskListener listener) {
-        String url = String.format(BASE_URL_ADDRESS, SERVER_ADDRESS, SERVER_PORT, ENTITY);
+    public void doGet(AsyncTaskListener listener, String method) { //adapting url to the get types: findAll, find id, count...
+        StringBuilder builder = new StringBuilder(String.format(BASE_URL_ADDRESS, SERVER_ADDRESS, SERVER_PORT, ENTITY));
+        String url;
+        if(method == null) // null means no more arguments are required: findAll
+            url = builder.toString();
+        else
+            url = builder.append("/").append(method).toString(); //Method to execute or particular ID to get
+
         if (isOnline()) {
-            Log.i(this.getClass().getCanonicalName(), "Connected");
+            Log.i(this.getClass().getCanonicalName(), "Connected to " + url);
             HttpGetWorker worker = new HttpGetWorker(context);
             worker.addAsyncTaskListener(listener); //Register the listener to be aware of the task termination
             worker.execute(url);
         } else {
-            Log.i(this.getClass().getCanonicalName(), "Not connected");
+            Log.i(this.getClass().getCanonicalName(), "Not connected to " + url);
             Toast.makeText(context,
                     i18n(R.string.toast_unable_connection),
                     Toast.LENGTH_SHORT).show();
@@ -76,12 +74,27 @@ public class HttpDispatcher {
                 .append(method).append("/")
                 .append(bean.getServerId()).toString(); //ID to update
         if (isOnline()) {
-            Log.i(this.getClass().getCanonicalName(), "Connected");
+            Log.i(this.getClass().getCanonicalName(), "Connected to " + url);
             HttpPutWorker worker = new HttpPutWorker(context, bean, mapper);
             worker.addAsyncTaskListener(listener);//Register the listener to be aware of the task termination
             worker.execute(url);
         } else {
-            Log.i(this.getClass().getCanonicalName(), "Not connected");
+            Log.i(this.getClass().getCanonicalName(), "Not connected to " + url);
+            Toast.makeText(context,
+                    i18n(R.string.toast_unable_connection),
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void doPost(AsyncTaskListener listener, JSONBean bean) {
+        String url = String.format(BASE_URL_ADDRESS, SERVER_ADDRESS, SERVER_PORT, ENTITY);
+        if (isOnline()) {
+            Log.i(this.getClass().getCanonicalName(), "Connected to " + url);
+            HttpPostWorker worker = new HttpPostWorker(context, bean, mapper);
+            worker.addAsyncTaskListener(listener);//Register the listener to be aware of the task termination
+            worker.execute(url);
+        } else {
+            Log.i(this.getClass().getCanonicalName(), "Not connected to " + url);
             Toast.makeText(context,
                     i18n(R.string.toast_unable_connection),
                     Toast.LENGTH_SHORT).show();

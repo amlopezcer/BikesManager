@@ -1,5 +1,6 @@
 package com.amlopezc.bikesmanager.net;
 
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -20,10 +21,9 @@ import java.net.URL;
 import java.util.HashSet;
 
 /**
- * Performs a HTTP PUT
+ * Performs a HTTP POST
  */
-
-public class HttpPutWorker extends AsyncTask<String, Void, String> {
+public class HttpPostWorker extends AsyncTask<String, Void, String> {
 
     private HashSet<AsyncTaskListener<String>> listeners;
     private final ProgressDialog progressDialog;
@@ -31,7 +31,7 @@ public class HttpPutWorker extends AsyncTask<String, Void, String> {
     private JSONBean bean;
     private ObjectMapper mapper;
 
-    public HttpPutWorker(Context context, JSONBean bean, ObjectMapper mapper) {
+    public HttpPostWorker(Context context, JSONBean bean, ObjectMapper mapper) {
         progressDialog = new ProgressDialog(context);
         this.context = context;
         this.bean = bean;
@@ -64,7 +64,7 @@ public class HttpPutWorker extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String result) {
         for(AsyncTaskListener<String> listener : listeners) {
-            listener.processServerResult(result, HttpConstants.OPERATION_PUT);
+            listener.processServerResult(result, HttpConstants.OPERATION_POST);
         }
         progressDialog.dismiss();
     }
@@ -85,7 +85,7 @@ public class HttpPutWorker extends AsyncTask<String, Void, String> {
             //Set connection stuff
             conn.setDoOutput(true);
             conn.setDoInput(true);
-            conn.setRequestMethod("PUT");
+            conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setRequestProperty("Accept", "application/json");
             conn.setReadTimeout(10000 /* milliseconds */);

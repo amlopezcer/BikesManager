@@ -56,7 +56,7 @@ public class HttpGetWorker extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String result) {
         for(AsyncTaskListener<String> listener : listeners) {
-            listener.processResult(result, HttpDispatcher.OPERATION_GET);
+            listener.processServerResult(result, HttpConstants.OPERATION_GET);
         }
         progressDialog.dismiss();
     }
@@ -100,7 +100,7 @@ public class HttpGetWorker extends AsyncTask<String, Void, String> {
         try {
             while ((read = br.readLine()) != null) { sb.append(read); }
             return sb.toString();
-        }finally {
+        } finally {
             br.close();
         }
     }

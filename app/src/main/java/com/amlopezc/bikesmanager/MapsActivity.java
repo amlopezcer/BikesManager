@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.amlopezc.bikesmanager.entity.BikeStation;
+import com.amlopezc.bikesmanager.net.HttpConstants;
 import com.amlopezc.bikesmanager.net.HttpDispatcher;
 import com.amlopezc.bikesmanager.util.AsyncTaskListener;
 import com.amlopezc.bikesmanager.util.BikesOpsSupport;
@@ -120,8 +121,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     }
 
     private void fetchUpdatedServerData() {
-        HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpDispatcher.ENTITY_STATION);
-        httpDispatcher.doGet(this);
+        HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_STATION);
+        httpDispatcher.doGet(this, HttpConstants.GET_FINDALL);
     }
 
     private void showConnectionDataDialog() {
@@ -281,10 +282,10 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
                             case R.id.menu_takeBike:
-                                modifyBike(marker, BikesOpsSupport.OP_TAKE_BIKE); //TODO: hacer un GET indivudual?
+                                modifyBike(marker, HttpConstants.PUT_TAKE_BIKE); //TODO: hacer un GET indivudual?
                                 break;
                             case R.id.menu_leaveBike:
-                                modifyBike(marker, BikesOpsSupport.OP_LEAVE_BIKE); //TODO: hacer un GET indivudual?
+                                modifyBike(marker, HttpConstants.PUT_LEAVE_BIKE); //TODO: hacer un GET indivudual?
                                 break;
                             case R.id.menu_bookBike: //Implement this feature
                                 Toast.makeText(getApplicationContext(),
@@ -304,27 +305,22 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
         //If the op can be done, update the server
         if(bikeStation != null) {
-            HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpDispatcher.ENTITY_STATION);
+            HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_STATION);
             httpDispatcher.doPut(this, bikeStation, operation);
         } else
             Toast.makeText(this,
-                    i18n(R.string.toast_operation_impossible),
+                    i18n(R.string.toast_bikeop_impossible),
                     Toast.LENGTH_SHORT).show();
     }
 
     //Process the server response
     @Override
-    public void processResult(String result, int operation) {
-
-        //Default server response after it checks race conditions (PUT operation only)
-        final String SERVER_RESPONSE_OK = "SERVER_OK";
-        final String SERVER_RESPONSE_KO = "SERVER_KO";
-
+    public void processServerResult(String result, int operation) {
         switch (operation) {
             //Update data and layout
-            case HttpDispatcher.OPERATION_GET:
+            case HttpConstants.OPERATION_GET:
                 try {
-                    HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpDispatcher.ENTITY_STATION);
+                    HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_STATION);
                     ObjectMapper mapper = httpDispatcher.getMapper();
                     List<BikeStation> bikeStationList = mapper.readValue(result,
                             new TypeReference<List<BikeStation>>() {});
@@ -337,18 +333,17 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                             Toast.LENGTH_SHORT).show();
                 }
                 break;
-
-            case HttpDispatcher.OPERATION_PUT:
+            case HttpConstants.OPERATION_PUT:
                 //Just showing Toast for user feedback
                 switch (result) {
-                    case SERVER_RESPONSE_OK:
+                    case HttpConstants.SERVER_RESPONSE_OK:
                         Toast.makeText(this,
-                                i18n(R.string.toast_operation_succeed),
+                                i18n(R.string.toast_bikeop_succeed),
                                 Toast.LENGTH_SHORT).show();
                         break;
-                    case SERVER_RESPONSE_KO:
+                    case HttpConstants.SERVER_RESPONSE_KO:
                         Toast.makeText(this,
-                                i18n(R.string.toast_operation_impossible),
+                                i18n(R.string.toast_bikeop_impossible),
                                 Toast.LENGTH_SHORT).show();
                         break;
                     default:

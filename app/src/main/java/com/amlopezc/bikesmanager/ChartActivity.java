@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.amlopezc.bikesmanager.entity.BikeStation;
+import com.amlopezc.bikesmanager.net.HttpConstants;
 import com.amlopezc.bikesmanager.net.HttpDispatcher;
 import com.amlopezc.bikesmanager.util.AsyncTaskListener;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -80,8 +81,8 @@ public class ChartActivity extends AppCompatActivity implements AsyncTaskListene
     }
 
     private void fetchUpdatedServerData() {
-        HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpDispatcher.ENTITY_STATION);
-        httpDispatcher.doGet(this);
+        HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_STATION);
+        httpDispatcher.doGet(this, HttpConstants.GET_FINDALL);
     }
 
     @Override
@@ -105,13 +106,13 @@ public class ChartActivity extends AppCompatActivity implements AsyncTaskListene
     }
 
     @Override
-    public void processResult(String result, int operation) {
+    public void processServerResult(String result, int operation) {
         //Process the server response
         switch (operation) {
-            case HttpDispatcher.OPERATION_GET:
+            case HttpConstants.OPERATION_GET:
                 //Update data and layout
                 try {
-                    HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpDispatcher.ENTITY_STATION);
+                    HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_STATION);
                     ObjectMapper mapper = httpDispatcher.getMapper();
                     List<BikeStation> bikeStationList = mapper.readValue(result, new TypeReference<List<BikeStation>>() {});
                     ArrayList<Integer> data = readData(bikeStationList);

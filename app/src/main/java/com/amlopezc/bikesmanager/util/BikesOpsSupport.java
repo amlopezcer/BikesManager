@@ -2,6 +2,7 @@ package com.amlopezc.bikesmanager.util;
 
 
 import com.amlopezc.bikesmanager.entity.BikeStation;
+import com.amlopezc.bikesmanager.net.HttpConstants;
 
 import java.math.BigDecimal;
 import java.text.DateFormat;
@@ -15,9 +16,6 @@ import java.util.Locale;
 public final class BikesOpsSupport {
 
     private static final float BASIC_FARE = 1.00f;   // Basic fare, it will change depending on the availability
-
-    public static final String OP_TAKE_BIKE = "take";          //Constant strings for server connection ->
-    public static final String OP_LEAVE_BIKE = "leave";        // -> (distinguishes "PUT" method in the URL)
 
     // Suppress default constructor for non-instantiability
     private BikesOpsSupport() {}
@@ -54,13 +52,13 @@ public final class BikesOpsSupport {
         boolean isOperationPossible = false; //The bike station status allows to perform the operation?
 
         switch (operation) {
-            case OP_TAKE_BIKE:
+            case HttpConstants.PUT_TAKE_BIKE:
                 //Are there bikes to take?
                 isOperationPossible = bikeStation.getmAvailableBikes() > 0;
                 if(isOperationPossible)
                     bikeStation.setmAvailableBikes(bikeStation.getmAvailableBikes() - 1);
                 break;
-            case OP_LEAVE_BIKE:
+            case HttpConstants.PUT_LEAVE_BIKE:
                 //Is there room to leave bikes?
                 isOperationPossible = (bikeStation.getmAvailableBikes() + bikeStation.getmBrokenBikes() + bikeStation.getmReservedBikes()) < bikeStation.getmTotalBikes();
                 if(isOperationPossible)
