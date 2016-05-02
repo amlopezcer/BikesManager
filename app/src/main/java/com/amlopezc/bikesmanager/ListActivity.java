@@ -85,7 +85,7 @@ public class ListActivity extends AppCompatActivity implements AsyncTaskListener
 
     private void fetchUpdatedServerData() {
         HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_STATION);
-        httpDispatcher.doGet(this, HttpConstants.GET_FINDALL);
+        httpDispatcher.doGet(this, HttpConstants.GET_FIND_ALL);
     }
 
     @Override

@@ -34,7 +34,7 @@ import java.util.List;
  * Shows a pie chart with the current bike stations state
  */
 
-public class ChartActivity extends AppCompatActivity implements AsyncTaskListener<String>{
+public class ChartActivity extends AppCompatActivity implements AsyncTaskListener<String> {
 
     private PieChart mChart;
     private ArrayList<String> mXVals;
@@ -82,7 +82,7 @@ public class ChartActivity extends AppCompatActivity implements AsyncTaskListene
 
     private void fetchUpdatedServerData() {
         HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_STATION);
-        httpDispatcher.doGet(this, HttpConstants.GET_FINDALL);
+        httpDispatcher.doGet(this, HttpConstants.GET_FIND_ALL);
     }
 
     @Override

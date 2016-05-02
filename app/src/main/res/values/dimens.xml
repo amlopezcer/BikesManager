@@ -8,6 +8,7 @@
 
     <!-- General -->
     <dimen name="widgets_standard_margin">16dp</dimen>
+    <dimen name="custom_buttons_width">150dp</dimen>
 
     <!-- List -->
     <dimen name="itemList_TextNumberMargin">4dp</dimen>
@@ -17,11 +18,12 @@
     <dimen name="custom_button_stroke_width">1dp</dimen>
     <dimen name="custom_button_corner_radius">3dp</dimen>
 
+    <!-- Login and welcome -->
+    <dimen name="main_texts_padding">60dp</dimen>
+    <dimen name="main_image_dimens">150dp</dimen>
+    <dimen name="main_widgets_margin">24dp</dimen>
+
     <!-- Login -->
-    <dimen name="login_app_name_margin">60dp</dimen>
-    <dimen name="login_image_dimens">150dp</dimen>
-    <dimen name="login_widgets_margin">24dp</dimen>
-    <dimen name="login_buttons_width">150dp</dimen>
     <dimen name="txt_version_margin">1dp</dimen>
 
 </resources>

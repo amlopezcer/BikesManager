@@ -1,5 +1,6 @@
 package com.amlopezc.bikesmanager;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -62,7 +63,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void submit() {
-        //Some check over the text fields...
+        //Some check over the text fields
         if(!validateInput(editTextFullName, inputLayoutFullName))
             return;
         if(!validateInput(editTextEmail, inputLayoutEmail))
@@ -141,9 +142,8 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                 //Just showing Toast for user feedback
                 switch (result) {
                     case HttpConstants.SERVER_RESPONSE_OK:
-                        Toast.makeText(this,
-                                i18n(R.string.toast_user_signup_succeed),
-                                Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(this, WelcomeActivity.class);
+                        startActivity(intent);
                         break;
                     case HttpConstants.SERVER_RESPONSE_KO:
                         Toast.makeText(this,

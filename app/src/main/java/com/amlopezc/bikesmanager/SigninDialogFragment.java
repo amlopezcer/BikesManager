@@ -11,7 +11,6 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
 public class SigninDialogFragment extends DialogFragment {
 
@@ -38,7 +37,7 @@ public class SigninDialogFragment extends DialogFragment {
 
         //mDefaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-        builder.setMessage(i18n(R.string.builder_sign_in_msg))
+        builder.setMessage(i18n(R.string.builder_sign_in_msg)) //Todo: meterlo en el preferences
                 .setView(view)
                 .setPositiveButton(i18n(R.string.text_ok), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
@@ -53,9 +52,8 @@ public class SigninDialogFragment extends DialogFragment {
                                 .putString(SettingsActivityFragment.KEY_PREF_SYNC_PORT, data)
                                 .apply();*/
 
-                        ((LoginActivity)getActivity()).doPositiveClick(username, password); //...
-
-                        Toast.makeText(getActivity(), username + " " + password, Toast.LENGTH_SHORT).show();
+                        //Try to log de user in
+                        ((LoginActivity)getActivity()).doPositiveClick(username, password);
                     }
                 });
 

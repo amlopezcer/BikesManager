@@ -12,34 +12,33 @@
         android:layout_height="wrap_content"
         style="?android:textAppearanceLarge"
         android:text="@string/app_name"
-
         android:textColor="@color/white"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/login_app_name_margin" />
+        android:layout_marginTop="@dimen/main_texts_padding" />
 
     <ImageView android:id="@+id/img_launcher"
-        android:layout_width="@dimen/login_image_dimens"
-        android:layout_height="@dimen/login_image_dimens"
+        android:layout_width="@dimen/main_image_dimens"
+        android:layout_height="@dimen/main_image_dimens"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/widgets_standard_margin"
-        android:layout_marginBottom="@dimen/login_widgets_margin"
+        android:layout_marginBottom="@dimen/main_widgets_margin"
         android:layout_below="@+id/textView_title"
         android:src="@mipmap/ic_launcher"
         android:contentDescription="@string/desc_image_launcher"/>
 
     <Button android:id="@+id/button_signUp"
-        android:layout_width="@dimen/login_buttons_width"
+        android:layout_width="@dimen/custom_buttons_width"
         android:layout_height="wrap_content"
         android:layout_below="@id/img_launcher"
         android:layout_centerInParent="true"
-        android:layout_marginTop="@dimen/login_widgets_margin"
+        android:layout_marginTop="@dimen/main_widgets_margin"
         android:text="@string/button_sign_up"
         android:textAllCaps="false"
         android:textColor="@color/darkPrimaryColor"
-        android:background="@drawable/custom_button_signup"/>
+        android:background="@drawable/custom_button_light"/>
 
     <Button android:id="@+id/button_signIn"
-        android:layout_width="@dimen/login_buttons_width"
+        android:layout_width="@dimen/custom_buttons_width"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_below="@id/button_signUp"

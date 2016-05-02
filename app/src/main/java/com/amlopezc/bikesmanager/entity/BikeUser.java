@@ -1,9 +1,14 @@
 package com.amlopezc.bikesmanager.entity;
 
 
-import com.amlopezc.bikesmanager.util.BikesOpsSupport;
+import com.amlopezc.bikesmanager.WelcomeActivity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 @JsonPropertyOrder({"balance", "biketaken", "bookaddress", "bookdate", "booktaken", "email",
         "fullname", "id", "md5", "mooringsaddress", "mooringsdate", "mooringstaken", "password",
@@ -37,42 +42,23 @@ public class BikeUser extends JSONBean {
     @JsonProperty("balance")
     private float  mBalance;
 
-    public BikeUser() {}
-
-    public BikeUser(int mId, String mUserName, String mPassword, String mFullName, String mEmail,
-                    boolean mBikeTaken, boolean mBookTaken, boolean mMooringsTaken,
-                    String mBookAddress, String mMooringsAddress, String mBookDate,
-                    String mMooringsDate, float mBalance) {
-        this.mId = mId;
-        this.mUserName = mUserName;
-        this.mPassword = mPassword;
-        this.mFullName = mFullName;
-        this.mEmail = mEmail;
-        this.mBikeTaken = mBikeTaken;
-        this.mBookTaken = mBookTaken;
-        this.mMooringsTaken = mMooringsTaken;
-        this.mBookAddress = mBookAddress;
-        this.mMooringsAddress = mMooringsAddress;
-        this.mBookDate = mBookDate;
-        this.mMooringsDate = mMooringsDate;
-        this.mBalance = mBalance;
-        processHashMD5();
-    }
+    public BikeUser() {} //DO NOT REMOVE, needed for JSON serialization
 
     public BikeUser(String mUserName, String mPassword, String mFullName, String mEmail) {
-        this.mId = 0;
+        this.mId = 0; //Not representative, the server will assign an appropriate ID, but this one is needed for serialization
         this.mUserName = mUserName;
         this.mPassword = mPassword;
         this.mFullName = mFullName;
         this.mEmail = mEmail;
+        //Some standard data for new users
         this.mBikeTaken = false;
         this.mBookTaken = false;
         this.mMooringsTaken = false;
         this.mBookAddress = "None";
         this.mMooringsAddress = "None";
-        this.mBookDate = BikesOpsSupport.getCurrentDateFormatted();
-        this.mMooringsDate = BikesOpsSupport.getCurrentDateFormatted();
-        this.mBalance = 0.00f;
+        this.mBookDate = getCurrentDateFormatted();
+        this.mMooringsDate = getCurrentDateFormatted();
+        this.mBalance = WelcomeActivity.NEW_USER_PRESENT; //Welcome present: 5.00€
         processHashMD5();
     }
 
@@ -134,7 +120,6 @@ public class BikeUser extends JSONBean {
         return mId;
     }
     //</editor-fold>
-
 
     //<editor-fold desc="SET">
     public void setmId(int mId) {
@@ -266,4 +251,14 @@ public class BikeUser extends JSONBean {
         return result;
     }
     //</editor-fold>
+
+    private static String getCurrentDateFormatted() {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
+        Calendar cal = Calendar.getInstance();
+        StringBuilder builder = new StringBuilder(dateFormat.format(cal.getTime()));
+        return builder.append("T")
+                .append(timeFormat.format(cal.getTime()))
+                .append("+01:00").toString();
+    }
 }

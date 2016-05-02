@@ -32,7 +32,7 @@ public final class BikesOpsSupport {
         else
             currentFare =  BASIC_FARE;
 
-        BigDecimal result = round(currentFare,2); //2 decimals
+        BigDecimal result = round(currentFare, 2); //2 decimals
         return result.floatValue();
     }
 
@@ -78,7 +78,7 @@ public final class BikesOpsSupport {
     }
 
     //Formatting date data to insert it correctly in the Database, format: yyyy-mm-ddThh:mm:ss+01:00
-    public static String getCurrentDateFormatted() {
+    private static String getCurrentDateFormatted() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
         Calendar cal = Calendar.getInstance();

@@ -8,6 +8,7 @@
     <string name="title_activity_settings">Settings</string>
     <string name="title_activity_login">Login</string>
     <string name="title_activity_signup">Sign Up</string>
+    <string name="title_activity_welcome">Welcome</string>
 
     <!-- Common toasts -->
     <string name="toast_sync_error">Error while sync with the server</string>
@@ -30,15 +31,18 @@
     <string name="text_user_name">User name</string>
     <string name="text_password">Password</string>
     <string name="text_confirm">Confirm</string>
-    <string name="text_ok">Ok</string>
+    <string name="text_ok">OK</string>
 
     <!-- SignupActivity.java -->
     <string name="text_err_name">Enter your full name</string>
     <string name="text_err_mail">Enter a valid email address</string>
     <string name="text_err_username">Enter your user name</string>
     <string name="text_err_password">Enter the password</string>
-    <string name="toast_user_signup_succeed">Welcome</string>
     <string name="toast_user_signup_error">Username or Email not available</string>
+
+    <!-- LoginActivity.java -->
+    <string name="toast_user_not_found">User not found</string>
+    <string name="toast_incorrect_password">Incorrect password for user \'%1$s\'</string>
 
     <!-- ChartActivity.java -->
     <string name="chart_total_msg">Total bikes: %1$d</string>
@@ -74,6 +78,12 @@
     <string name="button_sign_in">Sign in</string>
     <string name="textView_version">Version</string>
 
+    <!-- fragment_welcome.xml -->
+    <string name="textView_welcome">Welcome %1$s!</string>
+    <string name="desc_image_welcome">Welcome image</string>
+    <string name="textView_welcomePresent">A little present for you&#8230;</string> <!-- "&#8230;" = "..." -->
+    <string name="textView_welcomeMoney">%1$.2f€</string>
+    <string name="button_great">Great!</string>
 
     <!-- fragment_list.xml -->
     <string name="hint_search">Search</string>
