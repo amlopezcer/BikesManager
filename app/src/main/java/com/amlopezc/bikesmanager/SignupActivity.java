@@ -1,6 +1,8 @@
 package com.amlopezc.bikesmanager;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -63,7 +65,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void submit() {
-        //Some check over the text fields
+        //Some checks over the text fields
         if(!validateInput(editTextFullName, inputLayoutFullName))
             return;
         if(!validateInput(editTextEmail, inputLayoutEmail))
@@ -84,7 +86,15 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         String fullName = editTextFullName.getText().toString().trim();
         String email = editTextEmail.getText().toString().trim();
 
-        BikeUser bikeUser = new BikeUser(userName, passwordSHA1, fullName, email);
+        BikeUser bikeUser = BikeUser.getInstance();
+        bikeUser.setNewUserData(userName, passwordSHA1, fullName, email);
+
+        //Save data consistenly
+        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.file_user_preferences), Context.MODE_PRIVATE);
+        sharedPreferences.edit()
+                .putString(getString(R.string.text_user_name), userName)
+                .putString(getString(R.string.text_password),  passwordSHA1)
+                .apply();
 
         HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_USER);
         httpDispatcher.doPost(this, bikeUser);
@@ -133,7 +143,6 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-
     //Method to process the server result
     @Override
     public void processServerResult(String result, int operation) {
@@ -146,6 +155,13 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                         startActivity(intent);
                         break;
                     case HttpConstants.SERVER_RESPONSE_KO:
+                        //Undo changes
+                        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.file_user_preferences), Context.MODE_PRIVATE);
+                        sharedPreferences.edit()
+                                .putString(getString(R.string.text_user_name), "")
+                                .putString(getString(R.string.text_password), "")
+                                .apply();
+
                         Toast.makeText(this,
                                 i18n(R.string.toast_user_signup_error),
                                 Toast.LENGTH_SHORT).show();

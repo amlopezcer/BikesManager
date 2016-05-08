@@ -58,13 +58,17 @@ public class ConnectionDataDialogFragment extends DialogFragment {
                                 .putString(SettingsActivityFragment.KEY_PREF_SYNC_PORT, data)
                                 .apply();
 
-                        ((MapsActivity)getActivity()).doPositiveClick(); //To update MapsActivity layout
+                        //If the caller is the MapsActivity, update its layout
+                        if (getActivity().getComponentName().getClassName().contains("Maps"))
+                            ((MapsActivity) getActivity()).doPositiveClick();
                     }
                 });
 
         final AlertDialog dialog = builder.create();
         dialog.show();
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false); //"set" is disabled by default.
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                .setEnabled(!mEditText_server.getText().toString().trim().isEmpty() &&
+                        !mEditText_port.getText().toString().trim().isEmpty());
 
         //Code to enable "Set" button only when all data have been provided
         final TextWatcher watcher = new TextWatcher() {

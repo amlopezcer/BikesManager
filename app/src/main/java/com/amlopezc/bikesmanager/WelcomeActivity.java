@@ -1,6 +1,8 @@
 package com.amlopezc.bikesmanager;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -22,8 +24,10 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         Button buttonGreat = (Button) findViewById(R.id.button_great);
         buttonGreat.setOnClickListener(this);
 
+        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.file_user_preferences), Context.MODE_PRIVATE);
+        String username = sharedPreferences.getString(getString(R.string.text_user_name), "");
         TextView textViewWelcome = (TextView) findViewById(R.id.textView_welcome);
-        textViewWelcome.setText(i18n(R.string.textView_welcome, "USER")); //TODO: Sacarlo del preferences
+        textViewWelcome.setText(i18n(R.string.textView_welcome, username));
 
         TextView textViewMoney = (TextView) findViewById(R.id.textView_welcomeMoney);
         textViewMoney.setText(i18n(R.string.textView_welcomeMoney, NEW_USER_PRESENT));

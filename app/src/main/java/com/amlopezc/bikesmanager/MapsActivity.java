@@ -2,6 +2,7 @@ package com.amlopezc.bikesmanager;
 
 import android.Manifest;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -75,6 +76,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
         //Request for location permission, turning on location services if granted
         requestLocationPermission();
+
     }
 
     private void requestLocationPermission() {

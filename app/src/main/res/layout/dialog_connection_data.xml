@@ -9,6 +9,8 @@
         android:id="@+id/editText_serverAddress"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:inputType="numberDecimal"
+        android:digits="0123456789."
         android:hint="@string/text_server_address" />
 
     <EditText
@@ -16,6 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="number"
-        android:hint="@string/text_server_port" />
+        android:hint="@string/text_server_port"
+        android:layout_marginTop="@dimen/widgets_standard_margin"/>
 
 </LinearLayout>

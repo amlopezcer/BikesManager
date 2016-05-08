@@ -48,6 +48,18 @@
         style="?android:attr/borderlessButtonStyle"
         android:textColor="@color/white" />
 
+    <ImageButton android:id="@+id/imgButton_connection_settings"
+        android:layout_width="60dp"
+        android:layout_height="36dp"
+        android:src="@drawable/ic_settings"
+        style="?android:attr/borderlessButtonStyle"
+        android:tint="@color/secondaryTextColor"
+        android:layout_alignParentBottom= "true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+
+        android:contentDescription="@string/desc_image_button_connection_settings" />
+
     <TextView android:id="@+id/textView_version_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

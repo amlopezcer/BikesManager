@@ -2,6 +2,7 @@ package com.amlopezc.bikesmanager.entity;
 
 
 import com.amlopezc.bikesmanager.WelcomeActivity;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
@@ -42,25 +43,22 @@ public class BikeUser extends JSONBean {
     @JsonProperty("balance")
     private float  mBalance;
 
-    public BikeUser() {} //DO NOT REMOVE, needed for JSON serialization
 
-    public BikeUser(String mUserName, String mPassword, String mFullName, String mEmail) {
-        this.mId = 0; //Not representative, the server will assign an appropriate ID, but this one is needed for serialization
-        this.mUserName = mUserName;
-        this.mPassword = mPassword;
-        this.mFullName = mFullName;
-        this.mEmail = mEmail;
-        //Some standard data for new users
-        this.mBikeTaken = false;
-        this.mBookTaken = false;
-        this.mMooringsTaken = false;
-        this.mBookAddress = "None";
-        this.mMooringsAddress = "None";
-        this.mBookDate = getCurrentDateFormatted();
-        this.mMooringsDate = getCurrentDateFormatted();
-        this.mBalance = WelcomeActivity.NEW_USER_PRESENT; //Welcome present: 5.00€
-        processHashMD5();
+    //SINGLETON basic implementation
+    @JsonIgnore
+    private static BikeUser mInstance = null;
+
+    private BikeUser() {}
+
+    public static BikeUser getInstance() {
+        if (mInstance == null)
+            mInstance = new BikeUser();
+
+        return mInstance;
     }
+
+    //public BikeUser() {}
+
 
     //<editor-fold desc="GET">
     public int getmId() {
@@ -208,7 +206,6 @@ public class BikeUser extends JSONBean {
     }
     //</editor-fold>
 
-
     //<editor-fold desc="EQUALS & HASHCODE">
     @Override
     public boolean equals(Object o) {
@@ -252,6 +249,24 @@ public class BikeUser extends JSONBean {
     }
     //</editor-fold>
 
+    public void setNewUserData(String mUserName, String mPassword, String mFullName, String mEmail) {
+        this.mId = 0; //Not representative, the server will assign an appropriate ID, but this one is needed for serialization
+        this.mUserName = mUserName;
+        this.mPassword = mPassword;
+        this.mFullName = mFullName;
+        this.mEmail = mEmail;
+        //Some standard data for new users
+        this.mBikeTaken = false;
+        this.mBookTaken = false;
+        this.mMooringsTaken = false;
+        this.mBookAddress = "None";
+        this.mMooringsAddress = "None";
+        this.mBookDate = getCurrentDateFormatted();
+        this.mMooringsDate = getCurrentDateFormatted();
+        this.mBalance = WelcomeActivity.NEW_USER_PRESENT; //Welcome present: 5.00€
+        processHashMD5();
+    }
+
     private static String getCurrentDateFormatted() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
@@ -261,4 +276,5 @@ public class BikeUser extends JSONBean {
                 .append(timeFormat.format(cal.getTime()))
                 .append("+01:00").toString();
     }
+
 }

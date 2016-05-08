@@ -15,13 +15,11 @@ import android.widget.EditText;
 public class SigninDialogFragment extends DialogFragment {
 
 
-    //For MapsActivity when calling and showing this dialog
+    //For LoginActivity when calling and showing this dialog
     public static final String CLASS_ID = "SigninDialogFragment";
 
     private EditText mEditTextUsername;
     private EditText mEditTextPassword;
-
-    //private SharedPreferences mDefaultSharedPreferences;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -35,33 +33,22 @@ public class SigninDialogFragment extends DialogFragment {
         mEditTextUsername = (EditText) view.findViewById(R.id.editText_dialog_username);
         mEditTextPassword = (EditText) view.findViewById(R.id.editText_dialog_password);
 
-        //mDefaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
-        builder.setMessage(i18n(R.string.builder_sign_in_msg)) //Todo: meterlo en el preferences
+        builder.setMessage(i18n(R.string.builder_sign_in_msg))
                 .setView(view)
                 .setPositiveButton(i18n(R.string.text_ok), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        // Getting and setting data when "set" button is clicked
                         String username = mEditTextUsername.getText().toString().trim();
-                        /*mDefaultSharedPreferences.edit()
-                                .putString(SettingsActivityFragment.KEY_PREF_SYNC_SERVER, data)
-                                .apply();*/
-
                         String password = mEditTextPassword.getText().toString().trim();
-                        /*mDefaultSharedPreferences.edit()
-                                .putString(SettingsActivityFragment.KEY_PREF_SYNC_PORT, data)
-                                .apply();*/
-
-                        //Try to log de user in
+                        //Try to log the user in
                         ((LoginActivity)getActivity()).doPositiveClick(username, password);
                     }
                 });
 
         final AlertDialog dialog = builder.create();
         dialog.show();
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false); //"set" is disabled by default.
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false); //"OK" is disabled by default.
 
-        //Code to enable "Set" button only when all data have been provided
+        //Code to enable "OK" button only when all data have been provided
         final TextWatcher watcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -77,7 +64,7 @@ public class SigninDialogFragment extends DialogFragment {
             }
         };
 
-        //All text fields must be completed to enable "Set", so the TextWatcher is listening to all of them
+        //All text fields must be completed to enable "OK", so the TextWatcher is listening to all of them
         mEditTextUsername.addTextChangedListener(watcher);
         mEditTextPassword.addTextChangedListener(watcher);
 
