@@ -39,31 +39,22 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
 
         //Ensuring connection data is set, showing ConnectionDataDialog otherwise
+        checkConnectionData();
+
+        initActivity();
+    }
+
+    private void checkConnectionData() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         String serverAddress = sharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_SERVER, "");
         String serverPort = sharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_PORT, "");
         if(serverAddress.trim().isEmpty() || serverPort.trim().isEmpty())
             showConnectionDataDialog();
-
-        //Check if a user is already logged and skip this activity in that case
-        if(isUserLogged()) {
-            Intent intent = new Intent(this, MapsActivity.class);
-            startActivity(intent);
-        } else
-            initActivity();
     }
 
     private void showConnectionDataDialog() {
         DialogFragment dialog = new ConnectionDataDialogFragment();
         dialog.show(getFragmentManager(), ConnectionDataDialogFragment.CLASS_ID);
-    }
-
-    private boolean isUserLogged() {
-        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.file_user_preferences), Context.MODE_PRIVATE);
-        String username = sharedPreferences.getString(getString(R.string.text_user_name), "");
-        String password = sharedPreferences.getString(getString(R.string.text_password), "");
-
-        return !(username.equals("") || password.equals(""));
     }
 
     private void initActivity() {
@@ -76,7 +67,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         ImageButton buttonConnectionSettings = (ImageButton) findViewById(R.id.imgButton_connection_settings);
         buttonConnectionSettings.setOnClickListener(this);
     }
-
 
     //Sets version textView with the current app version
     private void setAppVersion() {
@@ -161,12 +151,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void completeLogin(BikeUser bikeUser) {
-        //Save data consistenly
+        //Save data consistently
         SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.file_user_preferences), Context.MODE_PRIVATE);
         sharedPreferences.edit()
                 .putString(getString(R.string.text_user_name), bikeUser.getmUserName())
                 .putString(getString(R.string.text_password),  bikeUser.getmPassword())
                 .apply();
+
+        BikeUser singletonInstance = BikeUser.getInstance();
+        singletonInstance.copyServerData(bikeUser);
 
         //Go to the main class
         Intent intent = new Intent(this, MapsActivity.class);

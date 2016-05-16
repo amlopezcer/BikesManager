@@ -89,7 +89,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         BikeUser bikeUser = BikeUser.getInstance();
         bikeUser.setNewUserData(userName, passwordSHA1, fullName, email);
 
-        //Save data consistenly
+        //Save data consistently
         SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.file_user_preferences), Context.MODE_PRIVATE);
         sharedPreferences.edit()
                 .putString(getString(R.string.text_user_name), userName)
@@ -138,9 +138,8 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void requestFocus(View view) {
-        if (view.requestFocus()) {
+        if (view.requestFocus())
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-        }
     }
 
     //Method to process the server result

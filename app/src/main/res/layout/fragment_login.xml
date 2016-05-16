@@ -57,7 +57,6 @@
         android:layout_alignParentBottom= "true"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
-
         android:contentDescription="@string/desc_image_button_connection_settings" />
 
     <TextView android:id="@+id/textView_version_text"

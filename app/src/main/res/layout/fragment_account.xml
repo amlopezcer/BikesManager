@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/activity_margin"
+    tools:context="com.amlopezc.bikesmanager.AccountActivityFragment">
+
+    <TextView android:id="@+id/textView_book_bike"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/textView_book_bike" />
+
+    <TableRow android:id="@+id/tableRow_book_bike"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textView_book_bike"
+        android:layout_marginTop="16dp"
+        android:layout_centerHorizontal="true">
+        <TextView android:id="@+id/textView_address_bike"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/secondaryTextColor"
+            android:padding="4dp"/>
+        <TextView android:id="@+id/textView_date_bike"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/secondaryTextColor"
+            android:padding="4dp"/>
+    </TableRow>
+
+    <TextView android:id="@+id/textView_book_moorings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/textView_book_moorings"
+        android:layout_below="@+id/tableRow_book_bike"
+        android:layout_marginTop="24dp"/>
+
+    <TableRow android:id="@+id/tableRow_book_moorings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textView_book_moorings"
+        android:layout_marginTop="16dp"
+        android:layout_centerHorizontal="true" >
+        <TextView android:id="@+id/textView_address_moorings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/secondaryTextColor"
+            android:padding="4dp"/>
+        <TextView android:id="@+id/textView_date_moorings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/secondaryTextColor"
+            android:padding="4dp"/>
+    </TableRow>
+
+    <TextView android:id="@+id/textView_profile_balance_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/textView_profile_balance_text"
+        android:layout_below="@id/tableRow_book_moorings"
+        android:layout_marginTop="24dp" />
+
+    <TextView android:id="@+id/textView_profile_balance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/secondaryTextColor"
+        android:text="@string/text_format_money"
+        android:layout_marginTop="16dp"
+        android:layout_below="@+id/textView_profile_balance_text"
+        android:layout_centerHorizontal="true"/>
+
+    <Button android:id="@+id/button_deposit_money"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_deposit"
+        android:textAllCaps="false"
+        android:textColor="@color/accentColor"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_below="@+id/textView_profile_balance"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"/>
+
+    <Button android:id="@+id/button_edit_profile"
+        android:layout_width="@dimen/custom_buttons_width"
+        android:layout_height="wrap_content"
+        android:text="@string/button_edit_profile"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:background="@drawable/custom_button_dark"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="36dp"/>
+
+    <Button android:id="@+id/button_delete_account"
+        android:layout_width="@dimen/custom_buttons_width"
+        android:layout_height="wrap_content"
+        android:text="@string/button_delete_account"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:background="@drawable/custom_button_red"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="36dp"/>
+
+</RelativeLayout>

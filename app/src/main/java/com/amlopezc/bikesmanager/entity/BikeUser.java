@@ -41,7 +41,7 @@ public class BikeUser extends JSONBean {
     @JsonProperty("mooringsdate")
     private String mMooringsDate;
     @JsonProperty("balance")
-    private float  mBalance;
+    private float mBalance;
 
 
     //SINGLETON basic implementation
@@ -265,6 +265,10 @@ public class BikeUser extends JSONBean {
         this.mMooringsDate = getCurrentDateFormatted();
         this.mBalance = WelcomeActivity.NEW_USER_PRESENT; //Welcome present: 5.00€
         processHashMD5();
+    }
+
+    public void copyServerData(BikeUser bikeUser) {
+        mInstance = bikeUser;
     }
 
     private static String getCurrentDateFormatted() {

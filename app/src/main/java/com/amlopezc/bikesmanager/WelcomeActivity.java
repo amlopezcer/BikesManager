@@ -30,7 +30,7 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         textViewWelcome.setText(i18n(R.string.textView_welcome, username));
 
         TextView textViewMoney = (TextView) findViewById(R.id.textView_welcomeMoney);
-        textViewMoney.setText(i18n(R.string.textView_welcomeMoney, NEW_USER_PRESENT));
+        textViewMoney.setText(i18n(R.string.text_format_money, NEW_USER_PRESENT));
     }
 
     @Override

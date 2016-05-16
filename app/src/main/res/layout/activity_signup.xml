@@ -4,4 +4,5 @@
     android:name="com.amlopezc.bikesmanager.SignupActivityFragment"
     tools:layout="@layout/fragment_signup"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    android:layout_height="wrap_content" />
+

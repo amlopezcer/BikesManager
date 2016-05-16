@@ -47,7 +47,7 @@
         android:gravity="center"
         android:layout_marginTop="@dimen/main_widgets_margin"
         android:layout_marginBottom="@dimen/main_widgets_margin"
-        android:text="@string/textView_welcomeMoney"
+        android:text="@string/text_format_money"
         android:textColor="@color/accentColor"
         android:textStyle="bold"/>
 

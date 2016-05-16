@@ -14,6 +14,11 @@
         android:title="@string/item_text_chart"
         app:showAsAction="ifRoom" />
 
+    <item android:id="@+id/action_account"
+        android:icon="@drawable/ic_person"
+        android:title="@string/item_text_account"
+        app:showAsAction="ifRoom" />
+
     <item android:id="@+id/action_refresh"
         android:icon="@drawable/ic_action_refresh"
         android:title="@string/item_text_refresh"
@@ -22,6 +27,10 @@
     <item android:id="@+id/action_settings"
         android:icon="@drawable/ic_settings"
         android:title="@string/item_text_settings"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
+
+    <item android:id="@+id/action_logout"
+        android:title="@string/item_text_logout"
+        app:showAsAction="never" />
 
 </menu>

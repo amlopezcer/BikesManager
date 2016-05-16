@@ -18,6 +18,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.amlopezc.bikesmanager.entity.BikeStation;
+import com.amlopezc.bikesmanager.entity.BikeUser;
 import com.amlopezc.bikesmanager.net.HttpConstants;
 import com.amlopezc.bikesmanager.net.HttpDispatcher;
 import com.amlopezc.bikesmanager.util.AsyncTaskListener;
@@ -52,7 +53,6 @@ import com.cocosw.bottomsheet.BottomSheet;
 public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarkerClickListener,
         AsyncTaskListener<String> {
 
-    private final int SETTINGS_REQUEST_CODE = 0;    //Intent code when connecting to the SettingsActivity
     private final int LIST_REQUEST_CODE = 1;        //Intent code when connecting to the ListActivity
 
     private final int MY_LOCATION_REQUEST_CODE = 1; //To request for location permission
@@ -118,8 +118,22 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
         if(serverAddress.trim().isEmpty() || serverPort.trim().isEmpty())
             showConnectionDataDialog();
-        else //Getting update data form the server
+        else { //Getting update data form the server
+            initUserIfNotSet();
             fetchUpdatedServerData();
+        }
+    }
+
+    //Set the user with update info form the server
+    private void initUserIfNotSet() { //TODO: Repasar, una tonteriía, pero habría que cambiarlo de nombre para hacerlo más general creo (si reservo bici también tendré que actualizar, aunque aquí hago comprobaciones y tal, se puede dividir en dos métodos y ale
+        BikeUser bikeUser = BikeUser.getInstance();
+        if(bikeUser.getmUserName() == null || bikeUser.getmUserName().isEmpty()) {
+            SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.file_user_preferences), Context.MODE_PRIVATE);
+            String username = sharedPreferences.getString(getString(R.string.text_user_name), "");
+            //Get the user selected
+            HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_USER);
+            httpDispatcher.doGet(this, String.format(HttpConstants.GET_FIND_USERID, username)); //path: .../user/{username}
+        }
     }
 
     private void fetchUpdatedServerData() {
@@ -141,7 +155,6 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-
         return true;
     }
 
@@ -151,11 +164,6 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         Intent intent;
 
         switch(item.getItemId()){
-            case R.id.action_settings: //Navigates to the SettingsActivity
-                intent = new Intent();
-                intent.setClass(this, SettingsActivity.class);
-                startActivityForResult(intent, SETTINGS_REQUEST_CODE);
-                return true;
             case R.id.action_list: //Navigates to the ListActivity
                 intent = new Intent(this, ListActivity.class);
                 startActivityForResult(intent, LIST_REQUEST_CODE);
@@ -164,13 +172,35 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                 intent = new Intent(this, ChartActivity.class);
                 startActivity(intent);
                 return true;
+            case R.id.action_account: //Navigates to the AccountActivity
+                intent = new Intent(this, AccountActivity.class);
+                startActivity(intent);
+                return true;
             case R.id.action_refresh: //Updates data
                 fetchUpdatedServerData();
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(MADRID.getCenter(), 12)); //Move the camera to the init position for user help
                 return true;
+            case R.id.action_settings: //Navigates to the SettingsActivity
+                intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                return true;
+            case R.id.action_logout: //Log out
+                logout();
+                intent = new Intent(this, LoginActivity.class);
+                startActivity(intent);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    //Log the user out
+    private void logout() {
+        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.file_user_preferences), Context.MODE_PRIVATE);
+        sharedPreferences.edit()
+                .putString(getString(R.string.text_user_name), "")
+                .putString(getString(R.string.text_password), "")
+                .apply();
     }
 
     /**
@@ -261,14 +291,6 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                 LatLng marker = new LatLng(latCoord, longCoord);
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(marker, 15));
                 break;
-            case SETTINGS_REQUEST_CODE: //Configuration data, it just shows a Toast for user feedback
-                SharedPreferences sharedPreferences = PreferenceManager.
-                        getDefaultSharedPreferences(this);
-                String username = sharedPreferences.getString("username", null);
-                Toast.makeText(this,
-                        i18n(R.string.toast_user_settings, username),
-                        Toast.LENGTH_SHORT).show();
-                break;
         }
     }
 
@@ -322,12 +344,10 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
             //Update data and layout
             case HttpConstants.OPERATION_GET:
                 try {
-                    HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_STATION);
-                    ObjectMapper mapper = httpDispatcher.getMapper();
-                    List<BikeStation> bikeStationList = mapper.readValue(result,
-                            new TypeReference<List<BikeStation>>() {});
-                    readData(bikeStationList);
-                    updateLocalLayout();
+                    if (result.contains("password")) //GET related to user instance
+                        manageUserData(result);
+                    else //GET related to station instance
+                        manageStationData(result);
                 } catch (Exception e) {
                     Log.e("[GET Result]" + getClass().getCanonicalName(), e.getLocalizedMessage(), e);
                     Toast.makeText(this,
@@ -357,6 +377,26 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                 fetchUpdatedServerData();
                 break;
         }
+    }
+
+    private void manageUserData(String result) throws Exception {
+        //Get the user
+        HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_USER);
+        ObjectMapper mapper = httpDispatcher.getMapper();
+        BikeUser bikeUser = mapper.readValue(result, BikeUser.class);
+
+        //Update the singleton local instance
+        BikeUser singletonInstance = BikeUser.getInstance();
+        singletonInstance.copyServerData(bikeUser);
+    }
+
+    private void manageStationData(String result) throws Exception {
+        HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_STATION);
+        ObjectMapper mapper = httpDispatcher.getMapper();
+        List<BikeStation> bikeStationList = mapper.readValue(result,
+                new TypeReference<List<BikeStation>>() {});
+        readData(bikeStationList);
+        updateLocalLayout();
     }
 
     //Update local layout (update map = update markers)

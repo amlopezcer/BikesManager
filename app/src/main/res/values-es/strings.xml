@@ -6,9 +6,9 @@
     <string name="title_activity_chart">Estado</string>
     <string name="title_activity_list">Detalle</string>
     <string name="title_activity_settings">Configuraciones</string>
-    <string name="title_activity_login">Entrada</string>
     <string name="title_activity_signup">Registrarse</string>
     <string name="title_activity_welcome">Bienvenida</string>
+    <string name="title_activity_account">Cuenta</string>
 
     <!-- Common toasts -->
     <string name="toast_sync_error">Error al sincronizar con el servidor</string>
@@ -32,6 +32,7 @@
     <string name="text_password">Contraseña</string>
     <string name="text_confirm">Confirmar</string>
     <string name="text_ok">Vale</string>
+    <string name="text_format_money">%1$.2f€</string>
 
     <!-- File to store username and password -->
     <string name="file_user_preferences">user_file</string>
@@ -79,11 +80,18 @@
     <string name="textView_version">Versión</string>
     <string name="desc_image_button_connection_settings">Botón para cambiar los datos de conexión si es necesario</string>
 
+    <!-- fragment_account.xml -->
+    <string name="textView_book_bike">Bici reservada</string>
+    <string name="textView_book_moorings">Anclaje reservado</string>
+    <string name="textView_profile_balance_text">Saldo actual</string>
+    <string name="button_deposit">Ingresar</string>
+    <string name="button_edit_profile">Editar perfil</string>
+    <string name="button_delete_account">Borrar cuenta</string>
+
     <!-- fragment_welcome.xml -->
     <string name="textView_welcome">¡Bienvenido %1$s!</string>
     <string name="desc_image_welcome">Imagen de bienvenida</string>
     <string name="textView_welcomePresent">Un pequeño regalo&#8230;</string> <!-- "&#8230;" = "..." -->
-    <string name="textView_welcomeMoney">%1$.2f€</string>
     <string name="button_great">Genial!</string>
 
     <!-- fragment_list.xml -->
@@ -109,7 +117,9 @@
     <!-- menu_main.xml -->
     <string name="item_text_list">Lista</string>
     <string name="item_text_chart">Gráfico</string>
+    <string name="item_text_account">Cuenta</string>
     <string name="item_text_settings">Configuración</string>
+    <string name="item_text_logout">Cerrar sesión</string>
 
     <!-- preferences.xml -->
     <string name="title_connection">Datos de conexión</string>
