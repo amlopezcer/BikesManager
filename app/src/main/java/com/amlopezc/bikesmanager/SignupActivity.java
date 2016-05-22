@@ -9,16 +9,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.amlopezc.bikesmanager.entity.BikeUser;
 import com.amlopezc.bikesmanager.net.HttpConstants;
 import com.amlopezc.bikesmanager.net.HttpDispatcher;
 import com.amlopezc.bikesmanager.util.AsyncTaskListener;
+import com.amlopezc.bikesmanager.util.DeviceUtilities;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -26,11 +29,10 @@ import org.apache.commons.codec.digest.DigestUtils;
 /**
  * Registers new users
  */
-public class SignupActivity extends AppCompatActivity implements View.OnClickListener, AsyncTaskListener<String> {
+public class SignupActivity extends AppCompatActivity implements AsyncTaskListener<String> {
 
     private EditText editTextFullName, editTextEmail, editTextUsername, editTextPassword;
     private TextInputLayout inputLayoutFullName, inputLayoutEmail, inputLayoutUsername, inputLayoutPassword;
-    private Button buttonConfirm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,18 +52,33 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
         inputLayoutEmail = (TextInputLayout) findViewById(R.id.inputLayout_mail);
         inputLayoutUsername = (TextInputLayout) findViewById(R.id.inputLayout_sign_username);
         inputLayoutPassword = (TextInputLayout) findViewById(R.id.inputLayout_password);
-
-        buttonConfirm = (Button)findViewById(R.id.button_signUp_confirm);
-        buttonConfirm.setOnClickListener(this);
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.button_signUp_confirm:
-                submit();
-                break;
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_signup, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks
+        int id = item.getItemId();
+
+        if (id == R.id.action_tick_signup) {
+            DeviceUtilities.hideSoftKeyboard(this); //Hides keyboard
+            scrollToTheTop(); //Scrolls to the top of the screen, useful for smaller ones
+            submit();
+            return true;
         }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void scrollToTheTop() {
+        ScrollView scrollView = (ScrollView) findViewById(R.id.scrollView_signUp);
+        scrollView.smoothScrollTo(0,0);
     }
 
     private void submit() {

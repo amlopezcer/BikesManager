@@ -70,9 +70,14 @@ public class HttpDispatcher {
 
     public void doPut(AsyncTaskListener listener, JSONBean bean, String method) {
         StringBuilder builder = new StringBuilder(String.format(BASE_URL_ADDRESS, SERVER_ADDRESS, SERVER_PORT, ENTITY));
-        String url = builder.append("/")
-                .append(method).append("/")
-                .append(bean.getServerId()).toString(); //ID to update
+        builder.append("/");
+
+        String url;
+        if(method == null)
+            url = builder.append(bean.getServerId()).toString(); //ID to update
+        else
+            url = builder.append(method).append("/").append(bean.getServerId()).toString(); //ID to update
+
         if (isOnline()) {
             Log.i(this.getClass().getCanonicalName(), "Connected to " + url);
             HttpPutWorker worker = new HttpPutWorker(context, bean, mapper);
@@ -91,6 +96,23 @@ public class HttpDispatcher {
         if (isOnline()) {
             Log.i(this.getClass().getCanonicalName(), "Connected to " + url);
             HttpPostWorker worker = new HttpPostWorker(context, bean, mapper);
+            worker.addAsyncTaskListener(listener);//Register the listener to be aware of the task termination
+            worker.execute(url);
+        } else {
+            Log.i(this.getClass().getCanonicalName(), "Not connected to " + url);
+            Toast.makeText(context,
+                    i18n(R.string.toast_unable_connection),
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void doDelete(AsyncTaskListener listener, String id) {
+        StringBuilder builder = new StringBuilder(String.format(BASE_URL_ADDRESS, SERVER_ADDRESS, SERVER_PORT, ENTITY));
+        String url = builder.append("/").append(id).toString();
+
+        if (isOnline()) {
+            Log.i(this.getClass().getCanonicalName(), "Connected to " + url);
+            HttpDeleteWorker worker = new HttpDeleteWorker(context);
             worker.addAsyncTaskListener(listener);//Register the listener to be aware of the task termination
             worker.execute(url);
         } else {

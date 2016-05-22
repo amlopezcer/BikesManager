@@ -9,6 +9,7 @@ public final class HttpConstants {
     public static final int OPERATION_GET = 1;
     public static final int OPERATION_PUT = 2;
     public static final int OPERATION_POST = 3;
+    public static final int OPERATION_DELETE = 4;
 
     //To select the entity involved and fulfill the URL and the connection
     public static final String ENTITY_STATION = "bikestation";

@@ -271,6 +271,10 @@ public class BikeUser extends JSONBean {
         mInstance = bikeUser;
     }
 
+    public void resetInstance () {
+        mInstance = null;
+    }
+
     private static String getCurrentDateFormatted() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);

@@ -33,6 +33,8 @@
     <string name="text_confirm">Confirmar</string>
     <string name="text_ok">Vale</string>
     <string name="text_format_money">%1$.2f€</string>
+    <string name="text_cancel">Cancelar</string>
+    <string name="text_euro">€</string>
 
     <!-- File to store username and password -->
     <string name="file_user_preferences">user_file</string>
@@ -58,6 +60,7 @@
     <string name="builder_connection_data_msg">Establecer datos de conexión</string>
 
     <!-- MapsActivity.java -->
+    <string name="dialog_logout">¿Cerrar sesión?</string>
     <string name="toast_user_settings">Datos del usuario \'%1$s\' guardados</string>
     <string name="toast_bikeop_impossible">La disponibilidad de la estación no permite completar la operación</string>
     <string name="toast_bikeop_succeed">Operación completada</string>
@@ -65,6 +68,18 @@
 
     <!-- ListActivity.java -->
     <string name="toast_id_not_found">\'%1$s\' no encontrado</string>
+
+    <!-- AccountActivity.java -->
+    <string name="dialog_delete_account">¿Borrar cuenta?</string>
+    <string name="dialog_delete">Borrar</string>
+    <string name="confirm_deposit">Ingreso realizado</string>
+
+    <!-- SigninDialogFragment.java -->
+    <string name="builder_ok_positive">Iniciar sesión</string>
+
+    <!-- DepositMoneyDialogFragment.java -->
+    <string name="builder_deposit">Cantidad a ingresar</string>
+    <string name="builder_deposit_positive">Ingresar</string>
 
     <!-- HttpDispatcher.java -->
     <string name="toast_unable_connection">Error al conectar con el servidor</string>
@@ -120,6 +135,9 @@
     <string name="item_text_account">Cuenta</string>
     <string name="item_text_settings">Configuración</string>
     <string name="item_text_logout">Cerrar sesión</string>
+
+    <!-- dialogDeposit_money.xml -->
+    <string name="dialog_deposit">Ingreso</string>
 
     <!-- preferences.xml -->
     <string name="title_connection">Datos de conexión</string>

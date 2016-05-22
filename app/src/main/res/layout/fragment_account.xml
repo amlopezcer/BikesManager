@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/activity_margin"
+    android:background="@color/white"
     tools:context="com.amlopezc.bikesmanager.AccountActivityFragment">
 
     <TextView android:id="@+id/textView_book_bike"
@@ -67,12 +68,12 @@
     <TextView android:id="@+id/textView_profile_balance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/secondaryTextColor"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/accentColor"
         android:text="@string/text_format_money"
         android:layout_marginTop="16dp"
         android:layout_below="@+id/textView_profile_balance_text"
-        android:layout_centerHorizontal="true"/>
+        android:layout_alignParentLeft="true"/>
 
     <Button android:id="@+id/button_deposit_money"
         android:layout_width="wrap_content"
@@ -80,10 +81,10 @@
         android:text="@string/button_deposit"
         android:textAllCaps="false"
         android:textColor="@color/accentColor"
-        style="?android:attr/borderlessButtonStyle"
-        android:layout_below="@+id/textView_profile_balance"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"/>
+        android:background="@drawable/custom_button_green"
+        android:layout_below="@+id/textView_profile_balance_text"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
     <Button android:id="@+id/button_edit_profile"
         android:layout_width="@dimen/custom_buttons_width"

@@ -1,6 +1,7 @@
 package com.amlopezc.bikesmanager;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -125,15 +126,18 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     }
 
     //Set the user with update info form the server
-    private void initUserIfNotSet() { //TODO: Repasar, una tonteriía, pero habría que cambiarlo de nombre para hacerlo más general creo (si reservo bici también tendré que actualizar, aunque aquí hago comprobaciones y tal, se puede dividir en dos métodos y ale
+    private void initUserIfNotSet() {
         BikeUser bikeUser = BikeUser.getInstance();
-        if(bikeUser.getmUserName() == null || bikeUser.getmUserName().isEmpty()) {
-            SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.file_user_preferences), Context.MODE_PRIVATE);
-            String username = sharedPreferences.getString(getString(R.string.text_user_name), "");
-            //Get the user selected
-            HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_USER);
-            httpDispatcher.doGet(this, String.format(HttpConstants.GET_FIND_USERID, username)); //path: .../user/{username}
-        }
+        if(bikeUser.getmUserName() == null || bikeUser.getmUserName().isEmpty())
+            updateUser();
+    }
+
+    private void updateUser() {
+        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.file_user_preferences), Context.MODE_PRIVATE);
+        String username = sharedPreferences.getString(getString(R.string.text_user_name), "");
+        //Get the user selected
+        HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_USER);
+        httpDispatcher.doGet(this, String.format(HttpConstants.GET_FIND_USERID, username)); //path: .../user/{username}
     }
 
     private void fetchUpdatedServerData() {
@@ -185,22 +189,49 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                 startActivity(intent);
                 return true;
             case R.id.action_logout: //Log out
-                logout();
-                intent = new Intent(this, LoginActivity.class);
-                startActivity(intent);
+                confirmLogout();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    //Log the user out
+    //Log the user out over an explicit confirmation
+    private void confirmLogout() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(i18n(R.string.dialog_logout)).
+                setPositiveButton(
+                        i18n(R.string.item_text_logout),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                logout();
+                                dialog.cancel();
+                            }
+                        }).
+                setNegativeButton(
+                        i18n(R.string.text_cancel),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+
+                        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
     private void logout() {
         SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.file_user_preferences), Context.MODE_PRIVATE);
         sharedPreferences.edit()
                 .putString(getString(R.string.text_user_name), "")
                 .putString(getString(R.string.text_password), "")
                 .apply();
+
+        BikeUser bikeUser = BikeUser.getInstance();
+        bikeUser.resetInstance();
+
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
     }
 
     /**

@@ -19,7 +19,7 @@ import android.widget.EditText;
 
 public class ConnectionDataDialogFragment extends DialogFragment {
 
-    //For MapsActivity when calling and showing this dialog
+    //For the Activity to call and show this dialog
     public static final String CLASS_ID = "ConnectionDataDialogFragment";
 
     private EditText mEditText_server;
@@ -45,24 +45,27 @@ public class ConnectionDataDialogFragment extends DialogFragment {
 
         builder.setMessage(i18n(R.string.builder_connection_data_msg))
                 .setView(view)
-                .setPositiveButton(i18n(R.string.text_set), new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // Getting and setting data when "set" button is clicked
-                        String data = mEditText_server.getText().toString().trim();
-                        mDefaultSharedPreferences.edit()
-                                .putString(SettingsActivityFragment.KEY_PREF_SYNC_SERVER, data)
-                                .apply();
+                .setPositiveButton(i18n(R.string.text_set),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // Getting and setting data when "set" button is clicked
+                                String data = mEditText_server.getText().toString().trim();
+                                mDefaultSharedPreferences.edit()
+                                    .putString(SettingsActivityFragment.KEY_PREF_SYNC_SERVER, data)
+                                    .apply();
 
-                        data = mEditText_port.getText().toString().trim();
-                        mDefaultSharedPreferences.edit()
-                                .putString(SettingsActivityFragment.KEY_PREF_SYNC_PORT, data)
-                                .apply();
+                                data = mEditText_port.getText().toString().trim();
+                                mDefaultSharedPreferences.edit()
+                                    .putString(SettingsActivityFragment.KEY_PREF_SYNC_PORT, data)
+                                    .apply();
 
-                        //If the caller is the MapsActivity, update its layout
-                        if (getActivity().getComponentName().getClassName().contains("Maps"))
-                            ((MapsActivity) getActivity()).doPositiveClick();
-                    }
-                });
+                            //If the caller is the MapsActivity, update its layout, no need to check
+                            // if this comes from LoginActivity because in that class no further action
+                            // is required
+                            if (getActivity().getComponentName().getClassName().contains("Maps"))
+                                ((MapsActivity) getActivity()).doPositiveClick();
+                            }
+                        });
 
         final AlertDialog dialog = builder.create();
         dialog.show();

@@ -12,14 +12,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
-public class SigninDialogFragment extends DialogFragment {
+public class DepositMoneyDialogFragment extends DialogFragment {
 
+    //For MapsActivity when calling and showing this dialog
+    public static final String CLASS_ID = "DepositMoneyDialogFragment";
 
-    //For LoginActivity when calling and showing this dialog
-    public static final String CLASS_ID = "SigninDialogFragment";
-
-    private EditText mEditTextUsername;
-    private EditText mEditTextPassword;
+    private EditText mEditText_money;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -28,20 +26,17 @@ public class SigninDialogFragment extends DialogFragment {
 
         // Get the layout inflater and the view from it
         final LayoutInflater inflater = getActivity().getLayoutInflater();
-        final View view = inflater.inflate(R.layout.dialog_sign_in, null);
+        final View view = inflater.inflate(R.layout.dialog_deposit_money, null);
 
-        mEditTextUsername = (EditText) view.findViewById(R.id.editText_dialog_username);
-        mEditTextPassword = (EditText) view.findViewById(R.id.editText_dialog_password);
+        mEditText_money = (EditText) view.findViewById(R.id.editText_depositMoney);
 
-        builder.setMessage(i18n(R.string.builder_sign_in_msg))
+        builder.setMessage(i18n(R.string.builder_deposit))
                 .setView(view)
-                .setPositiveButton(i18n(R.string.builder_ok_positive),
+                .setPositiveButton(i18n(R.string.builder_deposit_positive),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                String username = mEditTextUsername.getText().toString().trim();
-                                String password = mEditTextPassword.getText().toString().trim();
-                                //Try to log the user in
-                                ((LoginActivity) getActivity()).doPositiveClick(username, password);
+                                String deposit = mEditText_money.getText().toString().trim();
+                                ((AccountActivity) getActivity()).doPositiveClick(deposit);
                             }
                         })
                 .setNegativeButton(i18n(R.string.text_cancel),
@@ -53,7 +48,7 @@ public class SigninDialogFragment extends DialogFragment {
 
         final AlertDialog dialog = builder.create();
         dialog.show();
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false); //disabled by default.
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false); //Disabled by default.
 
         //Code to enable positive button only when all data have been provided
         final TextWatcher watcher = new TextWatcher() {
@@ -66,14 +61,13 @@ public class SigninDialogFragment extends DialogFragment {
             @Override
             public void afterTextChanged(Editable s) {
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                        .setEnabled(!mEditTextUsername.getText().toString().trim().isEmpty() &&
-                                !mEditTextPassword.getText().toString().trim().isEmpty());
+                        .setEnabled(!mEditText_money.getText().toString().trim().isEmpty() &&
+                                !mEditText_money.getText().toString().trim().isEmpty());
             }
         };
 
-        //All text fields must be completed to enable positive button, so the TextWatcher is listening to all of them
-        mEditTextUsername.addTextChangedListener(watcher);
-        mEditTextPassword.addTextChangedListener(watcher);
+        //Text fields must be completed to enable positive button
+        mEditText_money.addTextChangedListener(watcher);
 
         return dialog;
     }
@@ -82,5 +76,6 @@ public class SigninDialogFragment extends DialogFragment {
     private String i18n(int resourceId, Object ... formatArgs) {
         return getResources().getString(resourceId, formatArgs);
     }
+
 
 }
