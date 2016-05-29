@@ -9,7 +9,7 @@ import android.view.inputmethod.InputMethodManager;
 
 public final class DeviceUtilities {
 
-    // Suppress default constructor for non-instantiability
+    //Suppress default constructor for non-instantiability
     private DeviceUtilities() {}
 
     public static void hideSoftKeyboard(Activity activity) {

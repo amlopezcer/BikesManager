@@ -27,7 +27,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 
 /**
- * Launcher activity to sign up or sign in users
+ * Activity to sign up or sign in users
  */
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener, AsyncTaskListener<String> {
 
@@ -41,7 +41,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         //Ensuring connection data is set, showing ConnectionDataDialog otherwise
         checkConnectionData();
 
-        initActivity();
+        setAppVersion(); //Set version textView with the current app version
+
+        Button buttonSignUp = (Button) findViewById(R.id.button_signUp);
+        buttonSignUp.setOnClickListener(this);
+        Button buttonSignIn = (Button) findViewById(R.id.button_signIn);
+        buttonSignIn.setOnClickListener(this);
+        ImageButton buttonConnectionSettings = (ImageButton) findViewById(R.id.imgButton_connection_settings);
+        buttonConnectionSettings.setOnClickListener(this);
     }
 
     private void checkConnectionData() {
@@ -52,23 +59,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             showConnectionDataDialog();
     }
 
+    //Show Dialog to select server IP and port
     private void showConnectionDataDialog() {
         DialogFragment dialog = new ConnectionDataDialogFragment();
         dialog.show(getFragmentManager(), ConnectionDataDialogFragment.CLASS_ID);
     }
 
-    private void initActivity() {
-        setAppVersion(); //Sets version textView with the current app version
-
-        Button buttonSignUp = (Button) findViewById(R.id.button_signUp);
-        buttonSignUp.setOnClickListener(this);
-        Button buttonSignIn = (Button) findViewById(R.id.button_signIn);
-        buttonSignIn.setOnClickListener(this);
-        ImageButton buttonConnectionSettings = (ImageButton) findViewById(R.id.imgButton_connection_settings);
-        buttonConnectionSettings.setOnClickListener(this);
-    }
-
-    //Sets version textView with the current app version
+    //Set version textView with the current app version
     private void setAppVersion() {
         TextView textViewVersion = (TextView) findViewById(R.id.textView_version_text);
         try {
@@ -86,11 +83,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         Intent intent;
         switch(v.getId()) {
             case R.id.button_signUp:
-                intent = new Intent(this, SignupActivity.class);
+                intent = new Intent(this, SignUpActivity.class);
                 startActivity(intent);
                 break;
             case R.id.button_signIn:
-                showSigninDataDialog();
+                showSignInDataDialog();
                 break;
             case R.id.imgButton_connection_settings:
                 showConnectionDataDialog();
@@ -98,15 +95,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    //Showing the dialog for the user to sign in
-    private void showSigninDataDialog() {
-        DialogFragment dialog = new SigninDialogFragment();
-        dialog.show(getFragmentManager(), SigninDialogFragment.CLASS_ID);
+    //Show the dialog for the user to sign in
+    private void showSignInDataDialog() {
+        DialogFragment dialog = new SignInDialogFragment();
+        dialog.show(getFragmentManager(), SignInDialogFragment.CLASS_ID);
     }
 
-    //When the user clicks "ok", the app signs him in (if the user exists and the password is correct)
-    public void doPositiveClick(String username, String password) {
-        this.mTrialPassword = new String(Hex.encodeHex(DigestUtils.sha1(password))); //Encrypt password
+    //When the user clicks positive button, the app signs him in (if the user exists and the password is correct)
+    public void doPositiveClickSignInDialog(String username, String password) {
+        this.mTrialPassword = new String(Hex.encodeHex(DigestUtils.sha1(password))); //Encrypt password (SHA1)
 
         //Get the user selected
         HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_USER);
@@ -117,7 +114,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void processServerResult(String result, int operation) {
         switch (operation) {
             case HttpConstants.OPERATION_GET:
-                if(result == null || result.isEmpty())
+                if(result == null || result.isEmpty()) //User not found
                     Toast.makeText(this,
                             i18n(R.string.toast_user_not_found),
                             Toast.LENGTH_SHORT).show();
@@ -150,14 +147,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    //Once the user has been validated, complete login by going to the map and filling the singleton instance
     private void completeLogin(BikeUser bikeUser) {
         //Save data consistently
         SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.file_user_preferences), Context.MODE_PRIVATE);
-        sharedPreferences.edit()
-                .putString(getString(R.string.text_user_name), bikeUser.getmUserName())
-                .putString(getString(R.string.text_password),  bikeUser.getmPassword())
-                .apply();
+        sharedPreferences.edit().
+                putString(getString(R.string.text_user_name), bikeUser.getmUserName()).
+                putString(getString(R.string.text_password),  bikeUser.getmPassword()).
+                apply();
 
+        //Update singleton instance
         BikeUser singletonInstance = BikeUser.getInstance();
         singletonInstance.copyServerData(bikeUser);
 

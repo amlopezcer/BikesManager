@@ -25,7 +25,7 @@ public class HttpDeleteWorker extends AsyncTask<String, Void, String> {
         this.context = context;
     }
 
-    //Starting a progress dialog for user feedback
+    //Start a progress dialog for user feedback
     @Override
     protected void onPreExecute() {
         progressDialog.setTitle(i18n(R.string.progress_title));
@@ -34,10 +34,10 @@ public class HttpDeleteWorker extends AsyncTask<String, Void, String> {
         progressDialog.show();
     }
 
-    //Processing data in background
+    //Process data in background
     @Override
     protected String doInBackground(String... urls) {
-        // params comes from the execute() call: params[0] is the url.
+        //Params come from the execute() call: params[0] is the url.
         try {
             return process(urls[0]);
         } catch (IOException ioe) {
@@ -46,7 +46,7 @@ public class HttpDeleteWorker extends AsyncTask<String, Void, String> {
         }
     }
 
-    //Notifying task termination
+    //Notify task termination
     @Override
     protected void onPostExecute(String result) {
         for(AsyncTaskListener<String> listener : listeners) {

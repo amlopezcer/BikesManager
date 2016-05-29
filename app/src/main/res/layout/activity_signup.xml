@@ -3,13 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.amlopezc.bikesmanager.SignupActivityFragment"
+    tools:context=".SignUpActivityFragment"
     android:background="@color/white">
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/fragmentSignup"
-        android:name="com.amlopezc.bikesmanager.SignupActivityFragment"
+        android:name="com.amlopezc.bikesmanager.SignUpActivityFragment"
         tools:layout="@layout/fragment_signup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

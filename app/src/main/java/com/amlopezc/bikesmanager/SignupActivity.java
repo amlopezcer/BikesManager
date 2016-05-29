@@ -27,31 +27,31 @@ import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 
 /**
- * Registers new users
+ * To register new users
  */
-public class SignupActivity extends AppCompatActivity implements AsyncTaskListener<String> {
+public class SignUpActivity extends AppCompatActivity implements AsyncTaskListener<String> {
 
-    private EditText editTextFullName, editTextEmail, editTextUsername, editTextPassword;
-    private TextInputLayout inputLayoutFullName, inputLayoutEmail, inputLayoutUsername, inputLayoutPassword;
+    private EditText mEditTextFullName, mEditTextEmail, mEditTextUsername, mEditTextPassword;
+    private TextInputLayout mInputLayoutFullName, mInputLayoutEmail, mInputLayoutUsername, mInputLayoutPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-        editTextFullName = (EditText) findViewById(R.id.editText_fullName);
-        editTextFullName.addTextChangedListener(new MyTextWatcher(editTextFullName));
-        editTextEmail = (EditText) findViewById(R.id.editText_mail);
-        editTextEmail.addTextChangedListener(new MyTextWatcher(editTextEmail));
-        editTextUsername = (EditText) findViewById(R.id.editText_sign_username);
-        editTextUsername.addTextChangedListener(new MyTextWatcher(editTextUsername));
-        editTextPassword = (EditText) findViewById(R.id.editText_password);
-        editTextPassword.addTextChangedListener(new MyTextWatcher(editTextPassword));
+        mEditTextFullName = (EditText) findViewById(R.id.editText_fullName);
+        mEditTextFullName.addTextChangedListener(new MyTextWatcher(mEditTextFullName));
+        mEditTextEmail = (EditText) findViewById(R.id.editText_mail);
+        mEditTextEmail.addTextChangedListener(new MyTextWatcher(mEditTextEmail));
+        mEditTextUsername = (EditText) findViewById(R.id.editText_sign_username);
+        mEditTextUsername.addTextChangedListener(new MyTextWatcher(mEditTextUsername));
+        mEditTextPassword = (EditText) findViewById(R.id.editText_password);
+        mEditTextPassword.addTextChangedListener(new MyTextWatcher(mEditTextPassword));
 
-        inputLayoutFullName = (TextInputLayout) findViewById(R.id.inputLayout_fullName);
-        inputLayoutEmail = (TextInputLayout) findViewById(R.id.inputLayout_mail);
-        inputLayoutUsername = (TextInputLayout) findViewById(R.id.inputLayout_sign_username);
-        inputLayoutPassword = (TextInputLayout) findViewById(R.id.inputLayout_password);
+        mInputLayoutFullName = (TextInputLayout) findViewById(R.id.inputLayout_fullName);
+        mInputLayoutEmail = (TextInputLayout) findViewById(R.id.inputLayout_mail);
+        mInputLayoutUsername = (TextInputLayout) findViewById(R.id.inputLayout_sign_username);
+        mInputLayoutPassword = (TextInputLayout) findViewById(R.id.inputLayout_password);
     }
 
     @Override
@@ -83,41 +83,42 @@ public class SignupActivity extends AppCompatActivity implements AsyncTaskListen
 
     private void submit() {
         //Some checks over the text fields
-        if(!validateInput(editTextFullName, inputLayoutFullName))
+        if(!validateInput(mEditTextFullName, mInputLayoutFullName))
             return;
-        if(!validateInput(editTextEmail, inputLayoutEmail))
+        if(!validateInput(mEditTextEmail, mInputLayoutEmail))
             return;
-        if(!validateInput(editTextUsername, inputLayoutUsername))
+        if(!validateInput(mEditTextUsername, mInputLayoutUsername))
             return;
-        if(!validateInput(editTextPassword, inputLayoutPassword))
+        if(!validateInput(mEditTextPassword, mInputLayoutPassword))
             return;
 
         //everything goes fine so far
         registerUser();
     }
 
+    //Complete the singleton instance and the POST with the server
     private void registerUser() {
-        String userName = editTextUsername.getText().toString().trim();
-        String password = editTextPassword.getText().toString().trim();
+        String userName = mEditTextUsername.getText().toString().trim();
+        String password = mEditTextPassword.getText().toString().trim();
         String passwordSHA1 = new String(Hex.encodeHex(DigestUtils.sha1(password)));
-        String fullName = editTextFullName.getText().toString().trim();
-        String email = editTextEmail.getText().toString().trim();
+        String fullName = mEditTextFullName.getText().toString().trim();
+        String email = mEditTextEmail.getText().toString().trim();
 
         BikeUser bikeUser = BikeUser.getInstance();
         bikeUser.setNewUserData(userName, passwordSHA1, fullName, email);
 
         //Save data consistently
         SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.file_user_preferences), Context.MODE_PRIVATE);
-        sharedPreferences.edit()
-                .putString(getString(R.string.text_user_name), userName)
-                .putString(getString(R.string.text_password),  passwordSHA1)
-                .apply();
+        sharedPreferences.edit().
+                putString(getString(R.string.text_user_name), userName).
+                putString(getString(R.string.text_password),  passwordSHA1).
+                apply();
 
         HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_USER);
         httpDispatcher.doPost(this, bikeUser);
     }
 
-    //Method to validate text fields data (not empty, adequate format for the email...)
+    //Validate text fields data (not empty, adequate format for the email...)
     private boolean validateInput(EditText editText, TextInputLayout inputLayout) {
         String editTextString = editText.getText().toString().trim();
         boolean badString = editTextString.isEmpty();
@@ -136,7 +137,7 @@ public class SignupActivity extends AppCompatActivity implements AsyncTaskListen
         return true;
     }
 
-    //Adapting the error message to the field in trouble
+    //Adapt the error message to the field in trouble
     private String getErrorMsg(int id) {
         String errorMsg;
         switch(id) {
@@ -159,7 +160,6 @@ public class SignupActivity extends AppCompatActivity implements AsyncTaskListen
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
     }
 
-    //Method to process the server result
     @Override
     public void processServerResult(String result, int operation) {
         switch (operation) {
@@ -171,12 +171,11 @@ public class SignupActivity extends AppCompatActivity implements AsyncTaskListen
                         startActivity(intent);
                         break;
                     case HttpConstants.SERVER_RESPONSE_KO:
-                        //Undo changes
+                        //User cannot be created, undo changes and notify
                         SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.file_user_preferences), Context.MODE_PRIVATE);
-                        sharedPreferences.edit()
-                                .putString(getString(R.string.text_user_name), "")
-                                .putString(getString(R.string.text_password), "")
-                                .apply();
+                        sharedPreferences.edit().putString(getString(R.string.text_user_name), "").
+                                putString(getString(R.string.text_password), "").
+                                apply();
 
                         Toast.makeText(this,
                                 i18n(R.string.toast_user_signup_error),
@@ -212,16 +211,16 @@ public class SignupActivity extends AppCompatActivity implements AsyncTaskListen
         public void afterTextChanged(Editable editable) {
             switch(view.getId()) {
                 case R.id.editText_fullName:
-                    validateInput(editTextFullName, inputLayoutFullName);
+                    validateInput(mEditTextFullName, mInputLayoutFullName);
                     break;
                 case R.id.editText_mail:
-                    validateInput(editTextEmail, inputLayoutEmail);
+                    validateInput(mEditTextEmail, mInputLayoutEmail);
                     break;
                 case R.id.editText_sign_username:
-                    validateInput(editTextUsername, inputLayoutUsername);
+                    validateInput(mEditTextUsername, mInputLayoutUsername);
                     break;
                 case R.id.editText_password:
-                    validateInput(editTextPassword, inputLayoutPassword);
+                    validateInput(mEditTextPassword, mInputLayoutPassword);
                     break;
             }
         }

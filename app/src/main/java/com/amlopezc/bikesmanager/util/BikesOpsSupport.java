@@ -15,12 +15,12 @@ import java.util.Locale;
  */
 public final class BikesOpsSupport {
 
-    private static final float BASIC_FARE = 1.00f;   // Basic fare, it will change depending on the availability
+    private static final float BASIC_FARE = 1.00f;  // Basic fare, it will change depending on the availability
 
-    // Suppress default constructor for non-instantiability
+    //Suppress default constructor for non-instantiability
     private BikesOpsSupport() {}
 
-    //Getting current fare for the station, depending on the availability
+    //Get current fare for the station, depending on the availability
     public static float getCurrentFare(BikeStation bikeStation) {
         int availability = getStationAvailability(bikeStation);
         float currentFare;
@@ -42,12 +42,12 @@ public final class BikesOpsSupport {
         return bd;
     }
 
-    //Getting station availability
+    //Get station availability
     public static int getStationAvailability(BikeStation bikeStation) {
         return (bikeStation.getmAvailableBikes()*100) / bikeStation.getmTotalBikes();
     }
 
-    //Updating station status, will return null if the op can't be completed
+    //Update station status, will return null if the op can't be completed
     public static BikeStation updateBikeStation(String operation, BikeStation bikeStation) {
         boolean isOperationPossible = false; //The bike station status allows to perform the operation?
 
@@ -77,7 +77,7 @@ public final class BikesOpsSupport {
         return null;
     }
 
-    //Formatting date data to insert it correctly in the Database, format: yyyy-mm-ddThh:mm:ss+01:00
+    //Format date data to insert it correctly in the Database, format: yyyy-mm-ddThh:mm:ss+01:00
     private static String getCurrentDateFormatted() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);

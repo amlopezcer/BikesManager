@@ -12,11 +12,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
-public class SigninDialogFragment extends DialogFragment {
+/**
+ * Dialog to allow the user to sign in
+ */
+public class SignInDialogFragment extends DialogFragment {
 
 
-    //For LoginActivity when calling and showing this dialog
-    public static final String CLASS_ID = "SigninDialogFragment";
+    //For the caller activity
+    public static final String CLASS_ID = "SignInDialogFragment";
 
     private EditText mEditTextUsername;
     private EditText mEditTextPassword;
@@ -33,18 +36,18 @@ public class SigninDialogFragment extends DialogFragment {
         mEditTextUsername = (EditText) view.findViewById(R.id.editText_dialog_username);
         mEditTextPassword = (EditText) view.findViewById(R.id.editText_dialog_password);
 
-        builder.setMessage(i18n(R.string.builder_sign_in_msg))
-                .setView(view)
-                .setPositiveButton(i18n(R.string.builder_ok_positive),
+        builder.setMessage(i18n(R.string.builder_sign_in_msg)).
+                setView(view).
+                setPositiveButton(i18n(R.string.builder_ok_positive),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 String username = mEditTextUsername.getText().toString().trim();
                                 String password = mEditTextPassword.getText().toString().trim();
                                 //Try to log the user in
-                                ((LoginActivity) getActivity()).doPositiveClick(username, password);
+                                ((LoginActivity) getActivity()).doPositiveClickSignInDialog(username, password);
                             }
-                        })
-                .setNegativeButton(i18n(R.string.text_cancel),
+                        }).
+                setNegativeButton(i18n(R.string.text_cancel),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 dialog.cancel();
@@ -53,7 +56,7 @@ public class SigninDialogFragment extends DialogFragment {
 
         final AlertDialog dialog = builder.create();
         dialog.show();
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false); //disabled by default.
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false); //Disabled by default.
 
         //Code to enable positive button only when all data have been provided
         final TextWatcher watcher = new TextWatcher() {
@@ -71,7 +74,7 @@ public class SigninDialogFragment extends DialogFragment {
             }
         };
 
-        //All text fields must be completed to enable positive button, so the TextWatcher is listening to all of them
+        //All text fields must be completed to enable positive button
         mEditTextUsername.addTextChangedListener(watcher);
         mEditTextPassword.addTextChangedListener(watcher);
 

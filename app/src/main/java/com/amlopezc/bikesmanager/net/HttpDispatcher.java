@@ -20,7 +20,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * Manages HTTP connections.
  */
-
 public class HttpDispatcher {
 
     private final Context context; //Context from the caller Activity, needed for Toasts, progress dialog...
@@ -53,7 +52,7 @@ public class HttpDispatcher {
         if(method == null) // null means no more arguments are required: findAll
             url = builder.toString();
         else
-            url = builder.append("/").append(method).toString(); //Method to execute or particular ID to get
+            url = builder.append("/").append(method).toString(); //Method (count, for example) to execute or particular ID to get
 
         if (isOnline()) {
             Log.i(this.getClass().getCanonicalName(), "Connected to " + url);
@@ -73,9 +72,9 @@ public class HttpDispatcher {
         builder.append("/");
 
         String url;
-        if(method == null)
+        if(method == null) //User update
             url = builder.append(bean.getServerId()).toString(); //ID to update
-        else
+        else //Station update (method = leave or take)
             url = builder.append(method).append("/").append(bean.getServerId()).toString(); //ID to update
 
         if (isOnline()) {
@@ -123,7 +122,7 @@ public class HttpDispatcher {
         }
     }
 
-    //Checking whether net is reachable
+    //Check whether net is reachable
     private boolean isOnline () {
         ConnectivityManager connMgr = (ConnectivityManager)
                 context.getSystemService(Context.CONNECTIVITY_SERVICE);

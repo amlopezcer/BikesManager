@@ -31,7 +31,7 @@ public class HttpGetWorker extends AsyncTask<String, Void, String> {
         progressDialog = new ProgressDialog(context);
     }
 
-    //Starting a progress dialog for user feedback
+    //Start a progress dialog for user feedback
     @Override
     protected void onPreExecute() {
         progressDialog.setTitle(i18n(R.string.progress_title));
@@ -40,10 +40,10 @@ public class HttpGetWorker extends AsyncTask<String, Void, String> {
         progressDialog.show();
     }
 
-    //Processing data in background
+    //Process data in background
     @Override
     protected String doInBackground(String... urls) {
-        // params comes from the execute() call in the dispatcher; params[0] is the url.
+        //Param come from the execute() call in the dispatcher; params[0] is the url.
         try {
             return process(urls[0]);
         } catch (IOException ioe) {
@@ -52,7 +52,7 @@ public class HttpGetWorker extends AsyncTask<String, Void, String> {
         }
     }
 
-    //Notifying task termination
+    //Notify task termination
     @Override
     protected void onPostExecute(String result) {
         for(AsyncTaskListener<String> listener : listeners) {
@@ -92,7 +92,7 @@ public class HttpGetWorker extends AsyncTask<String, Void, String> {
         }
     }
 
-    // Reads an InputStream and converts it to a String.
+    //Read an InputStream and converts it to a String.
     private String readIt(InputStream stream)  throws IOException {
         StringBuilder sb = new StringBuilder();
         BufferedReader br = new BufferedReader(new InputStreamReader(stream));

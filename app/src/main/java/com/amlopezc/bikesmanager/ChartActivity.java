@@ -33,7 +33,6 @@ import java.util.List;
 /**
  * Shows a pie chart with the current bike stations state
  */
-
 public class ChartActivity extends AppCompatActivity implements AsyncTaskListener<String> {
 
     private PieChart mChart;
@@ -67,8 +66,7 @@ public class ChartActivity extends AppCompatActivity implements AsyncTaskListene
             }
 
             @Override
-            public void onNothingSelected() {
-            }
+            public void onNothingSelected() {}
         });
     }
 
@@ -77,10 +75,10 @@ public class ChartActivity extends AppCompatActivity implements AsyncTaskListene
         super.onResume();
 
         //Getting update data form the server
-        fetchUpdatedServerData();
+        getStationsUpdatedServerData();
     }
 
-    private void fetchUpdatedServerData() {
+    private void getStationsUpdatedServerData() {
         HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_STATION);
         httpDispatcher.doGet(this, HttpConstants.GET_FIND_ALL);
     }
@@ -98,7 +96,7 @@ public class ChartActivity extends AppCompatActivity implements AsyncTaskListene
         int id = item.getItemId();
 
         if (id == R.id.action_refresh) {
-            fetchUpdatedServerData();
+            getStationsUpdatedServerData();
             return true;
         }
 

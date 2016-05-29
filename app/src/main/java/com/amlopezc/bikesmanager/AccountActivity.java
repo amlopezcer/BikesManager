@@ -19,15 +19,21 @@ import com.amlopezc.bikesmanager.net.HttpConstants;
 import com.amlopezc.bikesmanager.net.HttpDispatcher;
 import com.amlopezc.bikesmanager.util.AsyncTaskListener;
 
+/**
+ * Class to read the profile / account. It manages additional operations such as
+ * booking cancels, money depositions, account elimination or access to account modification.
+ */
+
 public class AccountActivity extends AppCompatActivity implements View.OnClickListener, AsyncTaskListener<String> {
 
-    private BikeUser mBikeUser;
+    private BikeUser mBikeUser; //Current logged user (singleton instance)
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account);
 
+        //Set activity title with the username
         SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.file_user_preferences), Context.MODE_PRIVATE);
         String username = sharedPreferences.getString(getString(R.string.text_user_name), "");
         setTitle(username);
@@ -39,10 +45,11 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         Button buttonDeleteAccount = (Button)findViewById(R.id.button_delete_account);
         buttonDeleteAccount.setOnClickListener(this);
 
-        initData();
+        initBookingData();
     }
 
-    private void initData() {
+    //Initialization of some dynamic data realted to bookings
+    private void initBookingData() { //TODO: Modificar para poner una cuenta atrás, también tengo que repensarlo un pooc y poner botones de cancelación, esto es temporal
         mBikeUser = BikeUser.getInstance();
 
         TextView textView;
@@ -63,7 +70,11 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         } else
             textView.setText("No tienes ningún anclaje reservado");
 
-        textView = (TextView) findViewById(R.id.textView_profile_balance);
+        updateCurrentBalance();
+    }
+
+    private void updateCurrentBalance() {
+        TextView textView = (TextView) findViewById(R.id.textView_profile_balance);
         textView.setText(i18n(R.string.text_format_money, mBikeUser.getmBalance()));
     }
 
@@ -84,21 +95,23 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
+    //Show the DepositMoneyDialog to allow the user to select the amount of money to deposit
     private void showDepositMoneyDialog() {
         DialogFragment dialog = new DepositMoneyDialogFragment();
         dialog.show(getFragmentManager(), DepositMoneyDialogFragment.CLASS_ID);
     }
 
-    public void doPositiveClick(String deposit) {
+    //Update current balance and user instance in case the deposit has been confirmed
+    public void doPositiveClickDepositMoneyDialog(String deposit) {
         float newBalance = mBikeUser.getmBalance() + Float.parseFloat(deposit);
         mBikeUser.setmBalance(newBalance);
 
-        //Update user
+        //Update the user in the server
         HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_USER);
         httpDispatcher.doPut(this, mBikeUser, null);
     }
 
-    //Dialog to confirm operation
+    //Dialog to confirm delete account operation
     private void confirmDeleteAccount() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(i18n(R.string.dialog_delete_account)).
@@ -134,13 +147,13 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     public void processServerResult(String result, int operation) {
         //Process the server response
         switch (operation) {
-            case HttpConstants.OPERATION_PUT:
+            case HttpConstants.OPERATION_PUT: //User update
                 Toast.makeText(this,
                         i18n(R.string.confirm_deposit),
                         Toast.LENGTH_SHORT).show();
-                initData();
+                updateCurrentBalance();
                 break;
-            case HttpConstants.OPERATION_DELETE:
+            case HttpConstants.OPERATION_DELETE: //User deletion
                 deleteLocalUser(); //When the server operation is done, reset local configurations
                 break;
         }
@@ -152,10 +165,10 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         bikeUser.resetInstance();
 
         SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.file_user_preferences), Context.MODE_PRIVATE);
-        sharedPreferences.edit()
-                .putString(getString(R.string.text_user_name), "")
-                .putString(getString(R.string.text_password), "")
-                .apply();
+        sharedPreferences.edit().
+                putString(getString(R.string.text_user_name), "").
+                putString(getString(R.string.text_password), "").
+                apply();
 
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);

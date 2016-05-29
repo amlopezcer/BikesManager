@@ -52,7 +52,7 @@ public class ListActivity extends AppCompatActivity implements AsyncTaskListener
         super.onResume();
 
         //Getting update data form the server
-        fetchUpdatedServerData();
+        getStationsUpdatedServerData();
     }
 
     @Override
@@ -70,7 +70,7 @@ public class ListActivity extends AppCompatActivity implements AsyncTaskListener
         // Action bar item click handler
         switch (item.getItemId()) {
             case R.id.action_refresh:
-                fetchUpdatedServerData();
+                getStationsUpdatedServerData();
                 return true;
             case R.id.action_collapse: //Collapse ExpandableList
                 collapseAll();
@@ -83,7 +83,7 @@ public class ListActivity extends AppCompatActivity implements AsyncTaskListener
         }
     }
 
-    private void fetchUpdatedServerData() {
+    private void getStationsUpdatedServerData() {
         HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_STATION);
         httpDispatcher.doGet(this, HttpConstants.GET_FIND_ALL);
     }
@@ -158,16 +158,16 @@ public class ListActivity extends AppCompatActivity implements AsyncTaskListener
         if(id.isEmpty())
             return; //Nothing to search
 
-        DeviceUtilities.hideSoftKeyboard(this); //Hides the keyboard
+        DeviceUtilities.hideSoftKeyboard(this); //Hide the keyboard
 
         mTextViewSearch.getText().clear();
 
         int groupPosition = mListDataHeader.indexOf(id);
-        if (groupPosition > 0) { //Something have been found
+        if (groupPosition > 0) { //Something has been found
             collapseAll();
             mExpandableListView.setSelectedGroup(groupPosition);
             mExpandableListView.expandGroup(groupPosition); //Expand the group, now the list has 1 more element
-            mExpandableListView.smoothScrollToPosition(groupPosition + 1); // Navigate to the new element
+            mExpandableListView.smoothScrollToPosition(groupPosition + 1); //Navigate to the new element
         } else {
             Toast.makeText(this,
                     i18n(R.string.toast_id_not_found,id),

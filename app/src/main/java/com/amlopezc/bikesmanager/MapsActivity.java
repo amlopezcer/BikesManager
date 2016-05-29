@@ -45,24 +45,24 @@ import com.cocosw.bottomsheet.BottomSheet;
 
 /**
  * Main layout, show a google map with the stations as a markers. Main features:
- * - Take and leave bikes
+ * - Take, leave, book bikes
  * - Connect to google maps app to enable all of its features
- * - Navigate to other layouts (chart or expandable list)
- * - Access to change data connection via Action Bar
+ * - Navigate to other related layout (such as the chart or expandable list view)
+ * - Via Action Bar: change settings, read and update account, log out...
  */
 
 public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarkerClickListener,
         AsyncTaskListener<String> {
 
-    private final int LIST_REQUEST_CODE = 1;        //Intent code when connecting to the ListActivity
+    private final int LIST_REQUEST_CODE = 1; //Intent code to connect to the ListActivity
+    private final int MY_LOCATION_REQUEST_CODE = 1; //To request location permission
 
-    private final int MY_LOCATION_REQUEST_CODE = 1; //To request for location permission
-
-    //LatLngBounds that includes Madrid
+    //LatLngBounds that includes Madrid to initialize map camera
     private final LatLngBounds MADRID  = new LatLngBounds(new LatLng(40.38, -3.72), new LatLng(40.48, -3.67));
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private HashMap<String, BikeStation> mStations;
+    private BikeUser mBikeUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,9 +75,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         mMap.setOnMarkerClickListener(this);
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
-        //Request for location permission, turning on location services if granted
+        //Request location permission, turning on location services if granted
         requestLocationPermission();
-
     }
 
     private void requestLocationPermission() {
@@ -121,14 +120,14 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
             showConnectionDataDialog();
         else { //Getting update data form the server
             initUserIfNotSet();
-            fetchUpdatedServerData();
+            getStationsUpdatedServerData();
         }
     }
 
-    //Set the user with update info form the server
+    //Set the user with updated info from the server
     private void initUserIfNotSet() {
-        BikeUser bikeUser = BikeUser.getInstance();
-        if(bikeUser.getmUserName() == null || bikeUser.getmUserName().isEmpty())
+        mBikeUser = BikeUser.getInstance();
+        if(mBikeUser.getmUserName() == null || mBikeUser.getmUserName().isEmpty())
             updateUser();
     }
 
@@ -140,7 +139,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         httpDispatcher.doGet(this, String.format(HttpConstants.GET_FIND_USERID, username)); //path: .../user/{username}
     }
 
-    private void fetchUpdatedServerData() {
+    //Get updated server data related to bike stations
+    private void getStationsUpdatedServerData() {
         HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_STATION);
         httpDispatcher.doGet(this, HttpConstants.GET_FIND_ALL);
     }
@@ -150,9 +150,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         dialog.show(getFragmentManager(), ConnectionDataDialogFragment.CLASS_ID);
     }
 
-    public void doPositiveClick() {
-        Log.i(this.getClass().getCanonicalName(), "Positive button clicked");
-        fetchUpdatedServerData();
+    public void doPositiveClickConnectionDataDialog() {
+        getStationsUpdatedServerData();
     }
 
     @Override
@@ -181,7 +180,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                 startActivity(intent);
                 return true;
             case R.id.action_refresh: //Updates data
-                fetchUpdatedServerData();
+                getStationsUpdatedServerData();
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(MADRID.getCenter(), 12)); //Move the camera to the init position for user help
                 return true;
             case R.id.action_settings: //Navigates to the SettingsActivity
@@ -204,7 +203,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                         i18n(R.string.item_text_logout),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                logout();
+                                logOut();
                                 dialog.cancel();
                             }
                         }).
@@ -220,15 +219,15 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         alertDialog.show();
     }
 
-    private void logout() {
+    //Log the user out and go to he login activity
+    private void logOut() {
         SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.file_user_preferences), Context.MODE_PRIVATE);
-        sharedPreferences.edit()
-                .putString(getString(R.string.text_user_name), "")
-                .putString(getString(R.string.text_password), "")
-                .apply();
+        sharedPreferences.edit().
+                putString(getString(R.string.text_user_name), "").
+                putString(getString(R.string.text_password), "").
+                apply();
 
-        BikeUser bikeUser = BikeUser.getInstance();
-        bikeUser.resetInstance();
+        mBikeUser.resetInstance();
 
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
@@ -253,8 +252,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
             // Try to obtain the map from the SupportMapFragment.
-            mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
-                    .getMap();
+            mMap = ((SupportMapFragment) getSupportFragmentManager().
+                    findFragmentById(R.id.map)).
+                    getMap();
             // Check if we were successful in obtaining the map.
             if (mMap != null) {
                 setUpMap();
@@ -262,35 +262,36 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         }
     }
 
-    //Setting some map features: zoom + camera
+    //Set some map features: zoom + camera
     private void setUpMap() {
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(MADRID.getCenter(), 12));
     }
 
-    //Updating markers with current server data
+    //Update markers with current server data
     private void updateMarkers() {
         mMap.clear(); //Clear the map and redraw all markers
         for (Map.Entry<String, BikeStation> entry : mStations.entrySet())
-            mMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(
+            mMap.addMarker(new MarkerOptions().
+                    position(new LatLng(
                             entry.getValue().getmLatitude(),
-                            entry.getValue().getmLongitude()))
-                    .title(entry.getKey())
-                    .snippet(setMarkerSnippet(entry.getValue()))
-                    .icon(getAvailabilityColor(entry.getValue())));
+                            entry.getValue().getmLongitude())).
+                    title(entry.getKey()).
+                    snippet(setMarkerSnippet(entry.getValue())).
+                    icon(getAvailabilityColor(entry.getValue())));
     }
 
+    //Set marker snippets with some info from the station
     private String setMarkerSnippet(BikeStation bikeStation) {
         StringBuilder builder = new StringBuilder(bikeStation.getAvailabilityMessage());
-        return builder.append(" | ")
-                .append(i18n(R.string.text_fare))
-                .append(" ")
-                .append(String.format("%.2f", BikesOpsSupport.getCurrentFare(bikeStation)))
-                .append("€").toString();
+        return builder.append(" | ").
+                append(i18n(R.string.text_fare)).
+                append(" ").
+                append(String.format("%.2f", BikesOpsSupport.getCurrentFare(bikeStation))).
+                append("€").toString();
     }
 
-    //Setting marker colors depending on the availability (green to red)
+    //Set marker colors depending on the availability (green to red)
     private BitmapDescriptor getAvailabilityColor(BikeStation bikeStation) {
         int availability = BikesOpsSupport.getStationAvailability(bikeStation);
 
@@ -302,11 +303,11 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
             return BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
     }
 
-    //Processing intents responses
+    //Process intents responses
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        fetchUpdatedServerData();
-        //Ensuring there is something to read
+        getStationsUpdatedServerData();
+        //Ensure there is something to read
         if (data == null)
             return;
         switch (requestCode) {
@@ -325,7 +326,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         }
     }
 
-    //Managing the click on the marker to do whatever with the station selected with a BottomSheet
+    //Manage the click on the marker to do whatever with the station selected with a BottomSheet
     @Override
     public boolean onMarkerClick(final Marker marker) {
         new BottomSheet.Builder(this, R.style.BottomSheet_StyleDialog).
@@ -353,9 +354,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         return false;
     }
 
-    //Taking or leaving bikes with the server
+    //Take or leave bikes with the server
     private void modifyBike(Marker marker, String operation) {
-        fetchUpdatedServerData(); //Getting updated data firstly. Server manages concurrency.
+        getStationsUpdatedServerData(); //Get updated data firstly. Server manages concurrency.
         BikeStation bikeStation = BikesOpsSupport.updateBikeStation(operation, mStations.get(marker.getTitle()));
 
         //If the op can be done, update the server
@@ -368,7 +369,6 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                     Toast.LENGTH_SHORT).show();
     }
 
-    //Process the server response
     @Override
     public void processServerResult(String result, int operation) {
         switch (operation) {
@@ -405,11 +405,12 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                                 Toast.LENGTH_SHORT).show();
                 }
 
-                fetchUpdatedServerData();
+                getStationsUpdatedServerData();
                 break;
         }
     }
 
+    //Manage user data received form the server by updating local singleton instance
     private void manageUserData(String result) throws Exception {
         //Get the user
         HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_USER);
@@ -417,10 +418,10 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         BikeUser bikeUser = mapper.readValue(result, BikeUser.class);
 
         //Update the singleton local instance
-        BikeUser singletonInstance = BikeUser.getInstance();
-        singletonInstance.copyServerData(bikeUser);
+        mBikeUser.copyServerData(bikeUser);
     }
 
+    //Manage Station data received form the server by updating local data and layout
     private void manageStationData(String result) throws Exception {
         HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_STATION);
         ObjectMapper mapper = httpDispatcher.getMapper();
@@ -430,11 +431,6 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         updateLocalLayout();
     }
 
-    //Update local layout (update map = update markers)
-    private void updateLocalLayout() {
-        updateMarkers();
-    }
-
     //Read server data to update current state
     private void readData(List<BikeStation> bikeStationList) {
         mStations = new HashMap<>();
@@ -442,6 +438,11 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         for(BikeStation bikeStation : bikeStationList)
             mStations.put(String.format(headerTemplate, bikeStation.getmId(),
                     bikeStation.getmAddress()), bikeStation);
+    }
+
+    //Update local layout (update map = update markers)
+    private void updateLocalLayout() {
+        updateMarkers();
     }
 
     //Internationalization method

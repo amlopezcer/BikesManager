@@ -6,9 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class SignupActivityFragment extends Fragment {
+public class SignUpActivityFragment extends Fragment {
 
-    public SignupActivityFragment() {}
+    public SignUpActivityFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

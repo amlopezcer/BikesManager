@@ -12,9 +12,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
+/**
+ * Dialog to allow the user to introduce the amount of money to deposit
+ */
 public class DepositMoneyDialogFragment extends DialogFragment {
 
-    //For MapsActivity when calling and showing this dialog
+    //For the caller activity
     public static final String CLASS_ID = "DepositMoneyDialogFragment";
 
     private EditText mEditText_money;
@@ -30,16 +33,16 @@ public class DepositMoneyDialogFragment extends DialogFragment {
 
         mEditText_money = (EditText) view.findViewById(R.id.editText_depositMoney);
 
-        builder.setMessage(i18n(R.string.builder_deposit))
-                .setView(view)
-                .setPositiveButton(i18n(R.string.builder_deposit_positive),
+        builder.setMessage(i18n(R.string.builder_deposit)).
+                setView(view).
+                setPositiveButton(i18n(R.string.builder_deposit_positive),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 String deposit = mEditText_money.getText().toString().trim();
-                                ((AccountActivity) getActivity()).doPositiveClick(deposit);
+                                ((AccountActivity) getActivity()).doPositiveClickDepositMoneyDialog(deposit);
                             }
-                        })
-                .setNegativeButton(i18n(R.string.text_cancel),
+                        }).
+                setNegativeButton(i18n(R.string.text_cancel),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 dialog.cancel();

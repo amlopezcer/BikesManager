@@ -46,7 +46,7 @@ public abstract class JSONBean implements PropertyChangeListener {
         md5 = hashCode.toString();
     }
 
-    public String getMd5(){return md5;}
+    public String getMd5(){ return md5; }
 
     public abstract int getServerId();
 

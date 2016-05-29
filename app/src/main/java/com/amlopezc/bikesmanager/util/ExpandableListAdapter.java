@@ -102,7 +102,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Returning to the maps activity with the chosen coordinates
+                //Return to the maps activity with the chosen coordinates
                 Bundle bundle = new Bundle();
                 bundle.putDouble(BUNDLE_LAT, actual.getmLatitude());
                 bundle.putDouble(BUNDLE_LONG, actual.getmLongitude());

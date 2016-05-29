@@ -8,7 +8,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 
-
+/**
+ * Launcher activity which shows a logo and decides which activity goes then
+ */
 public class SplashActivity extends AppCompatActivity  {
 
     // Duration of wait
@@ -21,13 +23,13 @@ public class SplashActivity extends AppCompatActivity  {
 
         final Intent intent;
 
-        //Check if a user is already logged
+        //Check if a user is already logged and init the intent to go to the appropriate class
         if(isUserLogged())
             intent = new Intent(this, MapsActivity.class);
         else
             intent = new Intent(this, LoginActivity.class);
 
-        // New Handler to start the new activity and close this Splash-Screen after some seconds
+        //New Handler to start the new activity and close this Splash-Screen after some seconds
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {

@@ -16,10 +16,9 @@ import android.widget.EditText;
 /**
  * Shows the dialog to set connection data (IP + port) if any of them is not
  */
-
 public class ConnectionDataDialogFragment extends DialogFragment {
 
-    //For the Activity to call and show this dialog
+    //For the caller activity
     public static final String CLASS_ID = "ConnectionDataDialogFragment";
 
     private EditText mEditText_server;
@@ -43,37 +42,35 @@ public class ConnectionDataDialogFragment extends DialogFragment {
 
         fillData(); //Get default data
 
-        builder.setMessage(i18n(R.string.builder_connection_data_msg))
-                .setView(view)
-                .setPositiveButton(i18n(R.string.text_set),
+        builder.setMessage(i18n(R.string.builder_connection_data_msg)).
+                setView(view).
+                setPositiveButton(i18n(R.string.text_set),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 // Getting and setting data when "set" button is clicked
                                 String data = mEditText_server.getText().toString().trim();
-                                mDefaultSharedPreferences.edit()
-                                    .putString(SettingsActivityFragment.KEY_PREF_SYNC_SERVER, data)
-                                    .apply();
+                                mDefaultSharedPreferences.edit().
+                                        putString(SettingsActivityFragment.KEY_PREF_SYNC_SERVER, data).
+                                        apply();
 
                                 data = mEditText_port.getText().toString().trim();
-                                mDefaultSharedPreferences.edit()
-                                    .putString(SettingsActivityFragment.KEY_PREF_SYNC_PORT, data)
-                                    .apply();
+                                mDefaultSharedPreferences.edit().
+                                        putString(SettingsActivityFragment.KEY_PREF_SYNC_PORT, data).
+                                        apply();
 
-                            //If the caller is the MapsActivity, update its layout, no need to check
-                            // if this comes from LoginActivity because in that class no further action
-                            // is required
+                            //If the caller is MapsActivity, update its layout, no need to check
+                            // if this comes from LoginActivity because in that class no further
+                            // action is required
                             if (getActivity().getComponentName().getClassName().contains("Maps"))
-                                ((MapsActivity) getActivity()).doPositiveClick();
+                                ((MapsActivity) getActivity()).doPositiveClickConnectionDataDialog();
                             }
                         });
 
         final AlertDialog dialog = builder.create();
         dialog.show();
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                .setEnabled(!mEditText_server.getText().toString().trim().isEmpty() &&
-                        !mEditText_port.getText().toString().trim().isEmpty());
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false); // Disabled by default
 
-        //Code to enable "Set" button only when all data have been provided
+        //Code to enable positive button only when all data have been provided
         final TextWatcher watcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -89,7 +86,7 @@ public class ConnectionDataDialogFragment extends DialogFragment {
             }
         };
 
-        //All text fields must be completed to enable "Set", so the TextWatcher is listening to all of them
+        //All text fields must be completed to enable positive button
         mEditText_server.addTextChangedListener(watcher);
         mEditText_port.addTextChangedListener(watcher);
 
