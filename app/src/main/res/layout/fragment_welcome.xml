@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context="com.amlopezc.bikesmanager.WelcomeActivityFragment"
     android:background="@color/primaryColor"
-    android:padding="@dimen/activity_margin">
+    android:padding="@dimen/activity_padding">
 
     <TextView android:id="@+id/textView_welcome"
         android:layout_width="wrap_content"
@@ -45,8 +45,8 @@
         android:layout_below="@+id/textView_welcomePresent"
         android:layout_centerInParent="true"
         android:gravity="center"
-        android:layout_marginTop="@dimen/main_widgets_margin"
-        android:layout_marginBottom="@dimen/main_widgets_margin"
+        android:layout_marginTop="@dimen/widgets_large_margin"
+        android:layout_marginBottom="@dimen/widgets_large_margin"
         android:text="@string/text_format_money"
         android:textColor="@color/accentColor"
         android:textStyle="bold"/>
@@ -56,7 +56,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView_welcomeMoney"
         android:layout_centerInParent="true"
-        android:layout_marginTop="@dimen/main_widgets_margin"
+        android:layout_marginTop="@dimen/widgets_large_margin"
         android:text="@string/button_great"
         android:textAllCaps="false"
         android:textColor="@color/darkPrimaryColor"

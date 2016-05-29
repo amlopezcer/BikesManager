@@ -85,9 +85,8 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                 showDepositMoneyDialog();
                 break;
             case R.id.button_edit_profile:
-                Toast.makeText(this,
-                        "edit",
-                        Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, EditProfileActivity.class);
+                startActivity(intent);
                 break;
             case R.id.button_delete_account:
                 confirmDeleteAccount();

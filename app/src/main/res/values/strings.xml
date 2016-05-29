@@ -9,6 +9,7 @@
     <string name="title_activity_signup">Sign Up</string>
     <string name="title_activity_welcome">Welcome</string>
     <string name="title_activity_account">Account</string>
+    <string name="title_activity_edit_profile">Edit profile</string>
 
     <!-- Common toasts -->
     <string name="toast_sync_error">Error while sync with the server</string>
@@ -35,16 +36,20 @@
     <string name="text_format_money">%1$.2f€</string>
     <string name="text_cancel">Cancel</string>
     <string name="text_euro">€</string>
+    <string name="text_save">Save</string>
+
 
     <!-- File to store username and password -->
     <string name="file_user_preferences">user_file</string>
 
-    <!-- SignupActivity.java -->
+    <!-- SignupActivity.java and EditProfileActivity.java -->
     <string name="text_err_name">Enter your full name</string>
     <string name="text_err_mail">Enter a valid email address</string>
     <string name="text_err_username">Enter your user name</string>
     <string name="text_err_password">Enter the password</string>
-    <string name="toast_user_signup_error">Username or Email not available</string>
+    <string name="toast_user_not_available">Username or Email not available</string>
+    <string name="toast_profile_updated">Profile updated</string>
+    <string name="dialog_confirm_changes">Save changes?</string>
 
     <!-- LoginActivity.java -->
     <string name="toast_user_not_found">User not found</string>

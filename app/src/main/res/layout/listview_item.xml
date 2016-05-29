@@ -3,7 +3,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="8dp"
+    android:padding="@dimen/itemList_padding"
     android:animateLayoutChanges="true"
     android:background="@color/white">
 
@@ -22,8 +22,8 @@
             <TextView android:id="@+id/textView_totalNumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/itemList_TextNumberMargin"
-                android:layout_marginStart="@dimen/itemList_TextNumberMargin"
+                android:layout_marginLeft="@dimen/itemList_textNumberMargin"
+                android:layout_marginStart="@dimen/itemList_textNumberMargin"
                 android:textAppearance="?android:attr/textAppearanceListItem"
                 android:layout_gravity="end" />
             <TextView android:id="@+id/textView_available"
@@ -36,8 +36,8 @@
             <TextView android:id="@+id/textView_availableNumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/itemList_TextNumberMargin"
-                android:layout_marginStart="@dimen/itemList_TextNumberMargin"
+                android:layout_marginLeft="@dimen/itemList_textNumberMargin"
+                android:layout_marginStart="@dimen/itemList_textNumberMargin"
                 android:textAppearance="?android:attr/textAppearanceListItem"
                 android:layout_gravity="end" />
         </TableRow>
@@ -53,8 +53,8 @@
             <TextView android:id="@+id/textView_reservedNumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/itemList_TextNumberMargin"
-                android:layout_marginStart="@dimen/itemList_TextNumberMargin"
+                android:layout_marginLeft="@dimen/itemList_textNumberMargin"
+                android:layout_marginStart="@dimen/itemList_textNumberMargin"
                 android:textAppearance="?android:attr/textAppearanceListItem"
                 android:layout_gravity="end" />
             <TextView android:id="@+id/textView_broken"
@@ -68,8 +68,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceListItem"
-                android:layout_marginLeft="@dimen/itemList_TextNumberMargin"
-                android:layout_marginStart="@dimen/itemList_TextNumberMargin"
+                android:layout_marginLeft="@dimen/itemList_textNumberMargin"
+                android:layout_marginStart="@dimen/itemList_textNumberMargin"
                 android:layout_gravity="end" />
         </TableRow>
     </TableLayout>
@@ -90,8 +90,8 @@
         <TextView android:id="@+id/textView_fareNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/itemList_TextNumberMargin"
-            android:layout_marginStart="@dimen/itemList_TextNumberMargin"
+            android:layout_marginLeft="@dimen/itemList_textNumberMargin"
+            android:layout_marginStart="@dimen/itemList_textNumberMargin"
             android:textAppearance="?android:attr/textAppearanceListItem"
             android:layout_gravity="end" />
     </TableRow>
@@ -113,8 +113,8 @@
         android:layout_toEndOf="@id/textView_lastMod"
         android:layout_below="@id/tableRow_fare"
         android:layout_marginTop="@dimen/widgets_standard_margin"
-        android:layout_marginLeft="@dimen/itemList_TextNumberMargin"
-        android:layout_marginStart="@dimen/itemList_TextNumberMargin" />
+        android:layout_marginLeft="@dimen/itemList_textNumberMargin"
+        android:layout_marginStart="@dimen/itemList_textNumberMargin" />
 
     <Button android:id="@+id/button_showMap"
         android:layout_width="wrap_content"

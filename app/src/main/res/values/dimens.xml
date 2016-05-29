@@ -3,27 +3,32 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="activity_margin">16dp</dimen>
-
 
     <!-- General -->
     <dimen name="widgets_standard_margin">16dp</dimen>
-    <dimen name="custom_buttons_width">150dp</dimen>
+    <dimen name="widgets_large_margin">24dp</dimen>
+    <dimen name="dialogs_padding">16dp</dimen>
+    <dimen name="activity_padding">16dp</dimen>
 
     <!-- List -->
-    <dimen name="itemList_TextNumberMargin">4dp</dimen>
+    <dimen name="itemList_textNumberMargin">4dp</dimen>
+    <dimen name="itemList_padding">8dp</dimen>
 
     <!-- Custom button -->
     <dimen name="custom_button_padding">4dp</dimen>
     <dimen name="custom_button_stroke_width">1dp</dimen>
     <dimen name="custom_button_corner_radius">3dp</dimen>
+    <dimen name="custom_buttons_width">148dp</dimen>
+    <dimen name="custom_light_buttons_width">96dp</dimen>
 
     <!-- Login and welcome -->
     <dimen name="main_texts_padding">60dp</dimen>
-    <dimen name="main_image_dimens">150dp</dimen>
-    <dimen name="main_widgets_margin">24dp</dimen>
+    <dimen name="main_image_dimens">148dp</dimen>
 
     <!-- Login -->
     <dimen name="txt_version_margin">1dp</dimen>
+
+    <!-- Account -->
+    <dimen name="buttons_margin_bottom">36dp</dimen>
 
 </resources>

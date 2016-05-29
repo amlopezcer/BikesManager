@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:padding="@dimen/activity_padding"
     android:background="@color/white"
-    tools:context=".SignUpActivityFragment" >
+    tools:context="com.amlopezc.bikesmanager.EditProfileActivityFragment" >
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/inputLayout_fullName"
+        android:id="@+id/inputLayoutProfile_fullName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/widgets_large_margin">
         <EditText
-            android:id="@+id/editText_fullName"
+            android:id="@+id/editTextProfile_fullName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:singleLine="true"
@@ -24,12 +24,12 @@
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/inputLayout_mail"
+        android:id="@+id/inputLayoutProfile_mail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/widgets_standard_margin">
         <EditText
-            android:id="@+id/editText_mail"
+            android:id="@+id/editTextProfile_mail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:singleLine="true"
@@ -39,12 +39,12 @@
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/inputLayout_sign_username"
+        android:id="@+id/inputLayoutProfile_username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/widgets_standard_margin">
         <EditText
-            android:id="@+id/editText_sign_username"
+            android:id="@+id/editTextProfile_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:singleLine="true"
@@ -52,20 +52,4 @@
             android:hint="@string/text_user_name"/>
     </android.support.design.widget.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/inputLayout_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/widgets_standard_margin">
-        <EditText
-            android:id="@+id/editText_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:maxLength="30"
-            android:inputType="textPassword"
-            android:hint="@string/text_password" />
-    </android.support.design.widget.TextInputLayout>
-
 </LinearLayout>
-

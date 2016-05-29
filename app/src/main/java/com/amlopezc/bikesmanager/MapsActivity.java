@@ -77,6 +77,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
         //Request location permission, turning on location services if granted
         requestLocationPermission();
+
+        mBikeUser = BikeUser.getInstance();
     }
 
     private void requestLocationPermission() {
@@ -126,12 +128,11 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
     //Set the user with updated info from the server
     private void initUserIfNotSet() {
-        mBikeUser = BikeUser.getInstance();
         if(mBikeUser.getmUserName() == null || mBikeUser.getmUserName().isEmpty())
-            updateUser();
+            getUpdatedUserData();
     }
 
-    private void updateUser() {
+    private void getUpdatedUserData() {
         SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.file_user_preferences), Context.MODE_PRIVATE);
         String username = sharedPreferences.getString(getString(R.string.text_user_name), "");
         //Get the user selected

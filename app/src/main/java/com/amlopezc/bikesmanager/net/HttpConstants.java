@@ -23,6 +23,9 @@ public final class HttpConstants {
     public static final String PUT_TAKE_BIKE = "take";
     public static final String PUT_LEAVE_BIKE = "leave";
 
+    // To distinguish PUT (user) ops in the URL
+    public static final String PUT_USER_BASIC_DATA = "basicdata";
+
     //Standard server responses (used in POST and PUT ops)
     public static final String SERVER_RESPONSE_OK = "SERVER_OK";
     public static final String SERVER_RESPONSE_KO = "SERVER_KO";

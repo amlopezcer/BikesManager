@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     tools:context="com.amlopezc.bikesmanager.SplashActivityFragment"
     android:background="@color/primaryColor"
-    android:padding="@dimen/activity_margin">
+    android:padding="@dimen/activity_padding">
 
     <ImageView android:id="@+id/img_launcher"
         android:layout_width="@dimen/main_image_dimens"

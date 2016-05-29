@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".EditProfileActivity" >
+
+    <item android:id="@+id/action_tick_confirm_changes"
+        android:icon="@drawable/ic_action_tick"
+        android:title="@string/text_confirm"
+        app:showAsAction="always" />
+
+</menu>

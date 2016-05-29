@@ -1,7 +1,8 @@
 package com.amlopezc.bikesmanager;
 
+import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
@@ -17,47 +18,54 @@ import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
+
 import com.amlopezc.bikesmanager.entity.BikeUser;
 import com.amlopezc.bikesmanager.net.HttpConstants;
 import com.amlopezc.bikesmanager.net.HttpDispatcher;
 import com.amlopezc.bikesmanager.util.AsyncTaskListener;
 import com.amlopezc.bikesmanager.util.DeviceUtilities;
 
-import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.codec.digest.DigestUtils;
-
 /**
- * To register new users
+ * To allow the user to modify some of his basic data
  */
-public class SignUpActivity extends AppCompatActivity implements AsyncTaskListener<String> {
+public class EditProfileActivity extends AppCompatActivity implements AsyncTaskListener<String> {
 
-    private EditText mEditTextFullName, mEditTextEmail, mEditTextUsername, mEditTextPassword;
-    private TextInputLayout mInputLayoutFullName, mInputLayoutEmail, mInputLayoutUsername, mInputLayoutPassword;
+    private EditText mEditTextFullName, mEditTextEmail, mEditTextUsername;
+    private TextInputLayout mInputLayoutFullName, mInputLayoutEmail, mInputLayoutUsername;
+    private BikeUser mBikeUser;
+    private String mLastUsername, mLastFullName, mLastEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_signup);
+        setContentView(R.layout.activity_edit_profile);
 
-        mEditTextFullName = (EditText) findViewById(R.id.editText_fullName);
+        mEditTextFullName = (EditText) findViewById(R.id.editTextProfile_fullName);
         mEditTextFullName.addTextChangedListener(new MyTextWatcher(mEditTextFullName));
-        mEditTextEmail = (EditText) findViewById(R.id.editText_mail);
+        mEditTextEmail = (EditText) findViewById(R.id.editTextProfile_mail);
         mEditTextEmail.addTextChangedListener(new MyTextWatcher(mEditTextEmail));
-        mEditTextUsername = (EditText) findViewById(R.id.editText_sign_username);
+        mEditTextUsername = (EditText) findViewById(R.id.editTextProfile_username);
         mEditTextUsername.addTextChangedListener(new MyTextWatcher(mEditTextUsername));
-        mEditTextPassword = (EditText) findViewById(R.id.editText_password);
-        mEditTextPassword.addTextChangedListener(new MyTextWatcher(mEditTextPassword));
 
-        mInputLayoutFullName = (TextInputLayout) findViewById(R.id.inputLayout_fullName);
-        mInputLayoutEmail = (TextInputLayout) findViewById(R.id.inputLayout_mail);
-        mInputLayoutUsername = (TextInputLayout) findViewById(R.id.inputLayout_sign_username);
-        mInputLayoutPassword = (TextInputLayout) findViewById(R.id.inputLayout_password);
+        mInputLayoutFullName = (TextInputLayout) findViewById(R.id.inputLayoutProfile_fullName);
+        mInputLayoutEmail = (TextInputLayout) findViewById(R.id.inputLayoutProfile_mail);
+        mInputLayoutUsername = (TextInputLayout) findViewById(R.id.inputLayoutProfile_username);
+
+        mBikeUser = BikeUser.getInstance();
+
+        fillLayoutUserData();
+    }
+
+    private void fillLayoutUserData() {
+        mEditTextFullName.setText(mBikeUser.getmFullName());
+        mEditTextUsername.setText(mBikeUser.getmUserName());
+        mEditTextEmail.setText(mBikeUser.getmEmail());
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_signup, menu);
+        getMenuInflater().inflate(R.menu.menu_edit_profile, menu);
         return true;
     }
 
@@ -66,10 +74,10 @@ public class SignUpActivity extends AppCompatActivity implements AsyncTaskListen
         // Handle action bar item clicks
         int id = item.getItemId();
 
-        if (id == R.id.action_tick_signup) {
+        if (id == R.id.action_tick_confirm_changes) {
             DeviceUtilities.hideSoftKeyboard(this); //Hides keyboard
             scrollToTheTop(); //Scrolls to the top of the screen, useful for smaller ones
-            submit();
+            confirmProfileChanges();
             return true;
         }
 
@@ -77,8 +85,31 @@ public class SignUpActivity extends AppCompatActivity implements AsyncTaskListen
     }
 
     private void scrollToTheTop() {
-        ScrollView scrollView = (ScrollView) findViewById(R.id.scrollView_signUp);
+        ScrollView scrollView = (ScrollView) findViewById(R.id.scrollView_editProfile);
         scrollView.smoothScrollTo(0,0);
+    }
+
+    //Dialog to confirm changes
+    private void confirmProfileChanges() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(i18n(R.string.dialog_confirm_changes)).
+                setPositiveButton(
+                        i18n(R.string.text_save),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                submit();
+                                dialog.cancel();
+                            }
+                        }).
+                setNegativeButton(
+                        i18n(R.string.text_cancel),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     private void submit() {
@@ -89,18 +120,16 @@ public class SignUpActivity extends AppCompatActivity implements AsyncTaskListen
             return;
         if(!validateInput(mEditTextUsername, mInputLayoutUsername))
             return;
-        if(!validateInput(mEditTextPassword, mInputLayoutPassword))
-            return;
 
         //everything goes fine so far
-        registerUser();
+        updateUser();
     }
 
     //Validate text fields data (not empty, adequate format for the email...)
     private boolean validateInput(EditText editText, TextInputLayout inputLayout) {
         String editTextString = editText.getText().toString().trim();
         boolean badString = editTextString.isEmpty();
-        if(editText.getId() == R.id.editText_mail)
+        if(editText.getId() == R.id.editTextProfile_mail)
             badString = editTextString.isEmpty() || !isValidEmail(editTextString);
 
         if (badString) {
@@ -119,10 +148,9 @@ public class SignUpActivity extends AppCompatActivity implements AsyncTaskListen
     private String getErrorMsg(int id) {
         String errorMsg;
         switch(id) {
-            case R.id.editText_fullName: errorMsg = i18n(R.string.text_err_name); break;
-            case R.id.editText_mail: errorMsg = i18n(R.string.text_err_mail); break;
-            case R.id.editText_sign_username: errorMsg = i18n(R.string.text_err_username); break;
-            case R.id.editText_password: errorMsg = i18n(R.string.text_err_password); break;
+            case R.id.editTextProfile_fullName: errorMsg = i18n(R.string.text_err_name); break;
+            case R.id.editTextProfile_mail: errorMsg = i18n(R.string.text_err_mail); break;
+            case R.id.editTextProfile_username: errorMsg = i18n(R.string.text_err_username); break;
             default: errorMsg = null;
         }
 
@@ -138,44 +166,48 @@ public class SignUpActivity extends AppCompatActivity implements AsyncTaskListen
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
     }
 
-    //Complete the singleton instance and the POST with the server
-    private void registerUser() {
-        String userName = mEditTextUsername.getText().toString().trim();
-        String password = mEditTextPassword.getText().toString().trim();
-        String passwordSHA1 = new String(Hex.encodeHex(DigestUtils.sha1(password)));
-        String fullName = mEditTextFullName.getText().toString().trim();
-        String email = mEditTextEmail.getText().toString().trim();
+    //Update the singleton instance and the server info
+    private void updateUser() {
+        backupBasicUserData(); //save a copy of the data changed, just in case it needs to be recovered
 
-        BikeUser bikeUser = BikeUser.getInstance();
-        bikeUser.setNewUserData(userName, passwordSHA1, fullName, email);
+        mBikeUser.setmUserName(mEditTextUsername.getText().toString().trim());
+        mBikeUser.setmFullName(mEditTextFullName.getText().toString().trim());
+        mBikeUser.setmEmail(mEditTextEmail.getText().toString().trim());
 
         //Save data consistently
         SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.file_user_preferences), Context.MODE_PRIVATE);
         sharedPreferences.edit().
-                putString(getString(R.string.text_user_name), userName).
-                putString(getString(R.string.text_password),  passwordSHA1).
+                putString(getString(R.string.text_user_name), mBikeUser.getmUserName()).
                 apply();
 
         HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_USER);
-        httpDispatcher.doPost(this, bikeUser);
+        httpDispatcher.doPut(this, mBikeUser, HttpConstants.PUT_USER_BASIC_DATA);
+    }
+
+    private void backupBasicUserData() {
+        mLastUsername = mBikeUser.getmUserName();
+        mLastFullName = mBikeUser.getmFullName();
+        mLastEmail = mBikeUser.getmEmail();
     }
 
     @Override
     public void processServerResult(String result, int operation) {
         switch (operation) {
-            case HttpConstants.OPERATION_POST:
+            case HttpConstants.OPERATION_PUT:
                 switch (result) {
-                    case HttpConstants.SERVER_RESPONSE_OK: //Just showing Toast for user feedback
-                        Intent intent = new Intent(this, WelcomeActivity.class);
-                        startActivity(intent);
+                    case HttpConstants.SERVER_RESPONSE_OK:
+                        Toast.makeText(this,
+                                i18n(R.string.toast_profile_updated),
+                                Toast.LENGTH_SHORT).show();
                         break;
                     case HttpConstants.SERVER_RESPONSE_KO:
-                        //User cannot be created, undo changes and notify
+                        //User cannot be updated, undo changes
                         SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.file_user_preferences), Context.MODE_PRIVATE);
                         sharedPreferences.edit().
-                                putString(getString(R.string.text_user_name), "").
-                                putString(getString(R.string.text_password), "").
+                                putString(getString(R.string.text_user_name), mLastUsername).
                                 apply();
+
+                        restoreBasicUserData();
 
                         Toast.makeText(this,
                                 i18n(R.string.toast_user_not_available),
@@ -186,8 +218,15 @@ public class SignUpActivity extends AppCompatActivity implements AsyncTaskListen
                                 i18n(R.string.toast_sync_error),
                                 Toast.LENGTH_SHORT).show();
                 }
+                fillLayoutUserData(); //Update layout
                 break;
         }
+    }
+
+    private void restoreBasicUserData() {
+        mBikeUser.setmUserName(mLastUsername);
+        mBikeUser.setmFullName(mLastFullName);
+        mBikeUser.setmEmail(mLastEmail);
     }
 
     //Internationalization method
@@ -210,17 +249,14 @@ public class SignUpActivity extends AppCompatActivity implements AsyncTaskListen
 
         public void afterTextChanged(Editable editable) {
             switch(view.getId()) {
-                case R.id.editText_fullName:
+                case R.id.editTextProfile_fullName:
                     validateInput(mEditTextFullName, mInputLayoutFullName);
                     break;
-                case R.id.editText_mail:
+                case R.id.editTextProfile_mail:
                     validateInput(mEditTextEmail, mInputLayoutEmail);
                     break;
-                case R.id.editText_sign_username:
+                case R.id.editTextProfile_username:
                     validateInput(mEditTextUsername, mInputLayoutUsername);
-                    break;
-                case R.id.editText_password:
-                    validateInput(mEditTextPassword, mInputLayoutPassword);
                     break;
             }
         }
