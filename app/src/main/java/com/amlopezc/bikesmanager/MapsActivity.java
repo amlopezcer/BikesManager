@@ -376,7 +376,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
             //Update data and layout
             case HttpConstants.OPERATION_GET:
                 try {
-                    if (result.contains("password")) //GET related to user instance
+                    if (result.contains(BikeUser.ENTITY_ID)) //GET related to user instance
                         manageUserData(result);
                     else //GET related to station instance
                         manageStationData(result);

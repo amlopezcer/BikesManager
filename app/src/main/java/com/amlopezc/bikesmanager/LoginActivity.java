@@ -139,6 +139,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         i18n(R.string.toast_incorrect_password, bikeUser.getmUserName()),
                         Toast.LENGTH_SHORT).show();
 
+
+
+            if(result.contains(BikeUser.ENTITY_ID))
+                Log.d("LOGIN", "ok");
+            else
+                Log.d("LOGIN", "nok");
+
+
         } catch (Exception e) {
             Log.e("[GET Result]" + getClass().getCanonicalName(), e.getLocalizedMessage(), e);
             Toast.makeText(this,

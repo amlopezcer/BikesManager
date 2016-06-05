@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -144,7 +145,7 @@ public class SignUpActivity extends AppCompatActivity implements AsyncTaskListen
         String password = mEditTextPassword.getText().toString().trim();
         String passwordSHA1 = new String(Hex.encodeHex(DigestUtils.sha1(password)));
         String fullName = mEditTextFullName.getText().toString().trim();
-        String email = mEditTextEmail.getText().toString().trim();
+        String email = mEditTextEmail.getText().toString().trim().toLowerCase(); //To lower case to accomplish email patterns
 
         BikeUser bikeUser = BikeUser.getInstance();
         bikeUser.setNewUserData(userName, passwordSHA1, fullName, email);

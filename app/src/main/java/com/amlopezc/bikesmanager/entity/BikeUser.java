@@ -11,10 +11,13 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-@JsonPropertyOrder({"balance", "biketaken", "bookaddress", "bookdate", "booktaken", "email",
+@JsonPropertyOrder({"balance", "biketaken", "bookaddress", "bookdate", "booktaken", "email", "entityid",
         "fullname", "id", "md5", "mooringsaddress", "mooringsdate", "mooringstaken", "password",
         "username"})
 public class BikeUser extends JSONBean {
+
+    @JsonIgnore
+    public static final String ENTITY_ID = "entity_bikeuser"; //To identify server responses for this entity
 
     @JsonProperty("id")
     private int mId;
@@ -42,7 +45,8 @@ public class BikeUser extends JSONBean {
     private String mMooringsDate;
     @JsonProperty("balance")
     private float mBalance;
-
+    @JsonProperty("entityid")
+    private String mEntityid; //Redundant but avoids issues with JSON serialization
 
     //SINGLETON basic implementation
     @JsonIgnore
@@ -264,6 +268,7 @@ public class BikeUser extends JSONBean {
         this.mBookDate = getCurrentDateFormatted();
         this.mMooringsDate = getCurrentDateFormatted();
         this.mBalance = WelcomeActivity.NEW_USER_PRESENT; //Welcome present: 5.00€
+        this.mEntityid = ENTITY_ID; //Redundant but avoids issues with JSON serialization
         processHashMD5();
     }
 
