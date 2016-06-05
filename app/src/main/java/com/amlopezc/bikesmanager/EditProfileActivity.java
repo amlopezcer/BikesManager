@@ -172,7 +172,7 @@ public class EditProfileActivity extends AppCompatActivity implements AsyncTaskL
 
         mBikeUser.setmUserName(mEditTextUsername.getText().toString().trim());
         mBikeUser.setmFullName(mEditTextFullName.getText().toString().trim());
-        mBikeUser.setmEmail(mEditTextEmail.getText().toString().trim());
+        mBikeUser.setmEmail(mEditTextEmail.getText().toString().trim().toLowerCase()); //To lower case to accomplish email patterns
 
         //Save data consistently
         SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.file_user_preferences), Context.MODE_PRIVATE);
@@ -224,6 +224,7 @@ public class EditProfileActivity extends AppCompatActivity implements AsyncTaskL
     }
 
     private void restoreBasicUserData() {
+        //This can be performed with a complete GET of the user (with the ID), but with only three fields this is just easier and more efficient
         mBikeUser.setmUserName(mLastUsername);
         mBikeUser.setmFullName(mLastFullName);
         mBikeUser.setmEmail(mLastEmail);

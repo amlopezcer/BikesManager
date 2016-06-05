@@ -95,7 +95,7 @@ public class HttpPostWorker extends AsyncTask<String, Void, String> {
             osw.write(mapper.writeValueAsString(bean));
             osw.flush();
             osw.close();
-            //Get response
+            //POST response
             int response = conn.getResponseCode();
             Log.i(this.getClass().getCanonicalName(), "The response is: " + response);
             is = conn.getInputStream();
