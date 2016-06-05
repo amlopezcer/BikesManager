@@ -63,6 +63,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private HashMap<String, BikeStation> mStations;
     private BikeUser mBikeUser;
+    private String mBookAddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -344,10 +345,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                             case R.id.menu_leaveBike:
                                 modifyBike(marker, HttpConstants.PUT_LEAVE_BIKE); //TODO: hacer un GET indivudual?
                                 break;
-                            case R.id.menu_bookBike: //Implement this feature
-                                Toast.makeText(getApplicationContext(),
-                                        "Book",
-                                        Toast.LENGTH_SHORT).show();
+                            case R.id.menu_book:
+                                mBookAddress = marker.getTitle();
+                                showBookDialog();
                                 break;
                         }
                     }
@@ -368,6 +368,19 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
             Toast.makeText(this,
                     i18n(R.string.toast_bikeop_impossible),
                     Toast.LENGTH_SHORT).show();
+    }
+
+    private void showBookDialog() {
+        DialogFragment dialog = new BookDialogFragment();
+        dialog.show(getFragmentManager(), BookDialogFragment.CLASS_ID);
+    }
+
+    public void doPositiveClickBookDialog(boolean isBikeBooked, boolean isMooringsBooked) { //TODO: hay que hacer el PUT para el usuario, ahcerlo cuando haga el de la bici por lo de la distinción de instancia
+        //TODO: de momento sólo se recoge la lógica para el usuario
+        if(isBikeBooked)
+            mBikeUser.bookBike(mBookAddress);
+        if(isMooringsBooked)
+            mBikeUser.bookMoorings(mBookAddress);
     }
 
     @Override

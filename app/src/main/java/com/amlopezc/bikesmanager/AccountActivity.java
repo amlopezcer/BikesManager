@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -27,6 +28,7 @@ import com.amlopezc.bikesmanager.util.AsyncTaskListener;
 public class AccountActivity extends AppCompatActivity implements View.OnClickListener, AsyncTaskListener<String> {
 
     private BikeUser mBikeUser; //Current logged user (singleton instance)
+    private Button mButtonCancelBikeBook, mButtonCancelMooringsBook;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,8 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         String username = sharedPreferences.getString(getString(R.string.text_user_name), "");
         setTitle(username);
 
+        mBikeUser = BikeUser.getInstance();
+
         Button buttonDeposit = (Button)findViewById(R.id.button_deposit_money);
         buttonDeposit.setOnClickListener(this);
         Button buttonEdit = (Button)findViewById(R.id.button_edit_profile);
@@ -45,13 +49,30 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         Button buttonDeleteAccount = (Button)findViewById(R.id.button_delete_account);
         buttonDeleteAccount.setOnClickListener(this);
 
+        mButtonCancelBikeBook = (Button)findViewById(R.id.button_cancel_book_bike);
+        mButtonCancelBikeBook.setOnClickListener(this);
+        mButtonCancelMooringsBook = (Button)findViewById(R.id.button_cancel_book_moorings);
+        mButtonCancelMooringsBook.setOnClickListener(this);
+
+        disableCancelButtonsIfNeeded();
+
         initBookingData();
+    }
+
+    //Disabled buttons format
+    private void disableCancelButtonsIfNeeded() {
+        if(!mBikeUser.ismBookTaken()) {
+            mButtonCancelBikeBook.setEnabled(false);
+            mButtonCancelBikeBook.setTextColor(ContextCompat.getColor(this, R.color.lightGrey));
+        }
+        if(!mBikeUser.ismMooringsTaken()) {
+            mButtonCancelMooringsBook.setEnabled(mBikeUser.ismMooringsTaken());
+            mButtonCancelMooringsBook.setTextColor(ContextCompat.getColor(this, R.color.lightGrey));
+        }
     }
 
     //Initialization of some dynamic data realted to bookings
     private void initBookingData() { //TODO: Modificar para poner una cuenta atrás, también tengo que repensarlo un pooc y poner botones de cancelación, esto es temporal
-        mBikeUser = BikeUser.getInstance();
-
         TextView textView;
 
         textView = (TextView) findViewById(R.id.textView_address_bike);
@@ -90,6 +111,16 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             case R.id.button_delete_account:
                 confirmDeleteAccount();
+                break;
+            case R.id.button_cancel_book_bike: //TODO: pendiente actualización en servidor (cuando haga la del mapa con los PUT diferenciados)
+                mBikeUser.cancelBookBike();
+                initBookingData();
+                disableCancelButtonsIfNeeded();
+                break;
+            case R.id.button_cancel_book_moorings:
+                mBikeUser.cancelBookMoorings();
+                initBookingData();
+                disableCancelButtonsIfNeeded();
                 break;
         }
     }

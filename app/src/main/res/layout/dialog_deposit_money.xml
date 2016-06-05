@@ -15,7 +15,8 @@
         android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/textView_euro"
         android:layout_toStartOf="@id/textView_euro"
-        android:layout_marginRight="@dimen/widgets_standard_margin"/>
+        android:layout_marginRight="@dimen/widgets_standard_margin"
+        android:layout_marginEnd="@dimen/widgets_standard_margin"/>
 
     <TextView android:id="@+id/textView_euro"
         android:layout_width="wrap_content"

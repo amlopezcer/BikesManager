@@ -37,6 +37,7 @@
     <string name="text_cancel">Cancelar</string>
     <string name="text_euro">€</string>
     <string name="text_save">Guardar</string>
+    <string name="text_book">Reservar</string>
 
     <!-- File to store username and password -->
     <string name="file_user_preferences">user_file</string>
@@ -85,6 +86,9 @@
     <string name="builder_deposit">Cantidad a ingresar</string>
     <string name="builder_deposit_positive">Ingresar</string>
 
+    <!-- BookDialogFragment.java -->
+    <string name="builder_book_msg">Seleccionar reserva</string>
+
     <!-- HttpDispatcher.java -->
     <string name="toast_unable_connection">Error al conectar con el servidor</string>
 
@@ -131,7 +135,6 @@
     <!-- menu_bottomsheet.xml -->
     <string name="item_text_take">Coger bici</string>
     <string name="item_text_leave">Dejar bici</string>
-    <string name="item_text_book">Reservar bici</string>
 
     <!-- menu_main.xml -->
     <string name="item_text_list">Lista</string>
@@ -142,6 +145,10 @@
 
     <!-- dialogDeposit_money.xml -->
     <string name="dialog_deposit">Ingreso</string>
+
+    <!-- dialog_book.xml -->
+    <string name="dialog_book_bike">Reservar bici</string>
+    <string name="dialog_book_moorings">Reservar anclaje</string>
 
     <!-- preferences.xml -->
     <string name="title_connection">Datos de conexión</string>

@@ -18,6 +18,9 @@ public class BikeUser extends JSONBean {
 
     @JsonIgnore
     public static final String ENTITY_ID = "entity_bikeuser"; //To identify server responses for this entity
+    @JsonIgnore
+    private final String ADDRESS_NONE_TEXT = "None"; //Standard text for addresses when no book is taken
+
 
     @JsonProperty("id")
     private int mId;
@@ -31,17 +34,17 @@ public class BikeUser extends JSONBean {
     private String mEmail;
     @JsonProperty("biketaken")
     private boolean mBikeTaken;
-    @JsonProperty("booktaken")
+    @JsonProperty("booktaken") //Bikes bookings
     private boolean mBookTaken;
-    @JsonProperty("mooringstaken")
+    @JsonProperty("mooringstaken") //This filed refers only to a moorings booking, you cannot take moorings
     private boolean mMooringsTaken;
-    @JsonProperty("bookaddress")
+    @JsonProperty("bookaddress") //Bikes bookings
     private String mBookAddress;
-    @JsonProperty("mooringsaddress")
+    @JsonProperty("mooringsaddress") //This filed refers only to a moorings booking, you cannot take moorings
     private String mMooringsAddress;
-    @JsonProperty("bookdate")
+    @JsonProperty("bookdate") //Bikes bookings
     private String mBookDate;
-    @JsonProperty("mooringsdate")
+    @JsonProperty("mooringsdate") //This filed refers only to a moorings booking, you cannot take moorings
     private String mMooringsDate;
     @JsonProperty("balance")
     private float mBalance;
@@ -263,8 +266,8 @@ public class BikeUser extends JSONBean {
         this.mBikeTaken = false;
         this.mBookTaken = false;
         this.mMooringsTaken = false;
-        this.mBookAddress = "None";
-        this.mMooringsAddress = "None";
+        this.mBookAddress = ADDRESS_NONE_TEXT;
+        this.mMooringsAddress = ADDRESS_NONE_TEXT;
         this.mBookDate = getCurrentDateFormatted();
         this.mMooringsDate = getCurrentDateFormatted();
         this.mBalance = WelcomeActivity.NEW_USER_PRESENT; //Welcome present: 5.00€
@@ -280,7 +283,33 @@ public class BikeUser extends JSONBean {
         mInstance = null;
     }
 
-    private static String getCurrentDateFormatted() {
+    public void bookBike(String bookAddress) {
+        setmBikeTaken(true); //User cannot take bikes if it has a booking
+        setmBookTaken(true);
+        setmBookDate(getCurrentDateFormatted());
+        setmBookAddress(bookAddress);
+    }
+
+    public void bookMoorings(String bookAddress) {
+        setmMooringsTaken(true);
+        setmMooringsDate(getCurrentDateFormatted());
+        setmMooringsAddress(bookAddress);
+    }
+
+    public void cancelBookBike() {
+        setmBikeTaken(false);
+        setmBookTaken(false);
+        setmBookDate(getCurrentDateFormatted());
+        setmBookAddress(ADDRESS_NONE_TEXT);
+    }
+
+    public void cancelBookMoorings() {
+        setmMooringsTaken(false);
+        setmMooringsDate(getCurrentDateFormatted());
+        setmMooringsAddress(ADDRESS_NONE_TEXT);
+    }
+
+    private String getCurrentDateFormatted() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
         Calendar cal = Calendar.getInstance();
@@ -289,5 +318,7 @@ public class BikeUser extends JSONBean {
                 .append(timeFormat.format(cal.getTime()))
                 .append("+01:00").toString();
     }
+
+
 
 }

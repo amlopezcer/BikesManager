@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/dialogs_padding">
+
+    <CheckBox android:id="@+id/checkbox_bookBike"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/dialog_book_bike"
+        android:checked="false"/>
+
+    <CheckBox android:id="@+id/checkbox_bookMoorings"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/dialog_book_moorings"
+        android:checked="false"/>
+
+</LinearLayout>

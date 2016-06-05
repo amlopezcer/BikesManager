@@ -40,6 +40,25 @@
         </shape>
     </item>
 
+    <item android:state_enabled="false" >
+        <shape>
+            <gradient
+                android:endColor="@color/white"
+                android:startColor="@color/white"
+                android:angle="270" />
+            <stroke
+                android:width="@dimen/custom_button_stroke_width"
+                android:color="@color/lightGrey" />
+            <corners
+                android:radius="@dimen/custom_button_corner_radius" />
+            <padding
+                android:left="@dimen/custom_button_padding"
+                android:top="@dimen/custom_button_padding"
+                android:right="@dimen/custom_button_padding"
+                android:bottom="@dimen/custom_button_padding" />
+        </shape>
+    </item>
+
     <item>
         <shape>
             <gradient
