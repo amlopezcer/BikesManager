@@ -1,13 +1,20 @@
 package com.amlopezc.bikesmanager.entity;
 
 
+import com.amlopezc.bikesmanager.net.HttpConstants;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import java.math.BigDecimal;
+import java.util.Locale;
+
 @JsonPropertyOrder({"address", "available", "broken", "latitude", "longitude", "md5", "reserved",
         "serverId", "timestampBike", "total" })
 public class BikeStation extends JSONBean  {
+
+    @JsonIgnore
+    private static final float BASIC_FARE = 1.00f;  // Basic fare, it will change depending on the availability
 
     //TODO: Repasar cómo quedará esto finalmente para generar la base de datos final en condiciones; habrá que cambiar el PArcelable también. El JsonProperty es para el renombrado, tendré que poner el nombre de la BBDD
 
@@ -217,7 +224,66 @@ public class BikeStation extends JSONBean  {
     //</editor-fold>
 
     public String getAvailabilityMessage() {
-        return String.format("%d/%d", getmAvailableBikes(), getmTotalBikes());
+        return String.format(Locale.getDefault(),"%d/%d", getmAvailableBikes(), getmTotalBikes());
     }
+
+    //Get current fare for the station, depending on the availability
+    public float getCurrentFare() {
+        int availability = getStationAvailability();
+        float currentFare;
+
+        if(availability == 0)
+            currentFare = BASIC_FARE;
+        else if (availability < 50)
+            currentFare =  BASIC_FARE * 2;
+        else
+            currentFare =  BASIC_FARE;
+
+        BigDecimal result = round(currentFare, 2); //2 decimals
+        return result.floatValue();
+    }
+
+    private BigDecimal round(float fare, int decimalPlace) {
+        BigDecimal bd = new BigDecimal(Float.toString(fare));
+        bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
+        return bd;
+    }
+
+    //Get station availability
+    public int getStationAvailability() {
+        return (getmAvailableBikes()*100) / getmTotalBikes();
+    }
+
+    //Update station status, will return null if the op can't be completed
+    public BikeStation updateBikeStation(String operation) {
+        boolean isOperationPossible = false; //The bike station status allows to perform the operation?
+
+        switch (operation) {
+            case HttpConstants.PUT_TAKE_BIKE:
+                //Are there bikes to take?
+                isOperationPossible = getmAvailableBikes() > 0;
+                if(isOperationPossible)
+                    setmAvailableBikes(getmAvailableBikes() - 1);
+                break;
+            case HttpConstants.PUT_LEAVE_BIKE:
+                //Is there room to leave bikes?
+                isOperationPossible = (getmAvailableBikes() + getmBrokenBikes() + getmReservedBikes()) < getmTotalBikes();
+                if(isOperationPossible)
+                    setmAvailableBikes(getmAvailableBikes() + 1);
+                break;
+        }
+
+        //Format TimeStamp and return the instance
+        if(isOperationPossible) {
+            setmTimeStamp(getCurrentDateFormatted());
+            setServerId(getmId());
+            return this;
+        }
+
+        //Op not possible
+        return null;
+    }
+
+
 
 }

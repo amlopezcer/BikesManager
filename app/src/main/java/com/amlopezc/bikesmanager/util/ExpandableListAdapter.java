@@ -15,6 +15,7 @@ import com.amlopezc.bikesmanager.entity.BikeStation;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Support code to show and manage an expandable list
@@ -127,21 +128,21 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         TextView tv_listChild;
 
         tv_listChild = (TextView) convertView.findViewById(R.id.textView_totalNumber);
-        tv_listChild.setText(String.format("%d", bikeStation.getmTotalBikes()));
+        tv_listChild.setText(String.format(Locale.getDefault(), "%d", bikeStation.getmTotalBikes()));
 
         tv_listChild = (TextView) convertView.findViewById(R.id.textView_availableNumber);
-        tv_listChild.setText(String.format("%d", bikeStation.getmAvailableBikes()));
+        tv_listChild.setText(String.format(Locale.getDefault(), "%d", bikeStation.getmAvailableBikes()));
         //Color for available bikes number
         setAvailabilityColor(bikeStation, tv_listChild);
 
         tv_listChild = (TextView) convertView.findViewById(R.id.textView_reservedNumber);
-        tv_listChild.setText(String.format("%d", bikeStation.getmReservedBikes()));
+        tv_listChild.setText(String.format(Locale.getDefault(), "%d", bikeStation.getmReservedBikes()));
 
         tv_listChild = (TextView) convertView.findViewById(R.id.textView_brokenNumber);
-        tv_listChild.setText(String.format("%d", bikeStation.getmBrokenBikes()));
+        tv_listChild.setText(String.format(Locale.getDefault(), "%d", bikeStation.getmBrokenBikes()));
 
         tv_listChild = (TextView) convertView.findViewById(R.id.textView_fareNumber);
-        tv_listChild.setText(String.format("%.2f€", BikesOpsSupport.getCurrentFare(bikeStation)));
+        tv_listChild.setText(String.format(Locale.getDefault(), "%.2f€", bikeStation.getCurrentFare()));
         setAvailabilityColor(bikeStation, tv_listChild);
 
         tv_listChild = (TextView) convertView.findViewById(R.id.textView_lastModData);
@@ -149,7 +150,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     }
 
     private void setAvailabilityColor(BikeStation bikeStation, TextView textView) {
-        int availability = BikesOpsSupport.getStationAvailability(bikeStation);
+        int availability = bikeStation.getStationAvailability();
 
         if(availability == 0)
             textView.setTextColor(ContextCompat.getColor(mContext, R.color.red));

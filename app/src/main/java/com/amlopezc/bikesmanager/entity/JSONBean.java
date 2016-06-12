@@ -9,6 +9,10 @@ import com.google.common.hash.Hashing;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 public abstract class JSONBean implements PropertyChangeListener {
 
@@ -51,5 +55,16 @@ public abstract class JSONBean implements PropertyChangeListener {
     public abstract int getServerId();
 
     public abstract void setServerId(int serverId);
+
+    //Format date data to insert it correctly in the Database, format: yyyy-mm-ddThh:mm:ss+01:00
+    protected String getCurrentDateFormatted() {
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
+        Calendar cal = Calendar.getInstance();
+        StringBuilder builder = new StringBuilder(dateFormat.format(cal.getTime()));
+        return builder.append("T")
+                .append(timeFormat.format(cal.getTime()))
+                .append("+01:00").toString();
+    }
 
 }

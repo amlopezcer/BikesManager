@@ -23,7 +23,6 @@ import com.amlopezc.bikesmanager.entity.BikeUser;
 import com.amlopezc.bikesmanager.net.HttpConstants;
 import com.amlopezc.bikesmanager.net.HttpDispatcher;
 import com.amlopezc.bikesmanager.util.AsyncTaskListener;
-import com.amlopezc.bikesmanager.util.BikesOpsSupport;
 import com.amlopezc.bikesmanager.util.ExpandableListAdapter;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,6 +38,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import com.cocosw.bottomsheet.BottomSheet;
@@ -289,13 +289,13 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         return builder.append(" | ").
                 append(i18n(R.string.text_fare)).
                 append(" ").
-                append(String.format("%.2f", BikesOpsSupport.getCurrentFare(bikeStation))).
+                append(String.format(Locale.getDefault(), "%.2f", bikeStation.getCurrentFare())).
                 append("€").toString();
     }
 
     //Set marker colors depending on the availability (green to red)
     private BitmapDescriptor getAvailabilityColor(BikeStation bikeStation) {
-        int availability = BikesOpsSupport.getStationAvailability(bikeStation);
+        int availability = bikeStation.getStationAvailability();
 
         if(availability == 0)
             return BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
@@ -358,7 +358,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     //Take or leave bikes with the server
     private void modifyBike(Marker marker, String operation) {
         getStationsUpdatedServerData(); //Get updated data firstly. Server manages concurrency.
-        BikeStation bikeStation = BikesOpsSupport.updateBikeStation(operation, mStations.get(marker.getTitle()));
+        BikeStation bikeStation = mStations.get(marker.getTitle()).updateBikeStation(operation);
 
         //If the op can be done, update the server
         if(bikeStation != null) {

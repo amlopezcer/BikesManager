@@ -164,13 +164,10 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         alertDialog.show();
     }
 
-    //Delete account from the server
+    //Delete account from the server from user id
     private void deleteServerAccount() {
-        BikeUser bikeUser = BikeUser.getInstance();
-        String id = Integer.toString(bikeUser.getmId());
-
         HttpDispatcher dispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_USER);
-        dispatcher.doDelete(this, id);
+        dispatcher.doDelete(this, Integer.toString(mBikeUser.getmId()));
     }
 
     @Override
@@ -191,8 +188,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
 
     //Reset local configurations and return to the login Activity
     private void deleteLocalUser() {
-        BikeUser bikeUser = BikeUser.getInstance();
-        bikeUser.resetInstance();
+        mBikeUser.resetInstance();
 
         SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.file_user_preferences), Context.MODE_PRIVATE);
         sharedPreferences.edit().

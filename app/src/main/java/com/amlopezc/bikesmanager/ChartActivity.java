@@ -29,6 +29,7 @@ import com.github.mikephil.charting.utils.ViewPortHandler;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Shows a pie chart with the current bike stations state
@@ -61,7 +62,7 @@ public class ChartActivity extends AppCompatActivity implements AsyncTaskListene
                     return;
 
                 Toast.makeText(getApplicationContext(),
-                        String.format("%s: %d", mXVals.get(entry.getXIndex()), (int) entry.getVal()),
+                        String.format(Locale.getDefault(),"%s: %d", mXVals.get(entry.getXIndex()), (int) entry.getVal()),
                         Toast.LENGTH_LONG).show();
             }
 

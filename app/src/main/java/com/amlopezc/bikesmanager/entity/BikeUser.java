@@ -309,16 +309,4 @@ public class BikeUser extends JSONBean {
         setmMooringsAddress(ADDRESS_NONE_TEXT);
     }
 
-    private String getCurrentDateFormatted() {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-        DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
-        Calendar cal = Calendar.getInstance();
-        StringBuilder builder = new StringBuilder(dateFormat.format(cal.getTime()));
-        return builder.append("T")
-                .append(timeFormat.format(cal.getTime()))
-                .append("+01:00").toString();
-    }
-
-
-
 }
