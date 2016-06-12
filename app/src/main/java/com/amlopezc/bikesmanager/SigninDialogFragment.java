@@ -45,6 +45,7 @@ public class SignInDialogFragment extends DialogFragment {
                                 String password = mEditTextPassword.getText().toString().trim();
                                 //Try to log the user in
                                 ((LoginActivity) getActivity()).doPositiveClickSignInDialog(username, password);
+                                dialog.cancel();
                             }
                         }).
                 setNegativeButton(i18n(R.string.text_cancel),

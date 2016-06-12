@@ -47,6 +47,7 @@ public class BookDialogFragment extends DialogFragment {
                                 boolean isBikeBooked = mCheckBox_bike.isChecked();
                                 boolean isMooringsBooked =  mCheckBox_moorings.isChecked();
                                 ((MapsActivity) getActivity()).doPositiveClickBookDialog(isBikeBooked, isMooringsBooked);
+                                dialog.cancel();
                             }
                         }).
                 setNegativeButton(i18n(R.string.text_cancel),

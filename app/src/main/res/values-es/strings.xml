@@ -76,6 +76,8 @@
 
     <!-- AccountActivity.java -->
     <string name="dialog_delete_account">¿Borrar cuenta?</string>
+    <string name="dialog_cancel_booking">¿Cancelar reserva?</string>
+    <string name="dialog_cancel_positive">Sí, cancelar</string>
     <string name="dialog_delete">Borrar</string>
     <string name="confirm_deposit">Ingreso realizado</string>
 

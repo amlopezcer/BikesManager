@@ -8,8 +8,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -19,6 +21,10 @@ import com.amlopezc.bikesmanager.entity.BikeUser;
 import com.amlopezc.bikesmanager.net.HttpConstants;
 import com.amlopezc.bikesmanager.net.HttpDispatcher;
 import com.amlopezc.bikesmanager.util.AsyncTaskListener;
+import com.google.android.gms.games.GamesMetadata;
+import com.google.common.collect.ArrayListMultimap;
+
+import java.util.ArrayList;
 
 /**
  * Class to read the profile / account. It manages additional operations such as
@@ -27,8 +33,15 @@ import com.amlopezc.bikesmanager.util.AsyncTaskListener;
 
 public class AccountActivity extends AppCompatActivity implements View.OnClickListener, AsyncTaskListener<String> {
 
+    private final int BIKE_TIMER_POS = 0;
+    private final int MOORINGS_TIMER_POS = 1;
+    private final int OP_CANCEL_BIKE = 0;
+    private final int OP_CANCEL_MOORINGS = 1;
+
     private BikeUser mBikeUser; //Current logged user (singleton instance)
     private Button mButtonCancelBikeBook, mButtonCancelMooringsBook;
+    private CountDownTimer mCountDownTimerBike, mCountDownTimerMoorings;
+    private ArrayList<Boolean> mIsTimerRunning;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +54,9 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         setTitle(username);
 
         mBikeUser = BikeUser.getInstance();
+        mIsTimerRunning = new ArrayList<>();
+        mIsTimerRunning.add(BIKE_TIMER_POS, false);
+        mIsTimerRunning.add(MOORINGS_TIMER_POS, false);
 
         Button buttonDeposit = (Button)findViewById(R.id.button_deposit_money);
         buttonDeposit.setOnClickListener(this);
@@ -71,25 +87,66 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         }
     }
 
-    //Initialization of some dynamic data realted to bookings
+    //Initialization of some dynamic data related to bookings
     private void initBookingData() { //TODO: Modificar para poner una cuenta atrás, también tengo que repensarlo un pooc y poner botones de cancelación, esto es temporal
-        TextView textView;
-
-        textView = (TextView) findViewById(R.id.textView_address_bike);
+        TextView textViewBookBikeAddress = (TextView) findViewById(R.id.textView_book_bike_address);
+        final TextView textViewBookBikeClock = (TextView) findViewById(R.id.textView_book_bike_clock);
         if(mBikeUser.ismBookTaken()) {
-            textView.setText(mBikeUser.getmBookAddress());
-            textView = (TextView) findViewById(R.id.textView_date_bike);
-            textView.setText(mBikeUser.getmBookDate());
-        } else
-            textView.setText("No tienes ninguna bicicleta reservada");
+            textViewBookBikeAddress.setText(mBikeUser.getmBookAddress());
+            if(!mIsTimerRunning.get(BIKE_TIMER_POS)) {
 
-        textView = (TextView) findViewById(R.id.textView_address_moorings);
+                long diff = mBikeUser.getLongDate(mBikeUser.getmBookDate());
+                /*long reserva = */
+               /* long diff = Math.abs(mBikeUser.getLongDate(mBikeUser.getmBookDate()) - System.currentTimeMillis());*/
+                long diffSeg = diff / 1000 % 60;
+                long diffMinutes= diff / (60 * 1000) % 60;
+                //Log.d("ACCOUNT", "reserva " + mBikeUser.getmBookDate() + " en milis " + mBikeUser.getLongDate(mBikeUser.getmBookDate()) );
+                //Log.d("ACCOUNT", "current milis " +   System.currentTimeMillis());
+                Log.d("ACCOUNT", "milis " + diff + " seg " + diffSeg + " minutes " + diffMinutes);
+
+
+                mCountDownTimerBike = new CountDownTimer(30000, 1000) {
+                    public void onTick(long millisUntilFinished) {
+                        mIsTimerRunning.add(BIKE_TIMER_POS, true);
+                        int seconds = (int) millisUntilFinished / 1000;
+                        int minutes = seconds / 60;
+                        seconds = seconds % 60;
+                        textViewBookBikeClock.setText("Tiempo restante: " + String.format("%02d", minutes)
+                                + ":" + String.format("%02d", seconds));
+                    }
+                    public void onFinish() {
+                        cancelBooking(OP_CANCEL_BIKE);
+                    }
+                }.start();
+            }
+        } else {
+            textViewBookBikeAddress.setText("No tienes bicis reservadas");
+            textViewBookBikeClock.setText("");
+        }
+
+        TextView textViewBookMooringsAddress = (TextView) findViewById(R.id.textView_book_moorings_address);
+        final TextView textViewBookMooringClock = (TextView) findViewById(R.id.textView_book_moorings_clock);
         if(mBikeUser.ismMooringsTaken()) {
-            textView.setText(mBikeUser.getmMooringsAddress());
-            textView = (TextView) findViewById(R.id.textView_date_moorings);
-            textView.setText(mBikeUser.getmMooringsDate());
-        } else
-            textView.setText("No tienes ningún anclaje reservado");
+            textViewBookMooringsAddress.setText(mBikeUser.getmMooringsAddress());
+            if(!mIsTimerRunning.get(MOORINGS_TIMER_POS)) {
+                mCountDownTimerMoorings = new CountDownTimer(30000, 1000) {
+                    public void onTick(long millisUntilFinished) {
+                        mIsTimerRunning.add(MOORINGS_TIMER_POS, true);
+                        int seconds = (int) millisUntilFinished / 1000;
+                        int minutes = seconds / 60;
+                        seconds = seconds % 60;
+                        textViewBookMooringClock.setText("Tiempo restante: " + String.format("%02d", minutes)
+                                + ":" + String.format("%02d", seconds));
+                    }
+                    public void onFinish() {
+                        cancelBooking(OP_CANCEL_MOORINGS);
+                    }
+                }.start();
+            }
+        } else{
+            textViewBookMooringsAddress.setText("No tienes anclajes reservados");
+            textViewBookMooringClock.setText("");
+        }
 
         updateCurrentBalance();
     }
@@ -113,14 +170,10 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                 confirmDeleteAccount();
                 break;
             case R.id.button_cancel_book_bike: //TODO: pendiente actualización en servidor (cuando haga la del mapa con los PUT diferenciados)
-                mBikeUser.cancelBookBike();
-                initBookingData();
-                disableCancelButtonsIfNeeded();
+                confirmCancelBooking(OP_CANCEL_BIKE);
                 break;
             case R.id.button_cancel_book_moorings:
-                mBikeUser.cancelBookMoorings();
-                initBookingData();
-                disableCancelButtonsIfNeeded();
+                confirmCancelBooking(OP_CANCEL_MOORINGS);
                 break;
         }
     }
@@ -168,6 +221,43 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     private void deleteServerAccount() {
         HttpDispatcher dispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_USER);
         dispatcher.doDelete(this, Integer.toString(mBikeUser.getmId()));
+    }
+
+    private void confirmCancelBooking(final int operation) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(i18n(R.string.dialog_cancel_booking)).
+                setPositiveButton(
+                        i18n(R.string.dialog_cancel_positive),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                cancelBooking(operation);
+                                dialog.cancel();
+                            }
+                        }).
+                setNegativeButton(
+                        i18n(R.string.text_no),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void cancelBooking(int operation) {//TODO:Esto está bien pero tener en cuenta que la reserva del usuario se puede cancelar desde cualquier parte (aquello que pensé de una clase reserva global). Hay que ver cómo integrar todo porque desde aquí son las cancelaciones explícitas
+        if(operation == OP_CANCEL_BIKE) {
+            mBikeUser.cancelBookBike();
+            if(mCountDownTimerBike != null) mCountDownTimerBike.cancel();
+            mIsTimerRunning.add(BIKE_TIMER_POS, false);
+        } else {
+            mBikeUser.cancelBookMoorings();
+            if(mCountDownTimerMoorings != null) mCountDownTimerMoorings.cancel();
+            mIsTimerRunning.add(MOORINGS_TIMER_POS, false);
+        }
+
+        initBookingData();
+        disableCancelButtonsIfNeeded();
     }
 
     @Override

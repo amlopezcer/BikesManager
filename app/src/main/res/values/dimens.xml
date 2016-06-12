@@ -5,6 +5,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <!-- General -->
+    <dimen name="widgets_short_margin">8dp</dimen>
     <dimen name="widgets_standard_margin">16dp</dimen>
     <dimen name="widgets_large_margin">24dp</dimen>
     <dimen name="dialogs_padding">16dp</dimen>

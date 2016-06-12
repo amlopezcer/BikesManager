@@ -1,5 +1,7 @@
 package com.amlopezc.bikesmanager.entity;
 
+import android.util.Log;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.hash.HashCode;
@@ -10,8 +12,10 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 public abstract class JSONBean implements PropertyChangeListener {
@@ -65,6 +69,19 @@ public abstract class JSONBean implements PropertyChangeListener {
         return builder.append("T")
                 .append(timeFormat.format(cal.getTime()))
                 .append("+01:00").toString();
+    }
+
+    protected long getDateStored(String dateStored) {
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+        //Received: yyyy-mm-ddThh:mm:ss+01:00; wanted:yyyy-MM-dd HH:mm:ss
+        String dateInString = dateStored.substring(0, 10) + " " + dateStored.substring(11, 19);
+        try {
+            Date date = formatter.parse(dateInString);
+            return date.getTime();
+        } catch (ParseException pe) {
+            Log.e(getClass().getCanonicalName(), pe.getLocalizedMessage(), pe);
+        }
+        return 0;
     }
 
 }

@@ -78,8 +78,35 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
         //Request location permission, turning on location services if granted
         requestLocationPermission();
+    }
 
-        mBikeUser = BikeUser.getInstance();
+    /**
+     * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
+     * installed) and the map has not already been instantiated.. This will ensure that we only ever
+     * call {@link #setUpMap()} once when {@link #mMap} is not null.
+     * <p/>
+     * If it isn't installed {@link SupportMapFragment} (and
+     * {@link com.google.android.gms.maps.MapView MapView}) will show a prompt for the user to
+     * install/update the Google Play services APK on their device.
+     * <p/>
+     * A user can return to this FragmentActivity after following the prompt and correctly
+     * installing/updating/enabling the Google Play services. Since the FragmentActivity may not
+     * have been completely destroyed during this process (it is likely that it would only be
+     * stopped or paused), {@link #onCreate(Bundle)} may not be called again so we should call this
+     * method in {@link #onResume()} to guarantee that it will be called.
+     */
+    private void setUpMapIfNeeded() {
+        // Do a null check to confirm that we have not already instantiated the map.
+        if (mMap == null) {
+            // Try to obtain the map from the SupportMapFragment.
+            mMap = ((SupportMapFragment) getSupportFragmentManager().
+                    findFragmentById(R.id.map)).
+                    getMap();
+            // Check if we were successful in obtaining the map.
+            if (mMap != null) {
+                setUpMap();
+            }
+        }
     }
 
     private void requestLocationPermission() {
@@ -129,13 +156,18 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
     //Set the user with updated info from the server
     private void initUserIfNotSet() {
-        if(mBikeUser.getmUserName() == null || mBikeUser.getmUserName().isEmpty())
+        if (mBikeUser == null)
+            mBikeUser = BikeUser.getInstance();
+
+        //conditions which indicate the user is not updated
+        if(mBikeUser.getmUserName() == null || mBikeUser.getmUserName().isEmpty() || mBikeUser.getmId() == -1)
             getUpdatedUserData();
     }
 
     private void getUpdatedUserData() {
         SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.file_user_preferences), Context.MODE_PRIVATE);
         String username = sharedPreferences.getString(getString(R.string.text_user_name), "");
+
         //Get the user selected
         HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_USER);
         httpDispatcher.doGet(this, String.format(HttpConstants.GET_FIND_USERID, username)); //path: .../user/{username}
@@ -235,34 +267,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         startActivity(intent);
     }
 
-    /**
-     * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
-     * installed) and the map has not already been instantiated.. This will ensure that we only ever
-     * call {@link #setUpMap()} once when {@link #mMap} is not null.
-     * <p/>
-     * If it isn't installed {@link SupportMapFragment} (and
-     * {@link com.google.android.gms.maps.MapView MapView}) will show a prompt for the user to
-     * install/update the Google Play services APK on their device.
-     * <p/>
-     * A user can return to this FragmentActivity after following the prompt and correctly
-     * installing/updating/enabling the Google Play services. Since the FragmentActivity may not
-     * have been completely destroyed during this process (it is likely that it would only be
-     * stopped or paused), {@link #onCreate(Bundle)} may not be called again so we should call this
-     * method in {@link #onResume()} to guarantee that it will be called.
-     */
-    private void setUpMapIfNeeded() {
-        // Do a null check to confirm that we have not already instantiated the map.
-        if (mMap == null) {
-            // Try to obtain the map from the SupportMapFragment.
-            mMap = ((SupportMapFragment) getSupportFragmentManager().
-                    findFragmentById(R.id.map)).
-                    getMap();
-            // Check if we were successful in obtaining the map.
-            if (mMap != null) {
-                setUpMap();
-            }
-        }
-    }
+
 
     //Set some map features: zoom + camera
     private void setUpMap() {
@@ -381,6 +386,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
             mBikeUser.bookBike(mBookAddress);
         if(isMooringsBooked)
             mBikeUser.bookMoorings(mBookAddress);
+
     }
 
     @Override
@@ -432,7 +438,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         BikeUser bikeUser = mapper.readValue(result, BikeUser.class);
 
         //Update the singleton local instance
-        mBikeUser.copyServerData(bikeUser);
+        mBikeUser = BikeUser.updateInstance(bikeUser);
     }
 
     //Manage Station data received form the server by updating local data and layout

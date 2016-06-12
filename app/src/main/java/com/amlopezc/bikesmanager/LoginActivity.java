@@ -138,15 +138,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 Toast.makeText(this,
                         i18n(R.string.toast_incorrect_password, bikeUser.getmUserName()),
                         Toast.LENGTH_SHORT).show();
-
-
-
-            if(result.contains(BikeUser.ENTITY_ID))
-                Log.d("LOGIN", "ok");
-            else
-                Log.d("LOGIN", "nok");
-
-
         } catch (Exception e) {
             Log.e("[GET Result]" + getClass().getCanonicalName(), e.getLocalizedMessage(), e);
             Toast.makeText(this,
@@ -163,10 +154,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 putString(getString(R.string.text_user_name), bikeUser.getmUserName()).
                 putString(getString(R.string.text_password),  bikeUser.getmPassword()).
                 apply();
-
-        //Update singleton instance
-        BikeUser singletonInstance = BikeUser.getInstance();
-        singletonInstance.copyServerData(bikeUser);
 
         //Go to the main class
         Intent intent = new Intent(this, MapsActivity.class);

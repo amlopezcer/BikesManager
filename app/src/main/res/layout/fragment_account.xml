@@ -14,6 +14,28 @@
         android:text="@string/textView_book_bike"
         android:layout_marginTop="@dimen/widgets_standard_margin"/>
 
+    <TextView android:id="@+id/textView_book_bike_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textView_book_bike"
+        android:layout_marginTop="@dimen/widgets_standard_margin"
+        android:layout_toLeftOf="@+id/button_cancel_book_bike"
+        android:layout_toStartOf="@+id/button_cancel_book_bike"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginRight="@dimen/widgets_short_margin"
+        android:layout_marginEnd="@dimen/widgets_short_margin"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="hola"/>
+
+    <TextView android:id="@+id/textView_book_bike_clock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textView_book_bike_address"
+        android:textColor="@color/secondaryTextColor"
+        android:text="Cronómtero"/>
+
     <Button android:id="@+id/button_cancel_book_bike"
         android:layout_width="@dimen/custom_light_buttons_width"
         android:layout_height="wrap_content"
@@ -25,31 +47,35 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
-    <TableRow android:id="@+id/tableRow_book_bike"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textView_book_bike"
-        android:layout_marginTop="@dimen/widgets_standard_margin"
-        android:layout_centerHorizontal="true">
-        <TextView android:id="@+id/textView_address_bike"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/secondaryTextColor"
-            android:padding="4dp"/>
-        <TextView android:id="@+id/textView_date_bike"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/secondaryTextColor"
-            android:padding="4dp"/>
-    </TableRow>
-
     <TextView android:id="@+id/textView_book_moorings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/textView_book_moorings"
-        android:layout_below="@+id/button_cancel_book_bike"
+        android:layout_below="@+id/textView_book_bike_clock"
         android:layout_marginTop="@dimen/widgets_large_margin"/>
+
+    <TextView android:id="@+id/textView_book_moorings_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textView_book_moorings"
+        android:layout_marginTop="@dimen/widgets_standard_margin"
+        android:layout_toLeftOf="@+id/button_cancel_book_moorings"
+        android:layout_toStartOf="@+id/button_cancel_book_moorings"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginRight="@dimen/widgets_short_margin"
+        android:layout_marginEnd="@dimen/widgets_short_margin"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="hola"/>
+
+    <TextView android:id="@+id/textView_book_moorings_clock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textView_book_moorings_address"
+        android:textColor="@color/secondaryTextColor"
+        android:text="Cronómtero"/>
 
     <Button android:id="@+id/button_cancel_book_moorings"
         android:layout_width="@dimen/custom_light_buttons_width"
@@ -62,30 +88,12 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
-    <TableRow android:id="@+id/tableRow_book_moorings"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textView_book_moorings"
-        android:layout_marginTop="@dimen/widgets_standard_margin"
-        android:layout_centerHorizontal="true" >
-        <TextView android:id="@+id/textView_address_moorings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/secondaryTextColor"
-            android:padding="4dp"/>
-        <TextView android:id="@+id/textView_date_moorings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/secondaryTextColor"
-            android:padding="4dp"/>
-    </TableRow>
-
     <TextView android:id="@+id/textView_profile_balance_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="@string/textView_profile_balance_text"
-        android:layout_below="@id/button_cancel_book_moorings"
+        android:layout_below="@id/textView_book_moorings_clock"
         android:layout_marginTop="@dimen/widgets_large_margin" />
 
     <TextView android:id="@+id/textView_profile_balance"

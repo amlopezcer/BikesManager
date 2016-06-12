@@ -6,10 +6,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
 
 @JsonPropertyOrder({"balance", "biketaken", "bookaddress", "bookdate", "booktaken", "email", "entityid",
         "fullname", "id", "md5", "mooringsaddress", "mooringsdate", "mooringstaken", "password",
@@ -257,7 +253,7 @@ public class BikeUser extends JSONBean {
     //</editor-fold>
 
     public void setNewUserData(String mUserName, String mPassword, String mFullName, String mEmail) {
-        this.mId = 0; //Not representative, the server will assign an appropriate ID, but this one is needed for serialization
+        this.mId = -1; //Not representative, the server will assign an appropriate ID, but this one is needed for serialization
         this.mUserName = mUserName;
         this.mPassword = mPassword;
         this.mFullName = mFullName;
@@ -275,8 +271,9 @@ public class BikeUser extends JSONBean {
         processHashMD5();
     }
 
-    public void copyServerData(BikeUser bikeUser) {
+    public static BikeUser updateInstance(BikeUser bikeUser) {
         mInstance = bikeUser;
+        return mInstance;
     }
 
     public void resetInstance () {
@@ -307,6 +304,13 @@ public class BikeUser extends JSONBean {
         setmMooringsTaken(false);
         setmMooringsDate(getCurrentDateFormatted());
         setmMooringsAddress(ADDRESS_NONE_TEXT);
+    }
+
+    public long getLongDate(String date){
+        long actual = getDateStored(getCurrentDateFormatted());
+        long reserva = getDateStored(date);
+
+        return actual - reserva;
     }
 
 }
