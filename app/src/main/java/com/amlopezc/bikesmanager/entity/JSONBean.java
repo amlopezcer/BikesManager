@@ -60,7 +60,7 @@ public abstract class JSONBean implements PropertyChangeListener {
 
     public abstract void setServerId(int serverId);
 
-    //Format date data to insert it correctly in the Database, format: yyyy-mm-ddThh:mm:ss+01:00
+    //Format date data to insert it correctly in the Database, format: yyyy-mm-ddThh:mm:ss+02:00
     protected String getCurrentDateFormatted() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
@@ -68,7 +68,7 @@ public abstract class JSONBean implements PropertyChangeListener {
         StringBuilder builder = new StringBuilder(dateFormat.format(cal.getTime()));
         return builder.append("T")
                 .append(timeFormat.format(cal.getTime()))
-                .append("+01:00").toString();
+                .append("+02:00").toString();
     }
 
     //Obtain a long representation of a date

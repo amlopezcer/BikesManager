@@ -309,9 +309,7 @@ public class BikeUser extends JSONBean {
         long actual = System.currentTimeMillis();
         long booking = getLongDateStored(date);
 
-        final int MAX_BOOKING_TIME = 1800000; //30' TODO: esto meterlo en la clase esta que tengo pensado de reservas
-
-        return MAX_BOOKING_TIME - (actual - booking);
+        return Booking.MAX_BOOKING_TIME - (actual - booking);
     }
 
 }
