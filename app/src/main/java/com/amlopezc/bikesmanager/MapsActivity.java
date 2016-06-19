@@ -109,6 +109,12 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         }
     }
 
+    //Set some map features: zoom + camera
+    private void setUpMap() {
+        mMap.getUiSettings().setZoomControlsEnabled(true);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(MADRID.getCenter(), 12));
+    }
+
     private void requestLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -214,6 +220,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                 startActivity(intent);
                 return true;
             case R.id.action_refresh: //Updates data
+                initUserIfNotSet(); //just in case
                 getStationsUpdatedServerData();
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(MADRID.getCenter(), 12)); //Move the camera to the init position for user help
                 return true;
@@ -267,14 +274,6 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         startActivity(intent);
     }
 
-
-
-    //Set some map features: zoom + camera
-    private void setUpMap() {
-        mMap.getUiSettings().setZoomControlsEnabled(true);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(MADRID.getCenter(), 12));
-    }
-
     //Update markers with current server data
     private void updateMarkers() {
         mMap.clear(); //Clear the map and redraw all markers
@@ -283,7 +282,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                     position(new LatLng(
                             entry.getValue().getmLatitude(),
                             entry.getValue().getmLongitude())).
-                    title(entry.getKey()).
+                    title(entry.getKey()). //key = id - address
                     snippet(setMarkerSnippet(entry.getValue())).
                     icon(getAvailabilityColor(entry.getValue())));
     }
@@ -298,8 +297,12 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                 append("€").toString();
     }
 
-    //Set marker colors depending on the availability (green to red)
+    //Set marker colors depending on the availability (green to red) or booking status (blue)
     private BitmapDescriptor getAvailabilityColor(BikeStation bikeStation) {
+        if(mBikeUser.getmBookAddress().equals(bikeStation.getMarkerHeader()) ||
+                mBikeUser.getmMooringsAddress().equals(bikeStation.getMarkerHeader()))
+            return BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE);
+
         int availability = bikeStation.getStationAvailability();
 
         if(availability == 0)
@@ -387,6 +390,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         if(isMooringsBooked)
             mBikeUser.bookMoorings(mBookAddress);
 
+        updateMarkers(); //TODO: cuando meta la lógica de las bicis esto fuera, que ya lo hago al actualziar
+
     }
 
     @Override
@@ -454,10 +459,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     //Read server data to update current state
     private void readData(List<BikeStation> bikeStationList) {
         mStations = new HashMap<>();
-        String headerTemplate = "%d - %s";
         for(BikeStation bikeStation : bikeStationList)
-            mStations.put(String.format(headerTemplate, bikeStation.getmId(),
-                    bikeStation.getmAddress()), bikeStation);
+            mStations.put(bikeStation.getMarkerHeader(), bikeStation);
     }
 
     //Update local layout (update map = update markers)

@@ -17,7 +17,6 @@ public class BikeUser extends JSONBean {
     @JsonIgnore
     private final String ADDRESS_NONE_TEXT = "None"; //Standard text for addresses when no book is taken
 
-
     @JsonProperty("id")
     private int mId;
     @JsonProperty("username")
@@ -306,11 +305,13 @@ public class BikeUser extends JSONBean {
         setmMooringsAddress(ADDRESS_NONE_TEXT);
     }
 
-    public long getLongDate(String date){
-        long actual = getDateStored(getCurrentDateFormatted());
-        long reserva = getDateStored(date);
+    public long getRemainingBookingTime(String date){
+        long actual = System.currentTimeMillis();
+        long booking = getLongDateStored(date);
 
-        return actual - reserva;
+        final int MAX_BOOKING_TIME = 1800000; //30' TODO: esto meterlo en la clase esta que tengo pensado de reservas
+
+        return MAX_BOOKING_TIME - (actual - booking);
     }
 
 }

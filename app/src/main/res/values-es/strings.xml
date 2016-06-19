@@ -80,6 +80,9 @@
     <string name="dialog_cancel_positive">Sí, cancelar</string>
     <string name="dialog_delete">Borrar</string>
     <string name="confirm_deposit">Ingreso realizado</string>
+    <string name="textView_no_bikes">No hay bicis reservadas</string>
+    <string name="textView_no_moorings">No hay anclajes reservados</string>
+    <string name="textView_remaining_time">Tiempo restante: %1$02d:%2$02d</string>
 
     <!-- SigninDialogFragment.java -->
     <string name="builder_ok_positive">Iniciar sesión</string>

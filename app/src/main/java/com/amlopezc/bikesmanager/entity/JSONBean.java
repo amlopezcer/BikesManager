@@ -71,7 +71,8 @@ public abstract class JSONBean implements PropertyChangeListener {
                 .append("+01:00").toString();
     }
 
-    protected long getDateStored(String dateStored) {
+    //Obtain a long representation of a date
+    protected long getLongDateStored(String dateStored) {
         DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
         //Received: yyyy-mm-ddThh:mm:ss+01:00; wanted:yyyy-MM-dd HH:mm:ss
         String dateInString = dateStored.substring(0, 10) + " " + dateStored.substring(11, 19);

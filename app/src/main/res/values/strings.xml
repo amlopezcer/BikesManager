@@ -80,6 +80,9 @@
     <string name="dialog_cancel_positive">Yes, cancel</string>
     <string name="dialog_delete">Delete</string>
     <string name="confirm_deposit">Deposit done</string>
+    <string name="textView_no_bikes">No bikes booked</string>
+    <string name="textView_no_moorings">No moorings booked</string>
+    <string name="textView_remaining_time">Remaining time: %1$02d:%2$02d</string>
 
     <!-- SigninDialogFragment.java -->
     <string name="builder_ok_positive">Sign in</string>
