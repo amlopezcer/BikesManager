@@ -299,8 +299,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
     //Set marker colors depending on the availability (green to red) or booking status (blue)
     private BitmapDescriptor getAvailabilityColor(BikeStation bikeStation) {
-        if(mBikeUser.getmBookAddress().equals(bikeStation.getMarkerHeader()) ||
-                mBikeUser.getmMooringsAddress().equals(bikeStation.getMarkerHeader()))
+        if(mBikeUser.getmBookAddress().equals(bikeStation.getStationHeader()) ||
+                mBikeUser.getmMooringsAddress().equals(bikeStation.getStationHeader()))
             return BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE);
 
         int availability = bikeStation.getStationAvailability();
@@ -460,7 +460,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     private void readData(List<BikeStation> bikeStationList) {
         mStations = new HashMap<>();
         for(BikeStation bikeStation : bikeStationList)
-            mStations.put(bikeStation.getMarkerHeader(), bikeStation);
+            mStations.put(bikeStation.getStationHeader(), bikeStation);
     }
 
     //Update local layout (update map = update markers)

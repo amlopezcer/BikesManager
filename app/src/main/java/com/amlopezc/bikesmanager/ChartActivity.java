@@ -47,6 +47,7 @@ public class ChartActivity extends AppCompatActivity implements AsyncTaskListene
         mChart = (PieChart) findViewById(R.id.chart_pieChart);
 
         //Setting the chart basic format
+        assert mChart != null;
         mChart.setDescription(null);
         mChart.setHoleColorTransparent(true);
         mChart.setDrawSliceText(true);

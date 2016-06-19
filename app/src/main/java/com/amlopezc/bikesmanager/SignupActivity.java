@@ -78,6 +78,7 @@ public class SignUpActivity extends AppCompatActivity implements AsyncTaskListen
 
     private void scrollToTheTop() {
         ScrollView scrollView = (ScrollView) findViewById(R.id.scrollView_signUp);
+        assert scrollView != null;
         scrollView.smoothScrollTo(0,0);
     }
 

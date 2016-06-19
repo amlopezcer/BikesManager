@@ -60,15 +60,20 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         mIsTimerRunning.add(MOORINGS_TIMER_POS, false);
 
         Button buttonDeposit = (Button)findViewById(R.id.button_deposit_money);
+        assert buttonDeposit != null;
         buttonDeposit.setOnClickListener(this);
         Button buttonEdit = (Button)findViewById(R.id.button_edit_profile);
+        assert buttonEdit != null;
         buttonEdit.setOnClickListener(this);
         Button buttonDeleteAccount = (Button)findViewById(R.id.button_delete_account);
+        assert buttonDeleteAccount != null;
         buttonDeleteAccount.setOnClickListener(this);
 
         mButtonCancelBikeBook = (Button)findViewById(R.id.button_cancel_book_bike);
+        assert mButtonCancelBikeBook != null;
         mButtonCancelBikeBook.setOnClickListener(this);
         mButtonCancelMooringsBook = (Button)findViewById(R.id.button_cancel_book_moorings);
+        assert mButtonCancelMooringsBook != null;
         mButtonCancelMooringsBook.setOnClickListener(this);
 
         disableCancelButtonsIfNeeded();
@@ -93,6 +98,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         TextView textViewBookBikeAddress = (TextView) findViewById(R.id.textView_book_bike_address);
         final TextView textViewBookBikeClock = (TextView) findViewById(R.id.textView_book_bike_clock);
         if(mBikeUser.ismBookTaken()) {
+            assert textViewBookBikeAddress != null;
             textViewBookBikeAddress.setText(mBikeUser.getmBookAddress());
             if(!mIsTimerRunning.get(BIKE_TIMER_POS)) {
                 //Get remaining booking time
@@ -103,6 +109,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                         int seconds = (int) millisUntilFinished / 1000;
                         int minutes = seconds / 60;
                         seconds = seconds % 60;
+                        assert textViewBookBikeClock != null;
                         textViewBookBikeClock.setText(i18n(R.string.textView_remaining_time, minutes, seconds));
                     }
                     public void onFinish() {
@@ -111,13 +118,16 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                 }.start();
             }
         } else {
+            assert textViewBookBikeAddress != null;
             textViewBookBikeAddress.setText(i18n(R.string.textView_no_bikes));
+            assert textViewBookBikeClock != null;
             textViewBookBikeClock.setText("");
         }
 
         TextView textViewBookMooringsAddress = (TextView) findViewById(R.id.textView_book_moorings_address);
         final TextView textViewBookMooringClock = (TextView) findViewById(R.id.textView_book_moorings_clock);
         if(mBikeUser.ismMooringsTaken()) {
+            assert textViewBookMooringsAddress != null;
             textViewBookMooringsAddress.setText(mBikeUser.getmMooringsAddress());
             if(!mIsTimerRunning.get(MOORINGS_TIMER_POS)) {
                 //Get remaining booking time
@@ -128,6 +138,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                         int seconds = (int) millisUntilFinished / 1000;
                         int minutes = seconds / 60;
                         seconds = seconds % 60;
+                        assert textViewBookMooringClock != null;
                         textViewBookMooringClock.setText(i18n(R.string.textView_remaining_time, minutes, seconds));
                     }
                     public void onFinish() {
@@ -136,7 +147,9 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                 }.start();
             }
         } else{
+            assert textViewBookMooringsAddress != null;
             textViewBookMooringsAddress.setText(i18n(R.string.textView_no_moorings));
+            assert textViewBookMooringClock != null;
             textViewBookMooringClock.setText("");
         }
 
@@ -146,6 +159,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     //Update current balance layout
     private void updateCurrentBalance() {
         TextView textView = (TextView) findViewById(R.id.textView_profile_balance);
+        assert textView != null;
         textView.setText(i18n(R.string.text_format_money, mBikeUser.getmBalance()));
     }
 

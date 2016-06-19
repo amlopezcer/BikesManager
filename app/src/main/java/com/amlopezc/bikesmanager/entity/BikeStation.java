@@ -285,7 +285,7 @@ public class BikeStation extends JSONBean  {
     }
 
     //Map markers header (id - address)
-    public String getMarkerHeader() {
+    public String getStationHeader() {
         String headerTemplate = "%d - %s";
         return String.format(Locale.getDefault(), headerTemplate, getmId(), getmAddress());
     }

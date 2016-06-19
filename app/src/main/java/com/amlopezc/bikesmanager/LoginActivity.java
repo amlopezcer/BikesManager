@@ -44,10 +44,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setAppVersion(); //Set version textView with the current app version
 
         Button buttonSignUp = (Button) findViewById(R.id.button_signUp);
+        assert buttonSignUp != null;
         buttonSignUp.setOnClickListener(this);
         Button buttonSignIn = (Button) findViewById(R.id.button_signIn);
+        assert buttonSignIn != null;
         buttonSignIn.setOnClickListener(this);
         ImageButton buttonConnectionSettings = (ImageButton) findViewById(R.id.imgButton_connection_settings);
+        assert buttonConnectionSettings != null;
         buttonConnectionSettings.setOnClickListener(this);
     }
 
@@ -71,9 +74,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         try {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             String version = pInfo.versionName;
+            assert textViewVersion != null;
             textViewVersion.setText(version);
         } catch (PackageManager.NameNotFoundException nnfe) {
             Log.e(getClass().getCanonicalName(), nnfe.getLocalizedMessage(), nnfe);
+            assert textViewVersion != null;
             textViewVersion.setText("-");
         }
     }

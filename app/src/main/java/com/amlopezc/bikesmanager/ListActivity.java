@@ -43,6 +43,7 @@ public class ListActivity extends AppCompatActivity implements AsyncTaskListener
 
         mExpandableListView = (ExpandableListView) findViewById(R.id.expListView_list);
         ImageButton imageButtonSearch = (ImageButton) findViewById(R.id.imgButton_search);
+        assert imageButtonSearch != null;
         imageButtonSearch.setOnClickListener(this);
         mTextViewSearch = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView_stations);
     }
@@ -112,13 +113,12 @@ public class ListActivity extends AppCompatActivity implements AsyncTaskListener
 
     //Read server data to update current state
     private void readData(List<BikeStation> bikeStationList) {
-        String headerTemplate = "%d - %s";
         mListDataHeader = new ArrayList<>();
         mListDataChild = new HashMap<>();
         int i = 0;
 
         for(BikeStation bikeStation : bikeStationList) {
-            mListDataHeader.add(String.format(headerTemplate, bikeStation.getmId(), bikeStation.getmAddress()));
+            mListDataHeader.add(bikeStation.getStationHeader());
             mListDataChild.put(mListDataHeader.get(i), bikeStation);
             i++;
         }
