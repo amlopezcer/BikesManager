@@ -282,7 +282,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                     position(new LatLng(
                             entry.getValue().getmLatitude(),
                             entry.getValue().getmLongitude())).
-                    title(entry.getKey()). //key = id - address
+                    title(entry.getKey()). //key = "id - address
                     snippet(setMarkerSnippet(entry.getValue())).
                     icon(getAvailabilityColor(entry.getValue())));
     }
@@ -364,7 +364,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     }
 
     //Take or leave bikes with the server
-    private void modifyBike(Marker marker, String operation) {
+    private void modifyBike(Marker marker, String operation) { //TODO: pendientes comprobaciones de si ya tengo bici, si tengo reservada...
         getStationsUpdatedServerData(); //Get updated data firstly. Server manages concurrency.
         BikeStation bikeStation = mStations.get(marker.getTitle()).updateBikeStation(operation);
 
@@ -411,27 +411,22 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                             Toast.LENGTH_SHORT).show();
                 }
                 break;
-            case HttpConstants.OPERATION_PUT:
+            case HttpConstants.OPERATION_PUT: //TODO: Distinguir instancias al meter funcionalidad
                 //Just showing Toast for user feedback
-                switch (result) {
-                    case HttpConstants.SERVER_RESPONSE_OK:
-                        Toast.makeText(this,
-                                i18n(R.string.toast_bikeop_succeed),
-                                Toast.LENGTH_SHORT).show();
-                        break;
-                    case HttpConstants.SERVER_RESPONSE_KO:
-                        Toast.makeText(this,
-                                i18n(R.string.toast_bikeop_impossible),
-                                Toast.LENGTH_SHORT).show();
-                        break;
-                    default:
-                        Toast.makeText(this,
-                                i18n(R.string.toast_sync_error),
-                                Toast.LENGTH_SHORT).show();
-                }
+                if (result.contains(HttpConstants.SERVER_RESPONSE_OK))
+                    Toast.makeText(this,
+                            i18n(R.string.toast_bikeop_succeed),
+                            Toast.LENGTH_SHORT).show();
+                else if (result.contains(HttpConstants.SERVER_RESPONSE_KO))
+                    Toast.makeText(this,
+                            i18n(R.string.toast_bikeop_impossible),
+                            Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(this,
+                            i18n(R.string.toast_sync_error),
+                            Toast.LENGTH_SHORT).show();
 
                 getStationsUpdatedServerData();
-                break;
         }
     }
 

@@ -9,107 +9,80 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.math.BigDecimal;
 import java.util.Locale;
 
-@JsonPropertyOrder({"address", "available", "broken", "latitude", "longitude", "md5", "reserved",
-        "serverId", "timestampBike", "total" })
-public class BikeStation extends JSONBean  {
+@JsonPropertyOrder({"address", "availablebikes", "basicfare", "changetimestamp", "entityid", "id",
+        "latitude", "longitude", "md5", "reservedbikes", "reservedmoorings", "totalmoorings"})
+public class BikeStation extends JSONBean {
 
     @JsonIgnore
-    private static final float BASIC_FARE = 1.00f;  // Basic fare, it will change depending on the availability
+    public static final String ENTITY_ID = "entity_bikestation"; //To identify server responses for this entity
 
-    //TODO: Repasar cómo quedará esto finalmente para generar la base de datos final en condiciones; habrá que cambiar el PArcelable también. El JsonProperty es para el renombrado, tendré que poner el nombre de la BBDD
-
-    //General Data
-    @JsonProperty("serverId")
+    @JsonProperty("id")
     private int mId;
     @JsonProperty("address")
     private String mAddress;
-
-    @JsonIgnore
-    private int mServerId; //la tengo arriba, esto hay que retocarlo...
-    @JsonIgnore
-    private String mUser;
-    @JsonProperty("timestampBike")
-    private String mTimeStamp;
-
-    // Coordinates
-    @JsonProperty("latitude")
-    private double mLatitude;
-    @JsonProperty("longitude")
-    private double mLongitude;
-
-    //Station numbers
-    @JsonProperty("total")
-    private int mTotalBikes;
-    @JsonProperty("available")
+    @JsonProperty("totalmoorings")
+    private int mTotalMoorings;
+    @JsonProperty("reservedmoorings")
+    private int mReservedMoorings;
+    @JsonProperty("availablebikes")
     private int mAvailableBikes;
-    @JsonProperty("broken")
-    private int mBrokenBikes;
-    @JsonProperty("reserved")
+    @JsonProperty("reservedbikes")
     private int mReservedBikes;
+    @JsonProperty("latitude")
+    private float mLatitude;
+    @JsonProperty("longitude")
+    private float mLongitude;
+    @JsonProperty("changetimestamp")
+    private String mChangeTimestamp;
+    @JsonProperty("basicfare")
+    private float mBasicFare;
+    @JsonProperty("entityid")
+    private String mEntityId; //Redundant but avoids issues with JSON serialization
 
-    public BikeStation(){}
+    public BikeStation() {}
 
-    public BikeStation(double mLatitude, double mLongitude, int mId, String mAddress,
-                       int mTotalBikes, int mAvailableBikes, int mBrokenBikes, int mReservedBikes) {
-        this.mLatitude = mLatitude;
-        this.mLongitude = mLongitude;
+    public BikeStation(int mId, String mAddress, int mTotalMoorings, int mReservedMoorings,
+                       int mAvailableBikes, int mReservedBikes, float mLatitude, float mLongitude,
+                       String mChangeTimestamp, float mBasicFare, String mEntityId) {
         this.mId = mId;
         this.mAddress = mAddress;
-        this.mTotalBikes = mTotalBikes;
+        this.mTotalMoorings = mTotalMoorings;
+        this.mReservedMoorings = mReservedMoorings;
         this.mAvailableBikes = mAvailableBikes;
-        this.mBrokenBikes = mBrokenBikes;
         this.mReservedBikes = mReservedBikes;
-        processHashMD5();
+        this.mLatitude = mLatitude;
+        this.mLongitude = mLongitude;
+        this.mChangeTimestamp = mChangeTimestamp;
+        this.mBasicFare = mBasicFare;
+        this.mEntityId = mEntityId;
     }
 
     //<editor-fold desc="GET">
-    public double getmLatitude() {
-        return mLatitude;
-    }
+    public int getmId() { return mId; }
 
-    public double getmLongitude() {
-        return mLongitude;
-    }
+    public String getmAddress() { return mAddress; }
 
-    public int getmId() {
-        return mId;
-    }
+    public int getmTotalMoorings() { return mTotalMoorings; }
 
-    public String getmAddress() {
-        return mAddress;
-    }
+    public int getmReservedMoorings() { return mReservedMoorings; }
 
-    public int getmServerId() {
-        return mServerId;
-    }
+    public int getmAvailableBikes() { return mAvailableBikes; }
 
-    public String getmUser() {
-        return mUser;
-    }
+    public int getmReservedBikes() { return mReservedBikes; }
 
-    public String getmTimeStamp() {
-        return mTimeStamp;
-    }
+    public float getmLatitude() { return mLatitude; }
 
-    public int getmTotalBikes() {
-        return mTotalBikes;
-    }
+    public float getmLongitude() { return mLongitude; }
 
-    public int getmAvailableBikes() {
-        return mAvailableBikes;
-    }
+    public String getmChangeTimestamp() { return mChangeTimestamp; }
 
-    public int getmBrokenBikes() {
-        return mBrokenBikes;
-    }
+    public float getmBasicFare() { return mBasicFare; }
 
-    public int getmReservedBikes() {
-        return mReservedBikes;
-    }
+    public String getmEntityId() { return mEntityId; }
 
     @Override
     public int getServerId() {
-        return mServerId;
+        return mId;
     }
     //</editor-fold>
 
@@ -126,34 +99,16 @@ public class BikeStation extends JSONBean  {
         support.firePropertyChange("mAddress", oldValue, mAddress);
     }
 
-    public void setmUser(String mUser) {
-        String oldValue = this.mUser;
-        this.mUser = mUser;
-        support.firePropertyChange("mUser", oldValue, mUser);
+    public void setmTotalMoorings(int mTotalMoorings) {
+        int oldValue = this.mTotalMoorings;
+        this.mTotalMoorings = mTotalMoorings;
+        support.firePropertyChange("mTotalMoorings", oldValue, mTotalMoorings);
     }
 
-    public void setmTimeStamp(String mTimeStamp) {
-        String oldValue = this.mTimeStamp;
-        this.mTimeStamp = mTimeStamp;
-        support.firePropertyChange("mTimeStamp", oldValue, mTimeStamp);
-    }
-
-    public void setmLatitude(double mLatitude) {
-        double oldValue = this.mLatitude;
-        this.mLatitude = mLatitude;
-        support.firePropertyChange("mLatitude", oldValue, mLatitude);
-    }
-
-    public void setmLongitude(double mLongitude) {
-        double oldValue = this.mLongitude;
-        this.mLongitude = mLongitude;
-        support.firePropertyChange("mLongitude", oldValue, mLongitude);
-    }
-
-    public void setmTotalBikes(int mTotalBikes) {
-        int oldValue = this.mTotalBikes;
-        this.mTotalBikes = mTotalBikes;
-        support.firePropertyChange("mTotalBikes", oldValue, mTotalBikes);
+    public void setmReservedMoorings(int mReservedMoorings) {
+        int oldValue = this.mReservedMoorings;
+        this.mReservedMoorings = mReservedMoorings;
+        support.firePropertyChange("mReservedMoorings", oldValue, mReservedMoorings);
     }
 
     public void setmAvailableBikes(int mAvailableBikes) {
@@ -162,23 +117,41 @@ public class BikeStation extends JSONBean  {
         support.firePropertyChange("mAvailableBikes", oldValue, mAvailableBikes);
     }
 
-    public void setmBrokenBikes(int mBrokenBikes) {
-        int oldValue = this.mBrokenBikes;
-        this.mBrokenBikes = mBrokenBikes;
-        support.firePropertyChange("mBrokenBikes", oldValue, mBrokenBikes);
-    }
-
     public void setmReservedBikes(int mReservedBikes) {
         int oldValue = this.mReservedBikes;
         this.mReservedBikes = mReservedBikes;
         support.firePropertyChange("mReservedBikes", oldValue, mReservedBikes);
     }
 
+    public void setmLatitude(float mLatitude) {
+        float oldValue = this.mLatitude;
+        this.mLatitude = mLatitude;
+        support.firePropertyChange("mLatitude", oldValue, mLatitude);
+    }
+
+    public void setmLongitude(float mLongitude) {
+        float oldValue = this.mLongitude;
+        this.mLongitude = mLongitude;
+        support.firePropertyChange("mLongitude", oldValue, mLongitude);
+    }
+
+    public void setmChangeTimestamp(String mChangeTimestamp) {
+        String oldValue = this.mChangeTimestamp;
+        this.mChangeTimestamp = mChangeTimestamp;
+        support.firePropertyChange("mChangeTimestamp", oldValue, mChangeTimestamp);
+    }
+
+    public void setmBasicFare(float mBasicFare) {
+        float oldValue = this.mBasicFare;
+        this.mBasicFare = mBasicFare;
+        support.firePropertyChange("mBasicFare", oldValue, mBasicFare);
+    }
+
     @Override
     public void setServerId(int serverId) {
-        int oldValue = this.mServerId;
-        this.mServerId = serverId;
-        support.firePropertyChange("mServerId", oldValue, serverId);
+        int oldValue = this.mId;
+        this.mId = serverId;
+        support.firePropertyChange("mId", oldValue, serverId);
     }
     //</editor-fold>
 
@@ -191,40 +164,43 @@ public class BikeStation extends JSONBean  {
         BikeStation that = (BikeStation) o;
 
         if (mId != that.mId) return false;
-        if (Double.compare(that.mLatitude, mLatitude) != 0) return false;
-        if (Double.compare(that.mLongitude, mLongitude) != 0) return false;
-        if (mTotalBikes != that.mTotalBikes) return false;
+        if (mTotalMoorings != that.mTotalMoorings) return false;
+        if (mReservedMoorings != that.mReservedMoorings) return false;
         if (mAvailableBikes != that.mAvailableBikes) return false;
-        if (mBrokenBikes != that.mBrokenBikes) return false;
         if (mReservedBikes != that.mReservedBikes) return false;
+        if (Float.compare(that.mLatitude, mLatitude) != 0) return false;
+        if (Float.compare(that.mLongitude, mLongitude) != 0) return false;
+        if (Float.compare(that.mBasicFare, mBasicFare) != 0) return false;
         if (!mAddress.equals(that.mAddress)) return false;
-        if (!mUser.equals(that.mUser)) return false;
-        return !(mTimeStamp != null ? !mTimeStamp.equals(that.mTimeStamp) : that.mTimeStamp != null);
+        if (!mChangeTimestamp.equals(that.mChangeTimestamp)) return false;
+        return mEntityId.equals(that.mEntityId);
 
     }
 
     @Override
     public int hashCode() {
-        int result;
-        long temp;
-        result = mId;
+        int result = mId;
         result = 31 * result + mAddress.hashCode();
-//        result = 31 * result + mUser.hashCode();
-//        result = 31 * result + (mTimeStamp != null ? mTimeStamp.hashCode() : 0);
-        temp = Double.doubleToLongBits(mLatitude);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(mLongitude);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        result = 31 * result + mTotalBikes;
+        result = 31 * result + mTotalMoorings;
+        result = 31 * result + mReservedMoorings;
         result = 31 * result + mAvailableBikes;
-        result = 31 * result + mBrokenBikes;
         result = 31 * result + mReservedBikes;
+        result = 31 * result + (mLatitude != +0.0f ? Float.floatToIntBits(mLatitude) : 0);
+        result = 31 * result + (mLongitude != +0.0f ? Float.floatToIntBits(mLongitude) : 0);
+        result = 31 * result + mChangeTimestamp.hashCode();
+        result = 31 * result + (mBasicFare != +0.0f ? Float.floatToIntBits(mBasicFare) : 0);
+        result = 31 * result + mEntityId.hashCode();
         return result;
     }
     //</editor-fold>
 
+
+    public int getAvailableMoorings() {
+        return getmTotalMoorings() - getmAvailableBikes() - getmReservedBikes() - getmReservedMoorings() ;
+    }
+
     public String getAvailabilityMessage() {
-        return String.format(Locale.getDefault(),"%d/%d", getmAvailableBikes(), getmTotalBikes());
+        return String.format(Locale.getDefault(),"%d/%d", getmAvailableBikes(), getmTotalMoorings());
     }
 
     //Get current fare for the station, depending on the availability
@@ -233,11 +209,11 @@ public class BikeStation extends JSONBean  {
         float currentFare;
 
         if(availability == 0)
-            currentFare = BASIC_FARE;
+            currentFare = getmBasicFare();
         else if (availability < 50)
-            currentFare =  BASIC_FARE * 2;
+            currentFare =  getmBasicFare() * 2;
         else
-            currentFare =  BASIC_FARE;
+            currentFare =  getmBasicFare();
 
         BigDecimal result = round(currentFare, 2); //2 decimals
         return result.floatValue();
@@ -251,7 +227,7 @@ public class BikeStation extends JSONBean  {
 
     //Get station availability
     public int getStationAvailability() {
-        return (getmAvailableBikes()*100) / getmTotalBikes();
+        return (getmAvailableBikes()*100) / getmTotalMoorings();
     }
 
     //Update station status, will return null if the op can't be completed
@@ -267,7 +243,7 @@ public class BikeStation extends JSONBean  {
                 break;
             case HttpConstants.PUT_LEAVE_BIKE:
                 //Is there room to leave bikes?
-                isOperationPossible = (getmAvailableBikes() + getmBrokenBikes() + getmReservedBikes()) < getmTotalBikes();
+                isOperationPossible = getAvailableMoorings() > 0;
                 if(isOperationPossible)
                     setmAvailableBikes(getmAvailableBikes() + 1);
                 break;
@@ -275,8 +251,7 @@ public class BikeStation extends JSONBean  {
 
         //Format TimeStamp and return the instance
         if(isOperationPossible) {
-            setmTimeStamp(getCurrentDateFormatted());
-            setServerId(getmId());
+            setmChangeTimestamp(getCurrentDateFormatted());
             return this;
         }
 

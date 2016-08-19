@@ -37,7 +37,7 @@ import java.util.Locale;
 public class ChartActivity extends AppCompatActivity implements AsyncTaskListener<String> {
 
     private PieChart mChart;
-    private ArrayList<String> mXVals;
+    private ArrayList<String> mXValues;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +63,7 @@ public class ChartActivity extends AppCompatActivity implements AsyncTaskListene
                     return;
 
                 Toast.makeText(getApplicationContext(),
-                        String.format(Locale.getDefault(),"%s: %d", mXVals.get(entry.getXIndex()), (int) entry.getVal()),
+                        String.format(Locale.getDefault(),"%s: %d", mXValues.get(entry.getXIndex()), (int) entry.getVal()),
                         Toast.LENGTH_LONG).show();
             }
 
@@ -129,26 +129,29 @@ public class ChartActivity extends AppCompatActivity implements AsyncTaskListene
 
     //Read server data to update current state
     private ArrayList<Integer> readData(List<BikeStation> bikeStationList) {
-        int total = 0;
-        int available = 0;
-        int broken = 0;
-        int reserved = 0;
+        int totalBikes = 0;
+        int availableBikes = 0;
+        int availableMoorings = 0;
+        int reservedMoorings = 0;
+        int reservedBikes = 0;
 
         for(BikeStation bikeStation : bikeStationList) {
-            total += bikeStation.getmTotalBikes();
-            available += bikeStation.getmAvailableBikes();
-            broken += bikeStation.getmBrokenBikes();
-            reserved += bikeStation.getmReservedBikes();
+            totalBikes += bikeStation.getmTotalMoorings();
+            availableBikes += bikeStation.getmAvailableBikes();
+            availableMoorings += bikeStation.getAvailableMoorings();
+            reservedMoorings += bikeStation.getmReservedMoorings();
+            reservedBikes += bikeStation.getmReservedBikes();
         }
 
-        int occupied = total - available - broken - reserved;
+        int occupiedBikes = totalBikes - availableBikes - reservedBikes;
 
         ArrayList<Integer> data = new ArrayList<>();
-        data.add(total);
-        data.add(available);
-        data.add(broken);
-        data.add(reserved);
-        data.add(occupied);
+        data.add(totalBikes);
+        data.add(availableBikes);
+        data.add(reservedBikes);
+        data.add(occupiedBikes);
+        data.add(availableMoorings);
+        data.add(reservedMoorings);
 
         return data;
     }
@@ -163,16 +166,17 @@ public class ChartActivity extends AppCompatActivity implements AsyncTaskListene
             yData.add(new Entry(data.get(i), i-1));
 
         //Setting tags
-        mXVals = new ArrayList<>();
-        mXVals.add(i18n(R.string.text_available));
-        mXVals.add(i18n(R.string.text_broken));
-        mXVals.add(i18n(R.string.text_reserved));
-        mXVals.add(i18n(R.string.text_occupied));
+        mXValues = new ArrayList<>();
+        mXValues.add(i18n(R.string.text_available_bikes));
+        mXValues.add(i18n(R.string.text_reserved_bikes));
+        mXValues.add(i18n(R.string.text_occupied));
+        mXValues.add(i18n(R.string.text_available_moorings));
+        mXValues.add(i18n(R.string.text_reserved_moorings));
 
         PieDataSet pieDataSet = new PieDataSet(yData, "");
         setPieDataSetFormat(pieDataSet);
 
-        PieData pieData = new PieData(mXVals, pieDataSet);
+        PieData pieData = new PieData(mXValues, pieDataSet);
         setPieDataFormat(pieData);
 
         mChart.setCenterText(i18n(R.string.chart_total_msg, totalBikes));

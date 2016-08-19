@@ -41,7 +41,7 @@ public class HttpDispatcher {
         this.context = context;
 
         //Deactivate auto-detection, do not use getters or setters, but attributes of the instance when processing JSON strings
-        mapper =  new ObjectMapper()
+        mapper = new ObjectMapper()
                 .setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE)
                 .setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
     }

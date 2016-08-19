@@ -15,9 +15,10 @@
     <string name="toast_sync_error">Error al sincronizar con el servidor</string>
 
     <!-- Common texts-->
-    <string name="text_available">Disponibles</string>
-    <string name="text_broken">Averiadas</string>
-    <string name="text_reserved">Reservadas</string>
+    <string name="text_available_moorings">Disponibles (A)</string>
+    <string name="text_available_bikes">Disponibles (B)</string>
+    <string name="text_reserved_moorings">Reservas (A)</string>
+    <string name="text_reserved_bikes">Reservas (B)</string>
     <string name="text_occupied">Ocupadas</string>
     <string name="text_total">Total</string>
     <string name="text_set">Establecer</string>

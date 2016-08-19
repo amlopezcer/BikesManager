@@ -128,7 +128,7 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         TextView tv_listChild;
 
         tv_listChild = (TextView) convertView.findViewById(R.id.textView_totalNumber);
-        tv_listChild.setText(String.format(Locale.getDefault(), "%d", bikeStation.getmTotalBikes()));
+        tv_listChild.setText(String.format(Locale.getDefault(), "%d", bikeStation.getmTotalMoorings()));
 
         tv_listChild = (TextView) convertView.findViewById(R.id.textView_availableNumber);
         tv_listChild.setText(String.format(Locale.getDefault(), "%d", bikeStation.getmAvailableBikes()));
@@ -138,15 +138,15 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         tv_listChild = (TextView) convertView.findViewById(R.id.textView_reservedNumber);
         tv_listChild.setText(String.format(Locale.getDefault(), "%d", bikeStation.getmReservedBikes()));
 
-        tv_listChild = (TextView) convertView.findViewById(R.id.textView_brokenNumber);
-        tv_listChild.setText(String.format(Locale.getDefault(), "%d", bikeStation.getmBrokenBikes()));
+        tv_listChild = (TextView) convertView.findViewById(R.id.textView_reservedMooringsNumber);
+        tv_listChild.setText(String.format(Locale.getDefault(), "%d", bikeStation.getmReservedMoorings()));
 
         tv_listChild = (TextView) convertView.findViewById(R.id.textView_fareNumber);
         tv_listChild.setText(String.format(Locale.getDefault(), "%.2f€", bikeStation.getCurrentFare()));
         setAvailabilityColor(bikeStation, tv_listChild);
 
         tv_listChild = (TextView) convertView.findViewById(R.id.textView_lastModData);
-        tv_listChild.setText(String.format("%s", setTimeStampFormat(bikeStation.getmTimeStamp())));
+        tv_listChild.setText(String.format("%s", setTimeStampFormat(bikeStation.getmChangeTimestamp())));
     }
 
     private void setAvailabilityColor(BikeStation bikeStation, TextView textView) {

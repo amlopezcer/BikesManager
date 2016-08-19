@@ -15,7 +15,7 @@ public class BikeUser extends JSONBean {
     @JsonIgnore
     public static final String ENTITY_ID = "entity_bikeuser"; //To identify server responses for this entity
     @JsonIgnore
-    private final String ADDRESS_NONE_TEXT = "None"; //Standard text for addresses when no book is taken
+    private final String ADDRESS_NONE_TEXT = "None"; //Initialization text for addresses variables
 
     @JsonProperty("id")
     private int mId;

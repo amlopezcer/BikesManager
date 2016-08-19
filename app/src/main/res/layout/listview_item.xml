@@ -32,7 +32,7 @@
                 android:layout_marginLeft="@dimen/widgets_standard_margin"
                 android:layout_marginStart="@dimen/widgets_standard_margin"
                 android:textAppearance="?android:attr/textAppearanceListItem"
-                android:text="@string/text_available"/>
+                android:text="@string/text_available_bikes"/>
             <TextView android:id="@+id/textView_availableNumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -49,7 +49,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceListItem"
-                android:text="@string/text_reserved"/>
+                android:text="@string/text_reserved_bikes"/>
             <TextView android:id="@+id/textView_reservedNumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -57,14 +57,14 @@
                 android:layout_marginStart="@dimen/itemList_textNumberMargin"
                 android:textAppearance="?android:attr/textAppearanceListItem"
                 android:layout_gravity="end" />
-            <TextView android:id="@+id/textView_broken"
+            <TextView android:id="@+id/textView_reservedMoorings"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/widgets_standard_margin"
                 android:layout_marginStart="@dimen/widgets_standard_margin"
                 android:textAppearance="?android:attr/textAppearanceListItem"
-                android:text="@string/text_broken"/>
-            <TextView android:id="@+id/textView_brokenNumber"
+                android:text="@string/text_reserved_moorings"/>
+            <TextView android:id="@+id/textView_reservedMooringsNumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceListItem"
