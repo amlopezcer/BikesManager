@@ -195,33 +195,29 @@ public class EditProfileActivity extends AppCompatActivity implements AsyncTaskL
     public void processServerResult(String result, int operation) {
         switch (operation) {
             case HttpConstants.OPERATION_PUT:
-                switch (result) {
-                    case HttpConstants.SERVER_RESPONSE_OK:
-                        Toast.makeText(this,
-                                i18n(R.string.toast_profile_updated),
-                                Toast.LENGTH_SHORT).show();
-                        break;
-                    case HttpConstants.SERVER_RESPONSE_KO:
-                        //User cannot be updated, undo changes
-                        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.file_user_preferences), Context.MODE_PRIVATE);
-                        sharedPreferences.edit().
-                                putString(getString(R.string.text_user_name), mLastUsername).
-                                apply();
+                if (result.contains(HttpConstants.SERVER_RESPONSE_OK))
+                    Toast.makeText(this,
+                            i18n(R.string.toast_profile_updated),
+                            Toast.LENGTH_SHORT).show();
+                else if (result.contains(HttpConstants.SERVER_RESPONSE_KO)) {
+                    //User cannot be updated, undo changes
+                    SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.file_user_preferences), Context.MODE_PRIVATE);
+                    sharedPreferences.edit().
+                            putString(getString(R.string.text_user_name), mLastUsername).
+                            apply();
 
-                        restoreBasicUserData();
+                    restoreBasicUserData();
 
-                        Toast.makeText(this,
-                                i18n(R.string.toast_user_not_available),
-                                Toast.LENGTH_SHORT).show();
-                        break;
-                    default:
-                        Toast.makeText(this,
-                                i18n(R.string.toast_sync_error),
-                                Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this,
+                            i18n(R.string.toast_user_not_available),
+                            Toast.LENGTH_SHORT).show();
+
+                } else
+                    Toast.makeText(this,
+                            i18n(R.string.toast_sync_error),
+                            Toast.LENGTH_SHORT).show();
                 }
-                fillLayoutUserData(); //Update layout
-                break;
-        }
+        fillLayoutUserData(); //Update layout
     }
 
     private void restoreBasicUserData() {

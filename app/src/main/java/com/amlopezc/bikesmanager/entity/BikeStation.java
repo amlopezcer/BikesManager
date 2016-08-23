@@ -196,7 +196,7 @@ public class BikeStation extends JSONBean {
 
 
     public int getAvailableMoorings() {
-        return getmTotalMoorings() - getmAvailableBikes() - getmReservedBikes() - getmReservedMoorings() ;
+        return getmTotalMoorings() - getmAvailableBikes() - getmReservedBikes() - getmReservedMoorings();
     }
 
     public String getAvailabilityMessage() {
@@ -246,6 +246,20 @@ public class BikeStation extends JSONBean {
                 isOperationPossible = getAvailableMoorings() > 0;
                 if(isOperationPossible)
                     setmAvailableBikes(getmAvailableBikes() + 1);
+                break;
+            case HttpConstants.PUT_BOOK_BIKE:
+                //Are there bikes to book?
+                isOperationPossible = getmAvailableBikes() > 0;
+                if(isOperationPossible) {
+                    setmAvailableBikes(getmAvailableBikes() - 1);
+                    setmReservedBikes(getmReservedBikes() + 1);
+                }
+                break;
+            case HttpConstants.PUT_BOOK_MOORINGS:
+                //Are there moorings to book?
+                isOperationPossible = getAvailableMoorings() > 0;
+                if(isOperationPossible)
+                    setmReservedBikes(getmReservedMoorings() + 1);
                 break;
         }
 

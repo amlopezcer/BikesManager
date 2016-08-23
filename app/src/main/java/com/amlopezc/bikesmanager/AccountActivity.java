@@ -275,7 +275,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     public void processServerResult(String result, int operation) {
         //Process the server response
         switch (operation) {
-            case HttpConstants.OPERATION_PUT: //User update
+            case HttpConstants.OPERATION_PUT: //User update //TODO: pendiente los PUT asociados a las cancelaciones de reservas
                 Toast.makeText(this,
                         i18n(R.string.confirm_deposit),
                         Toast.LENGTH_SHORT).show();

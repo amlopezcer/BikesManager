@@ -39,6 +39,7 @@
     <string name="text_euro">€</string>
     <string name="text_save">Save</string>
     <string name="text_book">Book</string>
+    <string name="text_error">Error</string>
 
     <!-- File to store username and password -->
     <string name="file_user_preferences">user_file</string>
@@ -71,6 +72,9 @@
     <string name="toast_bikeop_impossible">Station availability don\'t allow to complete the operation</string>
     <string name="toast_bikeop_succeed">Operation completed</string>
     <string name="toast_location_not_granted">Not possible to determine your location</string>
+    <string name="toast_bike_taken">You already have a bike taken or booked in other station</string>
+    <string name="toast_bike_not_taken">You don\'t have any bike taken or you have moorings booked in other station</string>
+    <string name="toast_balance_insufficient">Current balance insufficient</string>
 
     <!-- ListActivity.java -->
     <string name="toast_id_not_found">\'%1$s\' not found</string>

@@ -39,6 +39,7 @@
     <string name="text_euro">€</string>
     <string name="text_save">Guardar</string>
     <string name="text_book">Reservar</string>
+    <string name="text_error">Error</string>
 
     <!-- File to store username and password -->
     <string name="file_user_preferences">user_file</string>
@@ -70,7 +71,10 @@
     <string name="toast_user_settings">Datos del usuario \'%1$s\' guardados</string>
     <string name="toast_bikeop_impossible">La disponibilidad de la estación no permite completar la operación</string>
     <string name="toast_bikeop_succeed">Operación completada</string>
-    <string name="toast_location_not_granted">No es posible determinar su ubicación</string>
+    <string name="toast_location_not_granted">No es posible determinar tu ubicación</string>
+    <string name="toast_bike_taken">Ya tienes una bici cogida o reservada en otra estación</string>
+    <string name="toast_bike_not_taken">No tienes ninguna bici cogida o has reservado un anclaje en otra estación</string>
+    <string name="toast_balance_insufficient">Saldo actual insuficiente</string>
 
     <!-- ListActivity.java -->
     <string name="toast_id_not_found">\'%1$s\' no encontrado</string>

@@ -131,15 +131,11 @@ public class ChartActivity extends AppCompatActivity implements AsyncTaskListene
     private ArrayList<Integer> readData(List<BikeStation> bikeStationList) {
         int totalBikes = 0;
         int availableBikes = 0;
-        int availableMoorings = 0;
-        int reservedMoorings = 0;
         int reservedBikes = 0;
 
         for(BikeStation bikeStation : bikeStationList) {
             totalBikes += bikeStation.getmTotalMoorings();
             availableBikes += bikeStation.getmAvailableBikes();
-            availableMoorings += bikeStation.getAvailableMoorings();
-            reservedMoorings += bikeStation.getmReservedMoorings();
             reservedBikes += bikeStation.getmReservedBikes();
         }
 
@@ -150,8 +146,6 @@ public class ChartActivity extends AppCompatActivity implements AsyncTaskListene
         data.add(availableBikes);
         data.add(reservedBikes);
         data.add(occupiedBikes);
-        data.add(availableMoorings);
-        data.add(reservedMoorings);
 
         return data;
     }
@@ -170,8 +164,6 @@ public class ChartActivity extends AppCompatActivity implements AsyncTaskListene
         mXValues.add(i18n(R.string.text_available_bikes));
         mXValues.add(i18n(R.string.text_reserved_bikes));
         mXValues.add(i18n(R.string.text_occupied));
-        mXValues.add(i18n(R.string.text_available_moorings));
-        mXValues.add(i18n(R.string.text_reserved_moorings));
 
         PieDataSet pieDataSet = new PieDataSet(yData, "");
         setPieDataSetFormat(pieDataSet);

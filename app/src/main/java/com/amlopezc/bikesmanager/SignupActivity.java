@@ -165,30 +165,25 @@ public class SignUpActivity extends AppCompatActivity implements AsyncTaskListen
     public void processServerResult(String result, int operation) {
         switch (operation) {
             case HttpConstants.OPERATION_POST:
-                switch (result) {
-                    case HttpConstants.SERVER_RESPONSE_OK: //Just showing Toast for user feedback
-                        Intent intent = new Intent(this, WelcomeActivity.class);
-                        startActivity(intent);
-                        break;
-                    case HttpConstants.SERVER_RESPONSE_KO:
-                        //User cannot be created, undo changes and notify
-                        SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.file_user_preferences), Context.MODE_PRIVATE);
-                        sharedPreferences.edit().
-                                putString(getString(R.string.text_user_name), "").
-                                putString(getString(R.string.text_password), "").
-                                apply();
+                if (result.contains(HttpConstants.SERVER_RESPONSE_OK)) {
+                    Intent intent = new Intent(this, WelcomeActivity.class);
+                    startActivity(intent);
+                } else if (result.contains(HttpConstants.SERVER_RESPONSE_KO)) {
+                    //User cannot be created, undo changes and notify
+                    SharedPreferences sharedPreferences = getSharedPreferences(getString(R.string.file_user_preferences), Context.MODE_PRIVATE);
+                    sharedPreferences.edit().
+                            putString(getString(R.string.text_user_name), "").
+                            putString(getString(R.string.text_password), "").
+                            apply();
 
-                        Toast.makeText(this,
-                                i18n(R.string.toast_user_not_available),
-                                Toast.LENGTH_SHORT).show();
-                        break;
-                    default:
-                        Toast.makeText(this,
-                                i18n(R.string.toast_sync_error),
-                                Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this,
+                            i18n(R.string.toast_user_not_available),
+                            Toast.LENGTH_SHORT).show();
+                } else
+                    Toast.makeText(this,
+                            i18n(R.string.toast_sync_error),
+                            Toast.LENGTH_SHORT).show();
                 }
-                break;
-        }
     }
 
     //Internationalization method

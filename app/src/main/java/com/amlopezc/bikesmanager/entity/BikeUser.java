@@ -280,7 +280,6 @@ public class BikeUser extends JSONBean {
     }
 
     public void bookBike(String bookAddress) {
-        setmBikeTaken(true); //User cannot take bikes if it has a booking
         setmBookTaken(true);
         setmBookDate(getCurrentDateFormatted());
         setmBookAddress(bookAddress);
@@ -293,7 +292,6 @@ public class BikeUser extends JSONBean {
     }
 
     public void cancelBookBike() {
-        setmBikeTaken(false);
         setmBookTaken(false);
         setmBookDate(getCurrentDateFormatted());
         setmBookAddress(ADDRESS_NONE_TEXT);

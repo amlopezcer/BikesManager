@@ -22,6 +22,8 @@ public final class HttpConstants {
     // To distinguish PUT (bikes) ops in the URL
     public static final String PUT_TAKE_BIKE = "take";
     public static final String PUT_LEAVE_BIKE = "leave";
+    public static final String PUT_BOOK_BIKE = "book_bike";
+    public static final String PUT_BOOK_MOORINGS = "book_moorings";
 
     // To distinguish PUT (user) ops in the URL
     public static final String PUT_USER_BASIC_DATA = "basicdata";
