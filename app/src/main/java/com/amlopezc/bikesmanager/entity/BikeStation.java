@@ -231,35 +231,35 @@ public class BikeStation extends JSONBean {
     }
 
     //Update station status, will return null if the op can't be completed
-    public BikeStation updateBikeStation(String operation) {
+    public BikeStation updateBikeStation(String operation, BikeUser bikeUser) {
         boolean isOperationPossible = false; //The bike station status allows to perform the operation?
 
         switch (operation) {
             case HttpConstants.PUT_TAKE_BIKE:
                 //Are there bikes to take?
-                isOperationPossible = getmAvailableBikes() > 0;
+                isOperationPossible = getmAvailableBikes() > 0 ||
+                        (getmAvailableBikes() == 0 && bikeUser.getmBookAddress().equals(getmAddress()));
                 if(isOperationPossible)
-                    setmAvailableBikes(getmAvailableBikes() - 1);
+                    takeBike(bikeUser);
                 break;
             case HttpConstants.PUT_LEAVE_BIKE:
                 //Is there room to leave bikes?
-                isOperationPossible = getAvailableMoorings() > 0;
+                isOperationPossible = getAvailableMoorings() > 0 ||
+                        (getAvailableMoorings() == 0 && bikeUser.getmMooringsAddress().equals(getmAddress()));
                 if(isOperationPossible)
-                    setmAvailableBikes(getmAvailableBikes() + 1);
+                    leaveBike(bikeUser);
                 break;
             case HttpConstants.PUT_BOOK_BIKE:
                 //Are there bikes to book?
                 isOperationPossible = getmAvailableBikes() > 0;
-                if(isOperationPossible) {
-                    setmAvailableBikes(getmAvailableBikes() - 1);
-                    setmReservedBikes(getmReservedBikes() + 1);
-                }
+                if(isOperationPossible)
+                    bookBike();
                 break;
             case HttpConstants.PUT_BOOK_MOORINGS:
                 //Are there moorings to book?
                 isOperationPossible = getAvailableMoorings() > 0;
                 if(isOperationPossible)
-                    setmReservedBikes(getmReservedMoorings() + 1);
+                    bookMoorings();
                 break;
         }
 
@@ -271,6 +271,40 @@ public class BikeStation extends JSONBean {
 
         //Op not possible
         return null;
+    }
+
+    private void takeBike(BikeUser bikeUser) {
+        if(bikeUser.ismBookTaken())
+            cancelBikeBooking();
+
+        mAvailableBikes--;
+    }
+
+    private void leaveBike(BikeUser bikeUser) {
+        if(bikeUser.ismMooringsTaken())
+            cancelMooringsBooking();
+
+        mAvailableBikes++;
+    }
+
+    private void bookBike() {
+        mAvailableBikes--;
+        mReservedBikes++;
+    }
+
+    private void bookMoorings() {
+        mReservedMoorings++;
+    }
+
+    public void cancelBikeBooking(){
+        mAvailableBikes++;
+        mReservedBikes--;
+        mChangeTimestamp = getCurrentDateFormatted();
+    }
+
+    public void cancelMooringsBooking(){
+        mReservedMoorings--;
+        mChangeTimestamp = getCurrentDateFormatted();
     }
 
     //Map markers header (id - address)

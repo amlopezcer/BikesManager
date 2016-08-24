@@ -91,5 +91,4 @@ public class BookDialogFragment extends DialogFragment {
         return getResources().getString(resourceId, formatArgs);
     }
 
-
 }

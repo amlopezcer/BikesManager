@@ -70,9 +70,9 @@ public class HttpDispatcher {
         builder.append("/");
 
         String url;
-        if(method == null) //Operational user update (balance, bikes, bookings...)
+        if(method == null) //Update by ID
             url = builder.append(bean.getServerId()).toString(); //ID to update
-        else //Station (method = leave or take) or basic user data (username, email...) update
+        else //Station (method = leave, take...) or basic user data (username, email...) update
             url = builder.append(method).append("/").append(bean.getServerId()).toString(); //ID to update
 
         if (isOnline()) {

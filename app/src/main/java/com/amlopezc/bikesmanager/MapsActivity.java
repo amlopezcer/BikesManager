@@ -173,7 +173,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
         //Get the user selected
         HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_USER);
-        httpDispatcher.doGet(this, String.format(HttpConstants.GET_FIND_USERID, username)); //path: .../user/{username}
+        httpDispatcher.doGet(this, String.format(HttpConstants.GET_FIND_USER_USERNAME, username)); //path: .../user/{username}
     }
 
     //Get updated server data related to bike stations
@@ -348,10 +348,10 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
                         switch (which) {
                             case R.id.menu_takeBike:
-                                modifyBikeStation(HttpConstants.PUT_TAKE_BIKE); //TODO: hacer un GET indivudual?
+                                performBikeStationOperation(HttpConstants.PUT_TAKE_BIKE); //TODO: hacer un GET indivudual?
                                 break;
                             case R.id.menu_leaveBike:
-                                modifyBikeStation(HttpConstants.PUT_LEAVE_BIKE); //TODO: hacer un GET indivudual?
+                                performBikeStationOperation(HttpConstants.PUT_LEAVE_BIKE); //TODO: hacer un GET indivudual?
                                 break;
                             case R.id.menu_book:
                                 showBookDialog();
@@ -363,18 +363,25 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     }
 
     //Take or leave bikes with the server
-    private void modifyBikeStation(String operation) {
-
+    private void performBikeStationOperation(String operation) {
         if(!isUserAbleToModifyBikeStation(operation, mStations.get(mCurrentBikeStationAddress)))
             return;
 
-        BikeStation bikeStation = mStations.get(mCurrentBikeStationAddress).updateBikeStation(operation);
+        BikeStation bikeStation = mStations.get(mCurrentBikeStationAddress).updateBikeStation(operation, mBikeUser);
 
         //If the station availability allows the operation , update the server
         if(bikeStation != null) {
-            mBikeUser.setmBikeTaken(operation.equals(HttpConstants.PUT_TAKE_BIKE)); //Update user locally
+            //Update user locally
+            switch(operation) {
+                case HttpConstants.PUT_TAKE_BIKE: mBikeUser.takeBike(); break;
+                case HttpConstants.PUT_LEAVE_BIKE: mBikeUser.leaveBike(); break;
+                case HttpConstants.PUT_BOOK_BIKE: mBikeUser.bookBike(bikeStation.getmAddress()); break;
+                case HttpConstants.PUT_BOOK_MOORINGS: mBikeUser.bookMoorings(bikeStation.getmAddress()); break;
+            }
+
+            //Here, only update the BikeStation; later, if done, update the user to ensure consistency
             HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_STATION);
-            httpDispatcher.doPut(this, bikeStation, operation); //Here, only update the BikeStation; later, if done, update the user to ensure consistency
+            httpDispatcher.doPut(this, bikeStation, operation);
         } else
             showBasicErrorDialog(i18n(R.string.toast_bikeop_impossible), i18n(R.string.text_ok));
     }
@@ -409,35 +416,13 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         dialog.show(getFragmentManager(), BookDialogFragment.CLASS_ID);
     }
 
-    //Book dialog response indicating booking type
+    //Book dialog response indicating the booking type
     public void doPositiveClickBookDialog(boolean isBikeBooked, boolean isMooringsBooked) {
-        //At this point, the user is able to book something, now let's check the station
+        if(isBikeBooked)
+            performBikeStationOperation(HttpConstants.PUT_BOOK_BIKE);
 
-        if(isBikeBooked) {
-            String operation = HttpConstants.PUT_BOOK_BIKE;
-            BikeStation bikeStation = mStations.get(mCurrentBikeStationAddress).updateBikeStation(operation);
-
-            //If the station availability allows the operation , update the server
-            if(bikeStation != null) {
-                mBikeUser.bookBike(bikeStation.getmAddress()); //Update user locally
-                HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_STATION);
-                httpDispatcher.doPut(this, bikeStation, operation); //Here, only update the BikeStation; later, if done, update the user to ensure consistency
-            } else
-                showBasicErrorDialog(i18n(R.string.toast_bikeop_impossible), i18n(R.string.text_ok));
-        }
-
-        if(isMooringsBooked) {
-            String operation = HttpConstants.PUT_BOOK_MOORINGS;
-            BikeStation bikeStation = mStations.get(mCurrentBikeStationAddress).updateBikeStation(operation);
-
-            //If the station availability allows the operation , update the server
-            if(bikeStation != null) {
-                mBikeUser.bookMoorings(bikeStation.getmAddress()); //Update user locally
-                HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_STATION);
-                httpDispatcher.doPut(this, bikeStation, operation); //Here, only update the BikeStation; later, if done, update the user to ensure consistency
-            } else
-                showBasicErrorDialog(i18n(R.string.toast_bikeop_impossible), i18n(R.string.text_ok));
-        }
+        if(isMooringsBooked)
+            performBikeStationOperation(HttpConstants.PUT_BOOK_MOORINGS);
     }
 
     @Override
@@ -463,7 +448,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                         httpDispatcher.doPut(this, mBikeUser, null);
                     } else//Result related to user instance (2nd update), everything goes fine
                         Toast.makeText(this,
-                                i18n(R.string.toast_bikeop_succeed),
+                                i18n(R.string.text_operation_complete),
                                 Toast.LENGTH_SHORT).show();
                 else if (result.contains(HttpConstants.SERVER_RESPONSE_KO)) {
                     //Here, only the bike station operation can goes wrong, get user data from the server to discard local changes
@@ -532,4 +517,5 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     private String i18n(int resourceId, Object ... formatArgs) {
         return getResources().getString(resourceId, formatArgs);
     }
+
 }

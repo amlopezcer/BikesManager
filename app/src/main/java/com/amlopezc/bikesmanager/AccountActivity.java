@@ -11,15 +11,18 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amlopezc.bikesmanager.entity.BikeStation;
 import com.amlopezc.bikesmanager.entity.BikeUser;
 import com.amlopezc.bikesmanager.net.HttpConstants;
 import com.amlopezc.bikesmanager.net.HttpDispatcher;
 import com.amlopezc.bikesmanager.util.AsyncTaskListener;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
 
@@ -41,6 +44,8 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     private Button mButtonCancelBikeBook, mButtonCancelMooringsBook;
     private CountDownTimer mCountDownTimerBike, mCountDownTimerMoorings;
     private ArrayList<Boolean> mIsTimerRunning; //To control countdown timers
+    private int mCancelOperation;
+    private boolean mIsActivityRunning;
 
 
     @Override
@@ -81,6 +86,18 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         initBookingData();
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        mIsActivityRunning = true;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mIsActivityRunning = false;
+    }
+
     //Depending on the user booking status, format Cancel buttons
     private void disableCancelButtonsIfNeeded() {
         if(!mBikeUser.ismBookTaken()) {
@@ -114,7 +131,10 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                         textViewBookBikeClock.setText(i18n(R.string.textView_remaining_time, minutes, seconds));
                     }
                     public void onFinish() {
-                        cancelBooking(OP_CANCEL_BIKE);
+                        if(mBikeUser.ismBookTaken() && mIsActivityRunning)
+                            cancelBooking(OP_CANCEL_BIKE);
+                        else
+                            finishTimer(OP_CANCEL_BIKE);
                     }
                 }.start();
             }
@@ -144,7 +164,10 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                         textViewBookMooringClock.setText(i18n(R.string.textView_remaining_time, minutes, seconds));
                     }
                     public void onFinish() {
-                        cancelBooking(OP_CANCEL_MOORINGS);
+                        if(mBikeUser.ismMooringsTaken() && mIsActivityRunning) //This explicit cancellation can only be performed if the activity is running
+                            cancelBooking(OP_CANCEL_MOORINGS);
+                        else
+                            finishTimer(OP_CANCEL_MOORINGS);
                     }
                 }.start();
             }
@@ -178,7 +201,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.button_delete_account:
                 confirmDeleteAccount();
                 break;
-            case R.id.button_cancel_book_bike: //TODO: pendiente actualización en servidor (cuando haga la del mapa con los PUT diferenciados)
+            case R.id.button_cancel_book_bike:
                 confirmCancelBooking(OP_CANCEL_BIKE);
                 break;
             case R.id.button_cancel_book_moorings:
@@ -198,7 +221,11 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         float newBalance = mBikeUser.getmBalance() + Float.parseFloat(deposit);
         mBikeUser.setmBalance(newBalance);
 
-        //Update the user in the server
+        updateServerUser();
+    }
+
+    //Update the user in the server
+    private void updateServerUser() {
         HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_USER);
         httpDispatcher.doPut(this, mBikeUser, null);
     }
@@ -257,31 +284,74 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
 
     //Logic to cancel bookings
     private void cancelBooking(int operation) {//TODO:Esto está bien pero tener en cuenta que la reserva del usuario se puede cancelar desde cualquier parte (aquello que pensé de una clase reserva global). Hay que ver cómo integrar todo porque desde aquí son las cancelaciones explícitas
+        String address;
+        mCancelOperation = operation;
+
         if(operation == OP_CANCEL_BIKE) {
+            address = mBikeUser.getmBookAddress().replaceAll(" ", "_"); //To avoid issues with urls
             mBikeUser.cancelBookBike();
+
+        } else {
+            address = mBikeUser.getmMooringsAddress().replaceAll(" ", "_"); //To avoid issues with urls
+            mBikeUser.cancelBookMoorings();
+        }
+
+        finishTimer(operation);
+
+        //Get the station
+        HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_STATION);
+        httpDispatcher.doGet(this, String.format(HttpConstants.GET_FIND_BIKESTATION_ADDRESS, address)); //path: .../stationAddress/{address}
+
+        //Update user
+        updateServerUser();
+
+        initBookingData(); //TODO: pendiente meterlo en el finish de los timers cuando actualice el usuario desde donde sea con la clase Booking, ligado al TODO de arriba
+        disableCancelButtonsIfNeeded();
+    }
+
+    private void finishTimer(int operation){
+        if(operation == OP_CANCEL_BIKE) {
             if(mCountDownTimerBike != null)
                 mCountDownTimerBike.cancel();
             mIsTimerRunning.add(BIKE_TIMER_POS, false);
         } else {
-            mBikeUser.cancelBookMoorings();
             if(mCountDownTimerMoorings != null)
                 mCountDownTimerMoorings.cancel();
             mIsTimerRunning.add(MOORINGS_TIMER_POS, false);
         }
-
-        initBookingData();
-        disableCancelButtonsIfNeeded();
     }
 
     @Override
     public void processServerResult(String result, int operation) {
         //Process the server response
         switch (operation) {
-            case HttpConstants.OPERATION_PUT: //User update //TODO: pendiente los PUT asociados a las cancelaciones de reservas
+            case HttpConstants.OPERATION_GET: //Bikestation always, I don't GET users here
+                try {
+                    HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_STATION);
+                    ObjectMapper mapper = httpDispatcher.getMapper();
+                    BikeStation bikeStation = mapper.readValue(result, BikeStation.class);
+
+                    //Update bike station
+                    if(mCancelOperation == OP_CANCEL_BIKE)
+                        bikeStation.cancelBikeBooking();
+                    else
+                        bikeStation.cancelMooringsBooking();
+
+                    httpDispatcher.doPut(this, bikeStation, null);
+
+                } catch (Exception e) {
+                    Log.e("[GET Result]" + getClass().getCanonicalName(), e.getLocalizedMessage(), e);
+                    showBasicErrorDialog(i18n(R.string.toast_sync_error), i18n(R.string.text_ok));
+                }
+                break;
+            case HttpConstants.OPERATION_PUT: //No checks in the server, so response is always going to be OK
+                if(result.contains(BikeUser.ENTITY_ID))
+                    updateCurrentBalance(); //Same PUT for cancel bookings or update balance, so I just do this always
+
                 Toast.makeText(this,
-                        i18n(R.string.confirm_deposit),
+                        i18n(R.string.text_operation_complete),
                         Toast.LENGTH_SHORT).show();
-                updateCurrentBalance();
+
                 break;
             case HttpConstants.OPERATION_DELETE: //User deletion
                 deleteLocalUser(); //When the server operation is done, reset local configurations
@@ -304,7 +374,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     // Show a basic error dialog with a custom message
-   /* private void showBasicErrorDialog(String message, String positiveButtonText) {
+   private void showBasicErrorDialog(String message, String positiveButtonText) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(i18n(R.string.text_error)).
                 setIcon(R.drawable.ic_error_outline).
@@ -319,7 +389,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
-    }*/
+    }
 
     //Internationalization method
     private String i18n(int resourceId, Object ... formatArgs) {

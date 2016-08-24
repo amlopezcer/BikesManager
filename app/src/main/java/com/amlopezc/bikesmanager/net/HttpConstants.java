@@ -17,7 +17,8 @@ public final class HttpConstants {
 
     // To distinguish GET ops
     public static final String GET_FIND_ALL = null; //no need of data to complete URLs
-    public static final String GET_FIND_USERID = "user/%s"; //the user to find
+    public static final String GET_FIND_USER_USERNAME = "user/%s"; //the user to find (by username)
+    public static final String GET_FIND_BIKESTATION_ADDRESS = "stationAddress/%s"; //the bike station to find (by address)
 
     // To distinguish PUT (bikes) ops in the URL
     public static final String PUT_TAKE_BIKE = "take";

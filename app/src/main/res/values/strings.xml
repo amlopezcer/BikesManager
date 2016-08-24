@@ -40,6 +40,7 @@
     <string name="text_save">Save</string>
     <string name="text_book">Book</string>
     <string name="text_error">Error</string>
+    <string name="text_operation_complete">Operation completed</string>
 
     <!-- File to store username and password -->
     <string name="file_user_preferences">user_file</string>
@@ -70,7 +71,6 @@
     <string name="dialog_logout">Log out?</string>
     <string name="toast_user_settings">\'%1$s\' user data saved</string>
     <string name="toast_bikeop_impossible">Station availability don\'t allow to complete the operation</string>
-    <string name="toast_bikeop_succeed">Operation completed</string>
     <string name="toast_location_not_granted">Not possible to determine your location</string>
     <string name="toast_bike_taken">You already have a bike taken or booked in other station</string>
     <string name="toast_bike_not_taken">You don\'t have any bike taken or you have moorings booked in other station</string>

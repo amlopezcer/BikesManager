@@ -279,6 +279,20 @@ public class BikeUser extends JSONBean {
         mInstance = null;
     }
 
+    public void takeBike() {
+        if(ismBookTaken())
+            cancelBookBike();
+
+        setmBikeTaken(true);
+    }
+
+    public void leaveBike() {
+        if(ismMooringsTaken())
+            cancelBookMoorings();
+
+        setmBikeTaken(false);
+    }
+
     public void bookBike(String bookAddress) {
         setmBookTaken(true);
         setmBookDate(getCurrentDateFormatted());
