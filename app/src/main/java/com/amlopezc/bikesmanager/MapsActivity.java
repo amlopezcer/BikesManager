@@ -133,11 +133,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                     permissions[0].equals(Manifest.permission.ACCESS_FINE_LOCATION) &&
                     grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 mMap.setMyLocationEnabled(true);
-            } else {
-                Toast.makeText(this,
-                        i18n(R.string.toast_location_not_granted),
-                        Toast.LENGTH_SHORT).show();
-            }
+            } else
+                showBasicErrorDialog(i18n(R.string.toast_location_not_granted), i18n(R.string.text_ok));
         }
     }
 
@@ -379,20 +376,13 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
             HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_STATION);
             httpDispatcher.doPut(this, bikeStation, operation); //Here, only update the BikeStation; later, if done, update the user to ensure consistency
         } else
-            Toast.makeText(this,
-                    i18n(R.string.toast_bikeop_impossible),
-                    Toast.LENGTH_SHORT).show();
+            showBasicErrorDialog(i18n(R.string.toast_bikeop_impossible), i18n(R.string.text_ok));
     }
 
     //Check if the current user status allows to take or leave bikes
     private boolean isUserAbleToModifyBikeStation(String operation, BikeStation bikeStation) {
         if(operation.equals(HttpConstants.PUT_TAKE_BIKE) && (mBikeUser.ismBikeTaken() ||
                 (mBikeUser.ismBookTaken() && !mBikeUser.getmBookAddress().equals(bikeStation.getmAddress())))) {
-
-            Log.d("PRUEBA RESERVAS", "Http constant: "+HttpConstants.PUT_TAKE_BIKE+" Operation: "+operation+
-                    " bikeTaken: "+mBikeUser.ismBikeTaken()+" bookTaken: "+mBikeUser.ismBookTaken()+
-                    " bookAddress: "+mBikeUser.getmBookAddress()+" bikeStation address: "+bikeStation.getmAddress());
-
             showBasicErrorDialog(i18n(R.string.toast_bike_taken), i18n(R.string.text_ok));
             return false;
         }
@@ -414,23 +404,6 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         return true;
     }
 
-    private void showBasicErrorDialog(String message, String positiveButtonText) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(i18n(R.string.text_error)).
-                setIcon(R.drawable.ic_error_outline).
-                setMessage(message).
-                setPositiveButton(
-                        positiveButtonText,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
-
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-    }
-
     private void showBookDialog() {
         DialogFragment dialog = new BookDialogFragment();
         dialog.show(getFragmentManager(), BookDialogFragment.CLASS_ID);
@@ -450,9 +423,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                 HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_STATION);
                 httpDispatcher.doPut(this, bikeStation, operation); //Here, only update the BikeStation; later, if done, update the user to ensure consistency
             } else
-                Toast.makeText(this,
-                        i18n(R.string.toast_bikeop_impossible),
-                        Toast.LENGTH_SHORT).show();
+                showBasicErrorDialog(i18n(R.string.toast_bikeop_impossible), i18n(R.string.text_ok));
         }
 
         if(isMooringsBooked) {
@@ -465,9 +436,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                 HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_STATION);
                 httpDispatcher.doPut(this, bikeStation, operation); //Here, only update the BikeStation; later, if done, update the user to ensure consistency
             } else
-                Toast.makeText(this,
-                        i18n(R.string.toast_bikeop_impossible),
-                        Toast.LENGTH_SHORT).show();
+                showBasicErrorDialog(i18n(R.string.toast_bikeop_impossible), i18n(R.string.text_ok));
         }
     }
 
@@ -483,32 +452,28 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                         manageUserData(result);
                 } catch (Exception e) {
                     Log.e("[GET Result]" + getClass().getCanonicalName(), e.getLocalizedMessage(), e);
-                    Toast.makeText(this,
-                            i18n(R.string.toast_sync_error),
-                            Toast.LENGTH_SHORT).show();
+                    showBasicErrorDialog(i18n(R.string.toast_sync_error), i18n(R.string.text_ok));
                 }
                 break;
             case HttpConstants.OPERATION_PUT:
                 if (result.contains(HttpConstants.SERVER_RESPONSE_OK))
-                    if (result.contains(BikeStation.ENTITY_ID)) { //Result related to bike station instance, now PUT the user
+                    if (result.contains(BikeStation.ENTITY_ID)) {
+                        //Result related to bike station instance, now PUT the user
                         HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_USER);
                         httpDispatcher.doPut(this, mBikeUser, null);
-                    } else {//Result related to user instance (2nd update), everything goes fine
+                    } else//Result related to user instance (2nd update), everything goes fine
                         Toast.makeText(this,
                                 i18n(R.string.toast_bikeop_succeed),
                                 Toast.LENGTH_SHORT).show();
-                    }
-                else if (result.contains(HttpConstants.SERVER_RESPONSE_KO)) { //Here, only the bike station operation can goes wrong, get user data from the server to discard local changes
+                else if (result.contains(HttpConstants.SERVER_RESPONSE_KO)) {
+                    //Here, only the bike station operation can goes wrong, get user data from the server to discard local changes
                     getUpdatedUserData();
-                    Toast.makeText(this,
-                            i18n(R.string.toast_bikeop_impossible),
-                            Toast.LENGTH_SHORT).show();
+                    showBasicErrorDialog(i18n(R.string.toast_bikeop_impossible), i18n(R.string.text_ok));
                 } else
-                    Toast.makeText(this,
-                            i18n(R.string.toast_sync_error),
-                            Toast.LENGTH_SHORT).show();
+                    showBasicErrorDialog(i18n(R.string.toast_sync_error), i18n(R.string.text_ok));
 
                 getStationsUpdatedServerData();
+                break;
         }
     }
 
@@ -543,6 +508,24 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     //Update local layout (update map = update markers)
     private void updateLocalLayout() {
         updateMarkers();
+    }
+
+    // Show a basic error dialog with a custom message
+    private void showBasicErrorDialog(String message, String positiveButtonText) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(i18n(R.string.text_error)).
+                setIcon(R.drawable.ic_error_outline).
+                setMessage(message).
+                setPositiveButton(
+                        positiveButtonText,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     //Internationalization method

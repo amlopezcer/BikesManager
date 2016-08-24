@@ -97,6 +97,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     private void initBookingData() {
         TextView textViewBookBikeAddress = (TextView) findViewById(R.id.textView_book_bike_address);
         final TextView textViewBookBikeClock = (TextView) findViewById(R.id.textView_book_bike_clock);
+
         if(mBikeUser.ismBookTaken()) {
             assert textViewBookBikeAddress != null;
             textViewBookBikeAddress.setText(mBikeUser.getmBookAddress());
@@ -126,6 +127,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
 
         TextView textViewBookMooringsAddress = (TextView) findViewById(R.id.textView_book_moorings_address);
         final TextView textViewBookMooringClock = (TextView) findViewById(R.id.textView_book_moorings_clock);
+
         if(mBikeUser.ismMooringsTaken()) {
             assert textViewBookMooringsAddress != null;
             textViewBookMooringsAddress.setText(mBikeUser.getmMooringsAddress());
@@ -300,6 +302,24 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
     }
+
+    // Show a basic error dialog with a custom message
+   /* private void showBasicErrorDialog(String message, String positiveButtonText) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(i18n(R.string.text_error)).
+                setIcon(R.drawable.ic_error_outline).
+                setMessage(message).
+                setPositiveButton(
+                        positiveButtonText,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }*/
 
     //Internationalization method
     private String i18n(int resourceId, Object ... formatArgs) {

@@ -20,7 +20,7 @@ public class SplashActivity extends AppCompatActivity  {
 
         final Intent intent;
         // Wait duration
-         final int SPLASH_DISPLAY_LENGTH = 1500;
+         final int SPLASH_DISPLAY_LENGTH = 1000;
 
         //Check if a user is already logged and init the intent to go to the appropriate class
         if(isUserLogged())

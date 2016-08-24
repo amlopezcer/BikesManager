@@ -1,13 +1,14 @@
 package com.amlopezc.bikesmanager.net;
 
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.amlopezc.bikesmanager.R;
 import com.amlopezc.bikesmanager.SettingsActivityFragment;
@@ -22,7 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class HttpDispatcher {
 
-    private final Context context; //Context from the caller Activity, needed for Toasts, progress dialog...
+    private final Context CONTEXT; //Context from the caller Activity, needed for Toasts, progress dialog...
 
     // Server developed in NetBeans, basic constants to establish connection
     private final String BASE_URL_ADDRESS = "http://%s:%s/BikesManager/rest/entities.%s";
@@ -30,18 +31,17 @@ public class HttpDispatcher {
     private final String SERVER_PORT;
     private final String ENTITY; //bikestation or bikeuser
 
-    private ObjectMapper mapper; //To process JSON strings
+    private ObjectMapper mMapper; //To process JSON strings
 
     public HttpDispatcher(Context context, String entity) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         SERVER_ADDRESS = sharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_SERVER, "");
         SERVER_PORT = sharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_PORT, "");
         ENTITY = entity;
-
-        this.context = context;
+        CONTEXT = context;
 
         //Deactivate auto-detection, do not use getters or setters, but attributes of the instance when processing JSON strings
-        mapper = new ObjectMapper()
+        mMapper = new ObjectMapper()
                 .setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE)
                 .setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
     }
@@ -56,14 +56,12 @@ public class HttpDispatcher {
 
         if (isOnline()) {
             Log.i(this.getClass().getCanonicalName(), "Connected to " + url);
-            HttpGetWorker worker = new HttpGetWorker(context);
+            HttpGetWorker worker = new HttpGetWorker(CONTEXT);
             worker.addAsyncTaskListener(listener); //Register the listener to be aware of the task termination
             worker.execute(url);
         } else {
             Log.i(this.getClass().getCanonicalName(), "Not connected to " + url);
-            Toast.makeText(context,
-                    i18n(R.string.toast_unable_connection),
-                    Toast.LENGTH_SHORT).show();
+            showBasicErrorDialog(i18n(R.string.toast_unable_connection), i18n(R.string.text_ok));
         }
     }
 
@@ -79,14 +77,12 @@ public class HttpDispatcher {
 
         if (isOnline()) {
             Log.i(this.getClass().getCanonicalName(), "Connected to " + url);
-            HttpPutWorker worker = new HttpPutWorker(context, bean, mapper);
+            HttpPutWorker worker = new HttpPutWorker(CONTEXT, bean, mMapper);
             worker.addAsyncTaskListener(listener);//Register the listener to be aware of the task termination
             worker.execute(url);
         } else {
             Log.i(this.getClass().getCanonicalName(), "Not connected to " + url);
-            Toast.makeText(context,
-                    i18n(R.string.toast_unable_connection),
-                    Toast.LENGTH_SHORT).show();
+            showBasicErrorDialog(i18n(R.string.toast_unable_connection), i18n(R.string.text_ok));
         }
     }
 
@@ -94,14 +90,12 @@ public class HttpDispatcher {
         String url = String.format(BASE_URL_ADDRESS, SERVER_ADDRESS, SERVER_PORT, ENTITY);
         if (isOnline()) {
             Log.i(this.getClass().getCanonicalName(), "Connected to " + url);
-            HttpPostWorker worker = new HttpPostWorker(context, bean, mapper);
+            HttpPostWorker worker = new HttpPostWorker(CONTEXT, bean, mMapper);
             worker.addAsyncTaskListener(listener);//Register the listener to be aware of the task termination
             worker.execute(url);
         } else {
             Log.i(this.getClass().getCanonicalName(), "Not connected to " + url);
-            Toast.makeText(context,
-                    i18n(R.string.toast_unable_connection),
-                    Toast.LENGTH_SHORT).show();
+            showBasicErrorDialog(i18n(R.string.toast_unable_connection), i18n(R.string.text_ok));
         }
     }
 
@@ -111,30 +105,46 @@ public class HttpDispatcher {
 
         if (isOnline()) {
             Log.i(this.getClass().getCanonicalName(), "Connected to " + url);
-            HttpDeleteWorker worker = new HttpDeleteWorker(context);
+            HttpDeleteWorker worker = new HttpDeleteWorker(CONTEXT);
             worker.addAsyncTaskListener(listener);//Register the listener to be aware of the task termination
             worker.execute(url);
         } else {
             Log.i(this.getClass().getCanonicalName(), "Not connected to " + url);
-            Toast.makeText(context,
-                    i18n(R.string.toast_unable_connection),
-                    Toast.LENGTH_SHORT).show();
+            showBasicErrorDialog(i18n(R.string.toast_unable_connection), i18n(R.string.text_ok));
         }
     }
 
     //Check whether net is reachable
     private boolean isOnline () {
         ConnectivityManager connMgr = (ConnectivityManager)
-                context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                CONTEXT.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         return networkInfo != null && networkInfo.isConnected();
     }
 
-    public ObjectMapper getMapper() { return mapper; }
+    public ObjectMapper getMapper() { return mMapper; }
+
+    // Show a basic error dialog with a custom message
+    private void showBasicErrorDialog(String message, String positiveButtonText) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(CONTEXT);
+        builder.setTitle(i18n(R.string.text_error)).
+                setIcon(R.drawable.ic_error_outline).
+                setMessage(message).
+                setPositiveButton(
+                        positiveButtonText,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
 
     //Internationalization method
     private String i18n(int resourceId, Object ... formatArgs) {
-        return context.getString(resourceId, formatArgs);
+        return CONTEXT.getString(resourceId, formatArgs);
     }
 
 }

@@ -208,15 +208,11 @@ public class EditProfileActivity extends AppCompatActivity implements AsyncTaskL
 
                     restoreBasicUserData();
 
-                    Toast.makeText(this,
-                            i18n(R.string.toast_user_not_available),
-                            Toast.LENGTH_SHORT).show();
-
+                    showBasicErrorDialog(i18n(R.string.toast_user_not_available), i18n(R.string.text_ok));
                 } else
-                    Toast.makeText(this,
-                            i18n(R.string.toast_sync_error),
-                            Toast.LENGTH_SHORT).show();
+                    showBasicErrorDialog(i18n(R.string.toast_sync_error), i18n(R.string.text_ok));
                 }
+
         fillLayoutUserData(); //Update layout
     }
 
@@ -225,6 +221,24 @@ public class EditProfileActivity extends AppCompatActivity implements AsyncTaskL
         mBikeUser.setmUserName(mLastUsername);
         mBikeUser.setmFullName(mLastFullName);
         mBikeUser.setmEmail(mLastEmail);
+    }
+
+    // Show a basic error dialog with a custom message
+    private void showBasicErrorDialog(String message, String positiveButtonText) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(i18n(R.string.text_error)).
+                setIcon(R.drawable.ic_error_outline).
+                setMessage(message).
+                setPositiveButton(
+                        positiveButtonText,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     //Internationalization method

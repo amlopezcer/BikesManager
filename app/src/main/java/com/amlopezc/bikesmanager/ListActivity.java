@@ -1,5 +1,7 @@
 package com.amlopezc.bikesmanager;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,7 +12,6 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import com.amlopezc.bikesmanager.entity.BikeStation;
 import com.amlopezc.bikesmanager.net.HttpConstants;
@@ -103,9 +104,7 @@ public class ListActivity extends AppCompatActivity implements AsyncTaskListener
                     updateLocalLayout();
                 } catch (Exception e) {
                     Log.e("[GET Result]" + getClass().getCanonicalName(), e.getLocalizedMessage(), e);
-                    Toast.makeText(this,
-                            i18n(R.string.toast_sync_error),
-                            Toast.LENGTH_SHORT).show();
+                    showBasicErrorDialog(i18n(R.string.toast_sync_error), i18n(R.string.text_ok));
                 }
                 break;
         }
@@ -168,11 +167,8 @@ public class ListActivity extends AppCompatActivity implements AsyncTaskListener
             mExpandableListView.setSelectedGroup(groupPosition);
             mExpandableListView.expandGroup(groupPosition); //Expand the group, now the list has 1 more element
             mExpandableListView.smoothScrollToPosition(groupPosition + 1); //Navigate to the new element
-        } else {
-            Toast.makeText(this,
-                    i18n(R.string.toast_id_not_found,id),
-                    Toast.LENGTH_SHORT).show();
-        }
+        } else
+            showBasicErrorDialog(i18n(R.string.toast_id_not_found,id), i18n(R.string.text_ok));
     }
 
     private void collapseAll() {
@@ -185,6 +181,24 @@ public class ListActivity extends AppCompatActivity implements AsyncTaskListener
         for(int i = 0; i < mExpandableListView.getExpandableListAdapter().getGroupCount(); i++) {
             mExpandableListView.expandGroup(i);
         }
+    }
+
+    // Show a basic error dialog with a custom message
+    private void showBasicErrorDialog(String message, String positiveButtonText) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(i18n(R.string.text_error)).
+                setIcon(R.drawable.ic_error_outline).
+                setMessage(message).
+                setPositiveButton(
+                        positiveButtonText,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     // Internationalization method

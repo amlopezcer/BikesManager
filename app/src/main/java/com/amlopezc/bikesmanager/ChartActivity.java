@@ -1,5 +1,7 @@
 package com.amlopezc.bikesmanager;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
@@ -119,9 +121,7 @@ public class ChartActivity extends AppCompatActivity implements AsyncTaskListene
                     updateLocalLayout(data);
                 } catch (Exception e) {
                     Log.e("[GET Result]" + getClass().getCanonicalName(), e.getLocalizedMessage(), e);
-                    Toast.makeText(this,
-                            i18n(R.string.toast_sync_error),
-                            Toast.LENGTH_SHORT).show();
+                    showBasicErrorDialog(i18n(R.string.toast_sync_error), i18n(R.string.text_ok));
                 }
                 break;
         }
@@ -220,6 +220,24 @@ public class ChartActivity extends AppCompatActivity implements AsyncTaskListene
         l.setTextColor(R.color.secondaryTextColor);
     }
     //</editor-fold>
+
+    // Show a basic error dialog with a custom message
+    private void showBasicErrorDialog(String message, String positiveButtonText) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(i18n(R.string.text_error)).
+                setIcon(R.drawable.ic_error_outline).
+                setMessage(message).
+                setPositiveButton(
+                        positiveButtonText,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
 
     //Internationalization method
     private String i18n(int resourceId, Object ... formatArgs) {

@@ -1,7 +1,9 @@
 package com.amlopezc.bikesmanager;
 
+import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -14,7 +16,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.amlopezc.bikesmanager.entity.BikeUser;
 import com.amlopezc.bikesmanager.net.HttpConstants;
@@ -120,9 +121,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         switch (operation) {
             case HttpConstants.OPERATION_GET:
                 if(result == null || result.isEmpty()) //User not found
-                    Toast.makeText(this,
-                            i18n(R.string.toast_user_not_found),
-                            Toast.LENGTH_SHORT).show();
+                    showBasicErrorDialog(i18n(R.string.toast_user_not_found), i18n(R.string.text_ok));
                 else
                     validateUser(result);
             }
@@ -140,14 +139,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             if(bikeUser.getmPassword().equals(this.mTrialPassword))
                 completeLogin(bikeUser);
             else
-                Toast.makeText(this,
-                        i18n(R.string.toast_incorrect_password, bikeUser.getmUserName()),
-                        Toast.LENGTH_SHORT).show();
+                showBasicErrorDialog(i18n(R.string.toast_incorrect_password, bikeUser.getmUserName()),
+                        i18n(R.string.text_ok));
+
         } catch (Exception e) {
             Log.e("[GET Result]" + getClass().getCanonicalName(), e.getLocalizedMessage(), e);
-            Toast.makeText(this,
-                    i18n(R.string.toast_sync_error),
-                    Toast.LENGTH_SHORT).show();
+            showBasicErrorDialog(i18n(R.string.toast_sync_error), i18n(R.string.text_ok));
         }
     }
 
@@ -163,6 +160,24 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         //Go to the main class
         Intent intent = new Intent(this, MapsActivity.class);
         startActivity(intent);
+    }
+
+    // Show a basic error dialog with a custom message
+    private void showBasicErrorDialog(String message, String positiveButtonText) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(i18n(R.string.text_error)).
+                setIcon(R.drawable.ic_error_outline).
+                setMessage(message).
+                setPositiveButton(
+                        positiveButtonText,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     //Internationalization method
