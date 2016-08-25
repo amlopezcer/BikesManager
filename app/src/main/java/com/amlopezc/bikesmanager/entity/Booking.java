@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-@JsonPropertyOrder({"bookaddress", "bookdate", "booktype", "id", "username"})
+@JsonPropertyOrder({"bookaddress", "bookdate", "booktype", "entityid", "id", "md5", "username"})
 public class Booking extends JSONBean {
 
     @JsonIgnore
@@ -27,9 +27,20 @@ public class Booking extends JSONBean {
     private String mBookDate;
     @JsonProperty("booktype")
     private int mBookType;
+    @JsonProperty("entityid")
+    private String mEntityid; //Redundant but avoids issues with JSON serialization
 
     public Booking() {}
 
+    public Booking(String mUserName, String mBookAddress, String mBookDate, int mBookType) {
+        this.mId = -1; //Not representative, the server will assign an appropriate ID, but this one is needed for serialization
+        this.mUserName = mUserName;
+        this.mBookAddress = mBookAddress;
+        this.mBookDate = mBookDate;
+        this.mBookType = mBookType;
+        this.mEntityid = ENTITY_ID;
+        processHashMD5();
+    }
 
     //<editor-fold desc="GET">
     @Override
@@ -52,6 +63,8 @@ public class Booking extends JSONBean {
     public String getmBookDate() {
         return mBookDate;
     }
+
+    public String getmEntityid() {return mEntityid; }
 
     public int getmBookType() {
         return mBookType;
@@ -95,6 +108,13 @@ public class Booking extends JSONBean {
         this.mBookType = mBookType;
         support.firePropertyChange("mBookType", oldValue, mBookType);
     }
+
+    public void setmEntityid(String mEntityid) {
+        String oldValue = this.mEntityid;
+        this.mEntityid = mEntityid;
+        support.firePropertyChange("mEntityid", oldValue, mEntityid);
+    }
+
     //</editor-fold>
 
 

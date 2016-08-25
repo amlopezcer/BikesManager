@@ -1,6 +1,8 @@
 package com.amlopezc.bikesmanager.entity;
 
 
+import android.util.Log;
+
 import com.amlopezc.bikesmanager.net.HttpConstants;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -55,6 +57,7 @@ public class BikeStation extends JSONBean {
         this.mChangeTimestamp = mChangeTimestamp;
         this.mBasicFare = mBasicFare;
         this.mEntityId = mEntityId;
+        processHashMD5();
     }
 
     //<editor-fold desc="GET">

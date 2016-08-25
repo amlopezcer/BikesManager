@@ -227,7 +227,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     //Update the user in the server
     private void updateServerUser() {
         HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_USER);
-        httpDispatcher.doPut(this, mBikeUser, null);
+        httpDispatcher.doPut(this, mBikeUser, HttpConstants.PUT_BASIC_BY_ID);
     }
 
     //Dialog to confirm delete account operation
@@ -283,7 +283,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     //Logic to cancel bookings
-    private void cancelBooking(int operation) {//TODO:Esto está bien pero tener en cuenta que la reserva del usuario se puede cancelar desde cualquier parte (aquello que pensé de una clase reserva global). Hay que ver cómo integrar todo porque desde aquí son las cancelaciones explícitas
+    private void cancelBooking(int operation) {
         String address;
         mCancelOperation = operation;
 
@@ -305,7 +305,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         //Update user
         updateServerUser();
 
-        initBookingData(); //TODO: pendiente meterlo en el finish de los timers cuando actualice el usuario desde donde sea con la clase Booking, ligado al TODO de arriba
+        initBookingData();
         disableCancelButtonsIfNeeded();
     }
 
@@ -337,7 +337,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                     else
                         bikeStation.cancelMooringsBooking();
 
-                    httpDispatcher.doPut(this, bikeStation, null);
+                    httpDispatcher.doPut(this, bikeStation, HttpConstants.PUT_BASIC_BY_ID);
 
                 } catch (Exception e) {
                     Log.e("[GET Result]" + getClass().getCanonicalName(), e.getLocalizedMessage(), e);

@@ -318,10 +318,25 @@ public class BikeUser extends JSONBean {
     }
 
     public long getRemainingBookingTime(String date){
-        long actual = System.currentTimeMillis();
-        long booking = getLongDateStored(date);
+        long now = System.currentTimeMillis();
+        long bookingDate = getLongDateStored(date);
 
-        return Booking.MAX_BOOKING_TIME - (actual - booking);
+        return Booking.MAX_BOOKING_TIME - (now - bookingDate);
+    }
+
+    public boolean isBookingTimedOut() {
+        boolean result = false;
+
+        if(ismBookTaken() && getRemainingBookingTime(getmBookDate()) <= 0) {
+            result = true;
+            cancelBookBike();
+        }
+        if(ismMooringsTaken() && getRemainingBookingTime(getmMooringsDate()) <= 0) {
+            result = true;
+            cancelBookMoorings();
+        }
+
+        return result;
     }
 
 }
