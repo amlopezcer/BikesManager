@@ -325,18 +325,15 @@ public class BikeUser extends JSONBean {
     }
 
     public boolean isBookingTimedOut() {
-        boolean result = false;
+        return isBikeBookingTimedOut() || isMooringsBookingTimedOut();
+    }
 
-        if(ismBookTaken() && getRemainingBookingTime(getmBookDate()) <= 0) {
-            result = true;
-            cancelBookBike();
-        }
-        if(ismMooringsTaken() && getRemainingBookingTime(getmMooringsDate()) <= 0) {
-            result = true;
-            cancelBookMoorings();
-        }
+    public boolean isBikeBookingTimedOut() {
+        return ismBookTaken() && (getRemainingBookingTime(getmBookDate()) <= 0);
+    }
 
-        return result;
+    public boolean isMooringsBookingTimedOut() {
+        return ismMooringsTaken() && (getRemainingBookingTime(getmMooringsDate()) <= 0);
     }
 
 }

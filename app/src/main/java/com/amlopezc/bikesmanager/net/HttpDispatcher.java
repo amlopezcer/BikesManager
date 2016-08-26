@@ -99,9 +99,15 @@ public class HttpDispatcher {
         }
     }
 
-    public void doDelete(AsyncTaskListener listener, String id) {
+    public void doDelete(AsyncTaskListener listener, JSONBean bean, String method) {
         StringBuilder builder = new StringBuilder(String.format(BASE_URL_ADDRESS, SERVER_ADDRESS, SERVER_PORT, ENTITY));
-        String url = builder.append("/").append(id).toString();
+        builder.append("/");
+
+        String url;
+        if(method == null) //Delete by ID
+            url = builder.append(bean.getServerId()).toString(); //ID to delete
+        else //Booking deletion by username
+            url = builder.append(method).toString(); //Details of the instance to delete
 
         if (isOnline()) {
             Log.i(this.getClass().getCanonicalName(), "Connected to " + url);

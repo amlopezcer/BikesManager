@@ -19,12 +19,14 @@ import android.widget.Toast;
 
 import com.amlopezc.bikesmanager.entity.BikeStation;
 import com.amlopezc.bikesmanager.entity.BikeUser;
+import com.amlopezc.bikesmanager.entity.Booking;
 import com.amlopezc.bikesmanager.net.HttpConstants;
 import com.amlopezc.bikesmanager.net.HttpDispatcher;
 import com.amlopezc.bikesmanager.util.AsyncTaskListener;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Class to read the profile / account. It manages additional operations such as
@@ -47,7 +49,6 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     private int mCancelOperation;
     private boolean mIsActivityRunning;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +59,11 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         String username = sharedPreferences.getString(getString(R.string.text_user_name), "");
         setTitle(username);
 
+        //Get the user
         mBikeUser = BikeUser.getInstance();
+        /*HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_USER);
+        httpDispatcher.doGet(this, String.format(HttpConstants.GET_FIND_USER_USERNAME, username)); //path: .../user/{username}*/
+
         mIsTimerRunning = new ArrayList<>();
         //In the beginning, no countdown timer is running
         mIsTimerRunning.add(BIKE_TIMER_POS, false);
@@ -82,18 +87,17 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         mButtonCancelMooringsBook.setOnClickListener(this);
 
         disableCancelButtonsIfNeeded();
-
         initBookingData();
     }
 
     @Override
-    public void onStart() {
+    protected void onStart() {
         super.onStart();
         mIsActivityRunning = true;
     }
 
     @Override
-    public void onStop() {
+    protected void onStop() {
         super.onStop();
         mIsActivityRunning = false;
     }
@@ -131,10 +135,11 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                         textViewBookBikeClock.setText(i18n(R.string.textView_remaining_time, minutes, seconds));
                     }
                     public void onFinish() {
-                        if(mBikeUser.ismBookTaken() && mIsActivityRunning)
-                            cancelBooking(OP_CANCEL_BIKE);
-                        else
-                            finishTimer(OP_CANCEL_BIKE);
+                        finishTimer(OP_CANCEL_BIKE);
+                        if(mIsActivityRunning) {
+                            initBookingData();
+                            disableCancelButtonsIfNeeded();
+                        }
                     }
                 }.start();
             }
@@ -164,10 +169,11 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                         textViewBookMooringClock.setText(i18n(R.string.textView_remaining_time, minutes, seconds));
                     }
                     public void onFinish() {
-                        if(mBikeUser.ismMooringsTaken() && mIsActivityRunning) //This explicit cancellation can only be performed if the activity is running
-                            cancelBooking(OP_CANCEL_MOORINGS);
-                        else
-                            finishTimer(OP_CANCEL_MOORINGS);
+                        finishTimer(OP_CANCEL_MOORINGS);
+                        if(mIsActivityRunning) {
+                            initBookingData();
+                            disableCancelButtonsIfNeeded();
+                        }
                     }
                 }.start();
             }
@@ -256,7 +262,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     //Delete account from the server from user id
     private void deleteServerAccount() {
         HttpDispatcher dispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_USER);
-        dispatcher.doDelete(this, Integer.toString(mBikeUser.getmId()));
+        dispatcher.doDelete(this, mBikeUser, HttpConstants.DELETE_BASIC_BY_ID);
     }
 
     //Dialog to confirm the booking cancel
@@ -286,21 +292,28 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     private void cancelBooking(int operation) {
         String address;
         mCancelOperation = operation;
+        int bookingType;
+        HttpDispatcher httpDispatcher;
 
         if(operation == OP_CANCEL_BIKE) {
             address = mBikeUser.getmBookAddress().replaceAll(" ", "_"); //To avoid issues with urls
             mBikeUser.cancelBookBike();
-
+            bookingType = Booking.BOOKING_TYPE_BIKE;
         } else {
             address = mBikeUser.getmMooringsAddress().replaceAll(" ", "_"); //To avoid issues with urls
             mBikeUser.cancelBookMoorings();
+            bookingType = Booking.BOOKING_TYPE_MOORINGS;
         }
 
         finishTimer(operation);
 
         //Get the station
-        HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_STATION);
+        httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_STATION);
         httpDispatcher.doGet(this, String.format(HttpConstants.GET_FIND_BIKESTATION_ADDRESS, address)); //path: .../stationAddress/{address}
+
+        //Delete the booking
+        httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_BOOKING);
+        httpDispatcher.doDelete(this, null, String.format(Locale.getDefault(), HttpConstants.DELETE_BOOKING_BY_USERNAME, mBikeUser.getmUserName(), bookingType));
 
         //Update user
         updateServerUser();
@@ -325,20 +338,23 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     public void processServerResult(String result, int operation) {
         //Process the server response
         switch (operation) {
-            case HttpConstants.OPERATION_GET: //Bikestation always, I don't GET users here
+            case HttpConstants.OPERATION_GET:
                 try {
-                    HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_STATION);
-                    ObjectMapper mapper = httpDispatcher.getMapper();
-                    BikeStation bikeStation = mapper.readValue(result, BikeStation.class);
+                    if(result.contains(BikeUser.ENTITY_ID))
+                        manageUserData(result);
+                    else { //BikeStation
+                        HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_STATION);
+                        ObjectMapper mapper = httpDispatcher.getMapper();
+                        BikeStation bikeStation = mapper.readValue(result, BikeStation.class);
 
-                    //Update bike station
-                    if(mCancelOperation == OP_CANCEL_BIKE)
-                        bikeStation.cancelBikeBooking();
-                    else
-                        bikeStation.cancelMooringsBooking();
+                        //Update bike station
+                        if (mCancelOperation == OP_CANCEL_BIKE)
+                            bikeStation.cancelBikeBooking();
+                        else
+                            bikeStation.cancelMooringsBooking();
 
-                    httpDispatcher.doPut(this, bikeStation, HttpConstants.PUT_BASIC_BY_ID);
-
+                        httpDispatcher.doPut(this, bikeStation, HttpConstants.PUT_BASIC_BY_ID);
+                    }
                 } catch (Exception e) {
                     Log.e("[GET Result]" + getClass().getCanonicalName(), e.getLocalizedMessage(), e);
                     showBasicErrorDialog(i18n(R.string.toast_sync_error), i18n(R.string.text_ok));
@@ -346,17 +362,28 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                 break;
             case HttpConstants.OPERATION_PUT: //No checks in the server, so response is always going to be OK
                 if(result.contains(BikeUser.ENTITY_ID))
-                    updateCurrentBalance(); //Same PUT for cancel bookings or update balance, so I just do this always
+                    updateCurrentBalance(); //Same PUT for cancel bookings or update balance, so I just do this anyway
 
                 Toast.makeText(this,
                         i18n(R.string.text_operation_complete),
                         Toast.LENGTH_SHORT).show();
 
                 break;
-            case HttpConstants.OPERATION_DELETE: //User deletion
-                deleteLocalUser(); //When the server operation is done, reset local configurations
+            case HttpConstants.OPERATION_DELETE:
+                if(result.contains(BikeUser.ENTITY_ID))//User deletion
+                    deleteLocalUser(); //When the server operation is done, reset local configurations
                 break;
         }
+    }
+
+    //Manage user data received form the server by updating local singleton instance
+    private void manageUserData(String result) throws Exception {
+        HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_USER);
+        ObjectMapper mapper = httpDispatcher.getMapper();
+        BikeUser bikeUser = mapper.readValue(result, BikeUser.class);
+
+        //Update the singleton local instance
+        mBikeUser = BikeUser.updateInstance(bikeUser);
     }
 
     //Reset local configurations and return to the login Activity

@@ -22,12 +22,16 @@ public final class HttpConstants {
     public static final String GET_FIND_BIKESTATION_ADDRESS = "stationAddress/%s"; //the bike station to find (by address)
 
     // To distinguish PUT ops in the URL
+    public static final String PUT_BASIC_BY_ID = null; //no need of data to complete de basic URL
     public static final String PUT_TAKE_BIKE = "take";
     public static final String PUT_LEAVE_BIKE = "leave";
     public static final String PUT_BOOK_BIKE = "book_bike";
     public static final String PUT_BOOK_MOORINGS = "book_moorings";
     public static final String PUT_USER_BASIC_DATA = "basicdata";
-    public static final String PUT_BASIC_BY_ID = null; //no need of data to complete de basic URL
+
+    // To distinguish DELETE ops
+    public static final String DELETE_BASIC_BY_ID = null; //no need of data to complete de basic URL
+    public static final String DELETE_BOOKING_BY_USERNAME = "%s/%d";
 
     //Standard server responses (used in POST and PUT ops)
     public static final String SERVER_RESPONSE_OK = "SERVER_OK";

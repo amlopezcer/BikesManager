@@ -21,7 +21,6 @@ import android.widget.Toast;
 import com.amlopezc.bikesmanager.entity.BikeStation;
 import com.amlopezc.bikesmanager.entity.BikeUser;
 import com.amlopezc.bikesmanager.entity.Booking;
-import com.amlopezc.bikesmanager.entity.BookingGlobalMonitor;
 import com.amlopezc.bikesmanager.net.HttpConstants;
 import com.amlopezc.bikesmanager.net.HttpDispatcher;
 import com.amlopezc.bikesmanager.util.AsyncTaskListener;
@@ -64,8 +63,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private HashMap<String, BikeStation> mStations;
     private BikeUser mBikeUser;
+    private Booking mCurrentBooking;
     private String mCurrentBikeStationAddress;
-    private BookingGlobalMonitor mBookingGlobalMonitor;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,10 +152,12 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
         if(serverAddress.trim().isEmpty() || serverPort.trim().isEmpty())
             showConnectionDataDialog();
-        else //Getting update data form the server
+        else { //Getting update data form the server
             initUserIfNeeded();
+            getUpdatedStationData();
+        }
 
-        clearTimedOutBookings();
+        mCurrentBooking = null;
     }
 
     //Set the user with updated info from the server
@@ -164,12 +166,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
             mBikeUser = BikeUser.getInstance();
 
         //conditions which indicate the user is not updated
-        if(mBikeUser.getmUserName() == null || mBikeUser.getmUserName().isEmpty() || mBikeUser.getmId() == -1)
+        if(mBikeUser.getmUserName() == null || mBikeUser.getmUserName().isEmpty() ||
+                mBikeUser.getmId() == -1 || mBikeUser.isBookingTimedOut())
             getUpdatedUserData();
-        else if(mBikeUser.isBookingTimedOut()) { //Look for timed out bookings
-                HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_USER);
-                httpDispatcher.doPut(this, mBikeUser, HttpConstants.PUT_BASIC_BY_ID);
-        }
     }
 
     private void getUpdatedUserData() {
@@ -179,25 +178,6 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         //Get the user selected
         HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_USER);
         httpDispatcher.doGet(this, String.format(HttpConstants.GET_FIND_USER_USERNAME, username)); //path: .../user/{username}
-    }
-
-    //Clear timed out bookings and update map status
-    private void clearTimedOutBookings() {
-        //First, get the current status of bookings and stations
-        getUpdatedStationData();
-        initBookingMonitorIfNeeded(); //The cleaning happens in the GET response, to ensure the monitor is updated
-    }
-
-    private void initBookingMonitorIfNeeded() {
-        if(mBookingGlobalMonitor == null)
-            mBookingGlobalMonitor = BookingGlobalMonitor.getInstance();
-
-        getUpdatedBookingData();
-    }
-
-    private void getUpdatedBookingData() {
-        HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_BOOKING);
-        httpDispatcher.doGet(this, HttpConstants.GET_FIND_ALL);
     }
 
     //Get updated server data related to bike stations
@@ -212,7 +192,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     }
 
     public void doPositiveClickConnectionDataDialog() {
-        clearTimedOutBookings();
+        getUpdatedStationData();
     }
 
     @Override
@@ -241,8 +221,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                 startActivity(intent);
                 return true;
             case R.id.action_refresh: //Updates data
-                initUserIfNeeded(); //just in case
-                clearTimedOutBookings();
+                getUpdatedStationData();
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(MADRID.getCenter(), 12)); //Move the camera to the init position for user help
                 return true;
             case R.id.action_settings: //Navigates to the SettingsActivity
@@ -320,8 +299,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
     //Set marker colors depending on the availability (green to red) or booking status (blue)
     private BitmapDescriptor getAvailabilityColor(BikeStation bikeStation) {
-        if(mBikeUser.getmBookAddress().equals(bikeStation.getmAddress()) ||
-                mBikeUser.getmMooringsAddress().equals(bikeStation.getmAddress()))
+        if((mBikeUser.ismBookTaken() && mBikeUser.getmBookAddress().equals(bikeStation.getmAddress())) ||
+                (mBikeUser.ismMooringsTaken() && mBikeUser.getmMooringsAddress().equals(bikeStation.getmAddress())))
             return BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE);
 
         int availability = bikeStation.getStationAvailability();
@@ -367,13 +346,13 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mCurrentBikeStationAddress = marker.getTitle();
-                        clearTimedOutBookings(); //Get updated server data first
+                        getUpdatedStationData(); //Get updated server data first
                         switch (which) {
                             case R.id.menu_takeBike:
-                                performBikeStationOperation(HttpConstants.PUT_TAKE_BIKE); //TODO: hacer un GET indivudual?
+                                performBikeStationOperation(HttpConstants.PUT_TAKE_BIKE);
                                 break;
                             case R.id.menu_leaveBike:
-                                performBikeStationOperation(HttpConstants.PUT_LEAVE_BIKE); //TODO: hacer un GET indivudual?
+                                performBikeStationOperation(HttpConstants.PUT_LEAVE_BIKE);
                                 break;
                             case R.id.menu_book:
                                 showBookDialog();
@@ -393,30 +372,35 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
         //If the station availability allows the operation , update the server
         if(bikeStation != null) {
-            Booking booking;
             HttpDispatcher httpDispatcher;
 
             //Update user locally and create the booking
             switch(operation) {
-                case HttpConstants.PUT_TAKE_BIKE: mBikeUser.takeBike(); break;
-                case HttpConstants.PUT_LEAVE_BIKE: mBikeUser.leaveBike(); break;
+                case HttpConstants.PUT_TAKE_BIKE:
+                    if(mBikeUser.ismBookTaken()) {
+                        httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_BOOKING);
+                        httpDispatcher.doDelete(this, null, String.format(Locale.getDefault(), HttpConstants.DELETE_BOOKING_BY_USERNAME, mBikeUser.getmUserName(), Booking.BOOKING_TYPE_BIKE));
+                    }
+                    mBikeUser.takeBike();
+                    break;
+                case HttpConstants.PUT_LEAVE_BIKE:
+                    if(mBikeUser.ismMooringsTaken()) {
+                        httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_BOOKING);
+                        httpDispatcher.doDelete(this, null, String.format(Locale.getDefault(), HttpConstants.DELETE_BOOKING_BY_USERNAME, mBikeUser.getmUserName(), Booking.BOOKING_TYPE_MOORINGS));
+                    }
+                    mBikeUser.leaveBike();
+                    break;
                 case HttpConstants.PUT_BOOK_BIKE:
                     mBikeUser.bookBike(bikeStation.getmAddress());
-                    booking = new Booking(mBikeUser.getmUserName(), mCurrentBikeStationAddress, mBikeUser.getmBookDate(), Booking.BOOKING_TYPE_BIKE);
-                    mBookingGlobalMonitor.addBooking(booking);
-                    httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_BOOKING);
-                    httpDispatcher.doPost(this, booking);
+                    mCurrentBooking = new Booking(mBikeUser.getmUserName(), bikeStation.getmAddress(), mBikeUser.getmBookDate(), Booking.BOOKING_TYPE_BIKE);
                     break;
                 case HttpConstants.PUT_BOOK_MOORINGS:
                     mBikeUser.bookMoorings(bikeStation.getmAddress());
-                    booking = new Booking(mBikeUser.getmUserName(), mCurrentBikeStationAddress, mBikeUser.getmMooringsDate(), Booking.BOOKING_TYPE_MOORINGS);
-                    mBookingGlobalMonitor.addBooking(booking);
-                    httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_BOOKING);
-                    httpDispatcher.doPost(this, booking);
+                    mCurrentBooking = new Booking(mBikeUser.getmUserName(), bikeStation.getmAddress(), mBikeUser.getmMooringsDate(), Booking.BOOKING_TYPE_MOORINGS);
                     break;
             }
 
-            //Here, only update the BikeStation; later, if done, update the user to ensure consistency
+            //Here, only update the BikeStation; later, if done, update the user and/or the booking to ensure consistency
             httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_STATION);
             httpDispatcher.doPut(this, bikeStation, operation);
 
@@ -469,12 +453,11 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
             //Update data and layout
             case HttpConstants.OPERATION_GET:
                 try {
-                    if (result.contains(BikeStation.ENTITY_ID)) //GET related to bike station instance
+                    if (result.contains(BikeStation.ENTITY_ID)) { //GET related to bike station instance
                         manageStationData(result);
-                    else if (result.contains(BikeUser.ENTITY_ID)) //GET related to user instance
+                        initUserIfNeeded();
+                    } else //GET related to user instance
                         manageUserData(result);
-                    else  //GET related to booking instance
-                        manageBookingData(result);
                 } catch (Exception e) {
                     Log.e("[GET Result]" + getClass().getCanonicalName(), e.getLocalizedMessage(), e);
                     showBasicErrorDialog(i18n(R.string.toast_sync_error), i18n(R.string.text_ok));
@@ -483,41 +466,34 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
             case HttpConstants.OPERATION_PUT:
                 if (result.contains(HttpConstants.SERVER_RESPONSE_OK))
                     if (result.contains(BikeStation.ENTITY_ID)) {
-                        //Result related to bike station instance, now PUT the user
+                        //Result related to bike station instance, now PUT the user and the booking if appropriate
                         HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_USER);
                         httpDispatcher.doPut(this, mBikeUser, HttpConstants.PUT_BASIC_BY_ID);
-                    } else { //Result related to user instance (2nd update), everything goes fine
+
+                        if(mCurrentBooking != null) {
+                            httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_BOOKING);
+                            httpDispatcher.doPost(this, mCurrentBooking);
+                            mCurrentBooking = null;
+                        }
+
+                    } else //Result related to the 2nd update, everything goes fine
                         Toast.makeText(this,
                                 i18n(R.string.text_operation_complete),
                                 Toast.LENGTH_SHORT).show();
-                        getUpdatedStationData();
-                    } else if (result.contains(HttpConstants.SERVER_RESPONSE_KO)) {
-                    //Here, only the bike station operation can goes wrong, get user data from the server to discard local changes
-                    getUpdatedUserData();
-                    showBasicErrorDialog(i18n(R.string.toast_bikeop_impossible), i18n(R.string.text_ok));
-                    getUpdatedStationData();
-                } else
+                else if (result.contains(HttpConstants.SERVER_RESPONSE_KO)) {
+                        //Here, only the bike station operation can goes wrong, get user data from the server to discard local changes
+                        getUpdatedUserData();
+                        showBasicErrorDialog(i18n(R.string.toast_bikeop_impossible), i18n(R.string.text_ok));
+                    }
+                else
                     showBasicErrorDialog(i18n(R.string.toast_sync_error), i18n(R.string.text_ok));
 
+                getUpdatedStationData();
                 break;
             //Only the Booking instance performs a POST or DELETE here, but there is no answer from the server to process
             case HttpConstants.OPERATION_POST: break;
             case HttpConstants.OPERATION_DELETE: break;
         }
-    }
-
-    //Manage user data received form the server by updating local singleton instance
-    private void manageUserData(String result) throws Exception {
-        HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_USER);
-        ObjectMapper mapper = httpDispatcher.getMapper();
-        BikeUser bikeUser = mapper.readValue(result, BikeUser.class);
-
-        //Update the singleton local instance
-        mBikeUser = BikeUser.updateInstance(bikeUser);
-
-        //Look for any timed out bookings and update
-        if(mBikeUser.isBookingTimedOut())
-            httpDispatcher.doPut(this, mBikeUser, HttpConstants.PUT_BASIC_BY_ID);
     }
 
     //Manage Station data received form the server by updating local data and layout
@@ -542,40 +518,14 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         updateMarkers();
     }
 
-    //Manage booking data received form the server by updating local singleton instance and clearing all timed out bookings
-    private void manageBookingData(String result) throws Exception {
-        HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_BOOKING);
+    //Manage user data received form the server by updating local singleton instance
+    private void manageUserData(String result) throws Exception {
+        HttpDispatcher httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_USER);
         ObjectMapper mapper = httpDispatcher.getMapper();
-        List<Booking> bookingList = mapper.readValue(result, new TypeReference<List<Booking>>() {});
+        BikeUser bikeUser = mapper.readValue(result, BikeUser.class);
 
-        //Update local instance
-        mBookingGlobalMonitor.clearMonitor();
-        mBookingGlobalMonitor.addBookingList(bookingList);
-
-        //Get all timed out bookings
-        List<Booking> timedOutBookings = mBookingGlobalMonitor.getTimedOutBookings();
-
-        if(!timedOutBookings.isEmpty()) {
-            BikeStation bikeStation;
-            for(Booking booking : timedOutBookings) {
-                //Get the station and cancel its booking
-                bikeStation = mStations.get(booking.getmBookAddress());
-                if(booking.getmBookType() == Booking.BOOKING_TYPE_BIKE)
-                    bikeStation.cancelBikeBooking();
-                else
-                    bikeStation.cancelMooringsBooking();
-
-                //Send the station update to the server
-                httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_STATION);
-                httpDispatcher.doPut(this, bikeStation, HttpConstants.PUT_BASIC_BY_ID);
-
-                //Send the booking update (deletion) to the server
-                httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_BOOKING);
-                httpDispatcher.doDelete(this, Integer.toString(booking.getmId()));
-            }
-        }
-
-        getUpdatedStationData(); //Finally, get the last status
+        //Update the singleton local instance
+        mBikeUser = BikeUser.updateInstance(bikeUser);
     }
 
     // Show a basic error dialog with a custom message
