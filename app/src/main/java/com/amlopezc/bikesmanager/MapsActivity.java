@@ -192,6 +192,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     }
 
     public void doPositiveClickConnectionDataDialog() {
+        initUserIfNeeded();
         getUpdatedStationData();
     }
 
@@ -221,6 +222,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                 startActivity(intent);
                 return true;
             case R.id.action_refresh: //Updates data
+                initUserIfNeeded();
                 getUpdatedStationData();
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(MADRID.getCenter(), 12)); //Move the camera to the init position for user help
                 return true;
@@ -346,7 +348,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         mCurrentBikeStationAddress = marker.getTitle();
-                        getUpdatedStationData(); //Get updated server data first
+                        initUserIfNeeded(); //Get updated server data first
+                        getUpdatedStationData();
                         switch (which) {
                             case R.id.menu_takeBike:
                                 performBikeStationOperation(HttpConstants.PUT_TAKE_BIKE);
@@ -374,7 +377,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         if(bikeStation != null) {
             HttpDispatcher httpDispatcher;
 
-            //Update user locally and create the booking
+            //Update user locally and update the booking
             switch(operation) {
                 case HttpConstants.PUT_TAKE_BIKE:
                     if(mBikeUser.ismBookTaken()) {
@@ -478,7 +481,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
                     } else //Result related to the 2nd update, everything goes fine
                         Toast.makeText(this,
-                                i18n(R.string.text_operation_complete),
+                                i18n(R.string.text_operation_completed),
                                 Toast.LENGTH_SHORT).show();
                 else if (result.contains(HttpConstants.SERVER_RESPONSE_KO)) {
                         //Here, only the bike station operation can goes wrong, get user data from the server to discard local changes
@@ -488,6 +491,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                 else
                     showBasicErrorDialog(i18n(R.string.toast_sync_error), i18n(R.string.text_ok));
 
+
+                initUserIfNeeded();
                 getUpdatedStationData();
                 break;
             //Only the Booking instance performs a POST or DELETE here, but there is no answer from the server to process

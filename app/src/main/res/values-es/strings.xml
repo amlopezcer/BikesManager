@@ -40,7 +40,7 @@
     <string name="text_save">Guardar</string>
     <string name="text_book">Reservar</string>
     <string name="text_error">Error</string>
-    <string name="text_operation_complete">Operación completada</string>
+    <string name="text_operation_completed">Operación completada</string>
 
     <!-- File to store username and password -->
     <string name="file_user_preferences">user_file</string>
