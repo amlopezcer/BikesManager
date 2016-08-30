@@ -1,9 +1,74 @@
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/map"
-    tools:context=".MapsActivity"
-    android:name="com.google.android.gms.maps.SupportMapFragment" />
+    android:orientation="vertical">
+
+    <RelativeLayout android:id="@+id/relativeLayout_bikeState"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <ImageView android:id="@+id/imageView_bikeIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/ic_launcher"
+            android:contentDescription="@string/desc_image_launcher"
+            android:layout_margin="@dimen/short_padding"/>
+
+        <TextView android:id="@+id/textView_bikeStateText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/imageView_bikeIcon"
+            android:layout_toEndOf="@+id/imageView_bikeIcon"
+            android:layout_marginLeft="@dimen/widgets_short_margin"
+            android:layout_marginStart="@dimen/widgets_short_margin"
+            android:layout_centerVertical="true"
+            android:textStyle="bold" />
+
+        <TextView android:id="@+id/textView_balance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/imageButton_goToAccount"
+            android:layout_toStartOf="@+id/imageButton_goToAccount"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/widgets_short_margin"
+            android:layout_marginEnd="@dimen/widgets_short_margin"
+            android:text="@string/text_format_money"
+            android:clickable="true"
+            android:textStyle="bold"/>
+
+        <ImageButton android:id="@+id/imageButton_goToAccount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_person_outline"
+            android:contentDescription="@string/desc_imageButton_account"
+            android:layout_centerVertical="true"
+            android:background="?android:selectableItemBackground"
+            android:layout_marginRight="@dimen/short_padding"
+            android:layout_marginEnd="@dimen/short_padding"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/darkPrimaryColor"
+            android:layout_below="@+id/imageView_bikeIcon" />
+
+    </RelativeLayout>
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/map"
+        tools:context=".MapsActivity"
+        android:name="com.google.android.gms.maps.SupportMapFragment" />
+
+</LinearLayout>
+
 
 

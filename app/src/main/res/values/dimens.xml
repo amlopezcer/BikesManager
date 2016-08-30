@@ -10,6 +10,7 @@
     <dimen name="widgets_large_margin">24dp</dimen>
     <dimen name="dialogs_padding">16dp</dimen>
     <dimen name="activity_padding">16dp</dimen>
+    <dimen name="short_padding">8dp</dimen>
 
     <!-- List -->
     <dimen name="itemList_textNumberMargin">4dp</dimen>

@@ -16,6 +16,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageButton;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amlopezc.bikesmanager.entity.BikeStation;
@@ -52,7 +56,7 @@ import com.cocosw.bottomsheet.BottomSheet;
  */
 
 public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarkerClickListener,
-        AsyncTaskListener<String> {
+        AsyncTaskListener<String>, View.OnClickListener {
 
     private final int LIST_REQUEST_CODE = 1; //Intent code to connect to the ListActivity
     private final int MY_LOCATION_REQUEST_CODE = 1; //To request location permission
@@ -65,6 +69,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     private BikeUser mBikeUser;
     private Booking mCurrentBooking;
     private String mCurrentBikeStationAddress;
+
+    private TextView mTextView_balance;
 
 
     @Override
@@ -135,7 +141,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                     grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 mMap.setMyLocationEnabled(true);
             } else
-                showBasicErrorDialog(i18n(R.string.toast_location_not_granted), i18n(R.string.text_ok));
+                showBasicErrorDialog(i18n(R.string.text_location_not_granted), i18n(R.string.text_ok));
         }
     }
 
@@ -144,6 +150,15 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         super.onResume();
 
         setUpMapIfNeeded();
+
+        //Init widgets
+        mTextView_balance = (TextView) findViewById(R.id.textView_balance);
+        assert mTextView_balance != null;
+        mTextView_balance.setOnClickListener(this);
+
+        ImageButton imageButton_account = (ImageButton) findViewById(R.id.imageButton_goToAccount);
+        assert imageButton_account != null;
+        imageButton_account.setOnClickListener(this);
 
         //Ensuring connection data is set, showing ConnectionDataDialog otherwise
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
@@ -158,6 +173,26 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         }
 
         mCurrentBooking = null;
+
+        updateBikeStateBar();
+    }
+
+    //Update the layout depending on user state
+    private void updateBikeStateBar() {
+        RelativeLayout bikeStateBar = (RelativeLayout) findViewById(R.id.relativeLayout_bikeState);
+        assert bikeStateBar != null;
+        TextView bikeStateText = (TextView) findViewById(R.id.textView_bikeStateText);
+        assert bikeStateText != null;
+
+        if(mBikeUser.ismBikeTaken()) {
+            bikeStateBar.setBackgroundColor(ContextCompat.getColor(this, R.color.lightPrimaryColor));
+            bikeStateText.setText(i18n(R.string.text_state_bike_taken));
+        } else {
+            bikeStateBar.setBackgroundColor(ContextCompat.getColor(this, R.color.lightGrey));
+            bikeStateText.setText(i18n(R.string.text_state_bike_not_taken));
+        }
+
+        mTextView_balance.setText(i18n(R.string.text_format_money, mBikeUser.getmBalance()));
     }
 
     //Set the user with updated info from the server
@@ -197,6 +232,17 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     }
 
     @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.textView_balance:
+            case R.id.imageButton_goToAccount:
+                Intent intent = new Intent(this, AccountActivity.class);
+                startActivity(intent);
+                break;
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -224,6 +270,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
             case R.id.action_refresh: //Updates data
                 initUserIfNeeded();
                 getUpdatedStationData();
+                updateBikeStateBar();
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(MADRID.getCenter(), 12)); //Move the camera to the init position for user help
                 return true;
             case R.id.action_settings: //Navigates to the SettingsActivity
@@ -291,12 +338,12 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
     //Set marker snippets with some info from the station
     private String setMarkerSnippet(BikeStation bikeStation) {
-        StringBuilder builder = new StringBuilder(bikeStation.getAvailabilityMessage());
-        return builder.append(" | ").
-                append(i18n(R.string.text_fare)).
-                append(" ").
-                append(String.format(Locale.getDefault(), "%.2f", bikeStation.getCurrentFare())).
-                append("€").toString();
+        return i18n(R.string.text_snippet_marker,
+                bikeStation.getmAvailableBikes(),
+                bikeStation.getmTotalMoorings(),
+                bikeStation.getAvailableMoorings(),
+                bikeStation.getmTotalMoorings(),
+                bikeStation.getCurrentFare());
     }
 
     //Set marker colors depending on the availability (green to red) or booking status (blue)
@@ -408,26 +455,26 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
             httpDispatcher.doPut(this, bikeStation, operation);
 
         } else
-            showBasicErrorDialog(i18n(R.string.toast_bikeop_impossible), i18n(R.string.text_ok));
+            showBasicErrorDialog(i18n(R.string.text_bikeop_impossible), i18n(R.string.text_ok));
     }
 
     //Check if the current user status allows to take or leave bikes
     private boolean isUserAbleToModifyBikeStation(String operation, BikeStation bikeStation) {
         if(operation.equals(HttpConstants.PUT_TAKE_BIKE) && (mBikeUser.ismBikeTaken() ||
                 (mBikeUser.ismBookTaken() && !mBikeUser.getmBookAddress().equals(bikeStation.getmAddress())))) {
-            showBasicErrorDialog(i18n(R.string.toast_bike_taken), i18n(R.string.text_ok));
+            showBasicErrorDialog(i18n(R.string.text_bike_taken), i18n(R.string.text_ok));
             return false;
         }
 
         if(operation.equals(HttpConstants.PUT_LEAVE_BIKE) && (!mBikeUser.ismBikeTaken() ||
                 (mBikeUser.ismMooringsTaken() && !mBikeUser.getmMooringsAddress().equals(bikeStation.getmAddress())))) {
-            showBasicErrorDialog(i18n(R.string.toast_bike_not_taken), i18n(R.string.text_ok));
+            showBasicErrorDialog(i18n(R.string.text_bike_not_taken), i18n(R.string.text_ok));
             return false;
         }
 
         if(operation.equals(HttpConstants.PUT_TAKE_BIKE) && bikeStation.getCurrentFare() > mBikeUser.getmBalance()) {
-            showBasicErrorDialog(i18n(R.string.toast_balance_insufficient), i18n(R.string.text_ok));
-            return false; //TODO: a lo mejor puedo dejarle que meta la pasta desde aquí, pero en cualquier caso se devuelve falso siempre en este momento
+            showBasicErrorDialog(i18n(R.string.text_balance_insufficient), i18n(R.string.text_ok));
+            return false;
         }
 
         if(operation.equals(HttpConstants.PUT_TAKE_BIKE)) //Here, the bike can be taken
@@ -459,8 +506,10 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                     if (result.contains(BikeStation.ENTITY_ID)) { //GET related to bike station instance
                         manageStationData(result);
                         initUserIfNeeded();
-                    } else //GET related to user instance
+                    } else { //GET related to user instance
                         manageUserData(result);
+                        updateBikeStateBar();
+                    }
                 } catch (Exception e) {
                     Log.e("[GET Result]" + getClass().getCanonicalName(), e.getLocalizedMessage(), e);
                     showBasicErrorDialog(i18n(R.string.toast_sync_error), i18n(R.string.text_ok));
@@ -486,7 +535,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                 else if (result.contains(HttpConstants.SERVER_RESPONSE_KO)) {
                         //Here, only the bike station operation can goes wrong, get user data from the server to discard local changes
                         getUpdatedUserData();
-                        showBasicErrorDialog(i18n(R.string.toast_bikeop_impossible), i18n(R.string.text_ok));
+                        showBasicErrorDialog(i18n(R.string.text_bikeop_impossible), i18n(R.string.text_ok));
                     }
                 else
                     showBasicErrorDialog(i18n(R.string.toast_sync_error), i18n(R.string.text_ok));
@@ -494,6 +543,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
                 initUserIfNeeded();
                 getUpdatedStationData();
+                updateBikeStateBar();
                 break;
             //Only the Booking instance performs a POST or DELETE here, but there is no answer from the server to process
             case HttpConstants.OPERATION_POST: break;

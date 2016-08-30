@@ -15,11 +15,9 @@
     <string name="toast_sync_error">Error while sync with the server</string>
 
     <!-- Common texts-->
-    <string name="text_available_moorings">Available (M)</string>
-    <string name="text_available_bikes">Available (B)</string>
-    <string name="text_reserved_moorings">Reserved (M)</string>
-    <string name="text_reserved_bikes">Reserved (B)</string>
-    <string name="text_occupied">Occupied</string>
+    <string name="text_availability">Availability</string>
+    <string name="text_bookings">Bookings</string>
+    <string name="text_occupied">In use</string>
     <string name="text_total">Total</string>
     <string name="text_set">Set</string>
     <string name="text_no">No</string>
@@ -41,6 +39,8 @@
     <string name="text_book">Book</string>
     <string name="text_error">Error</string>
     <string name="text_operation_completed">Operation completed</string>
+    <string name="text_bikes">Bicycles</string>
+    <string name="text_moorings">Moorings</string>
 
     <!-- File to store username and password -->
     <string name="file_user_preferences">user_file</string>
@@ -70,11 +70,15 @@
     <!-- MapsActivity.java -->
     <string name="dialog_logout">Log out?</string>
     <string name="toast_user_settings">\'%1$s\' user data saved</string>
-    <string name="toast_bikeop_impossible">Station availability don\'t allow to complete the operation</string>
-    <string name="toast_location_not_granted">Not possible to determine your location</string>
-    <string name="toast_bike_taken">You already have a bike taken or booked in other station</string>
-    <string name="toast_bike_not_taken">You don\'t have any bike taken or you have moorings booked in other station</string>
-    <string name="toast_balance_insufficient">Current balance insufficient</string>
+    <string name="text_bikeop_impossible">Station availability don\'t allow to complete the operation</string>
+    <string name="text_location_not_granted">Not possible to determine your location</string>
+    <string name="text_bike_taken">You already have a bike taken or booked in other station</string>
+    <string name="text_bike_not_taken">You don\'t have any bike taken or you have moorings booked in other station</string>
+    <string name="text_balance_insufficient">Current balance insufficient</string>
+    <string name="desc_imageButton_account">Go to account</string>
+    <string name="text_state_bike_taken">Bike taken!</string>
+    <string name="text_state_bike_not_taken">No bike taken</string>
+    <string name="text_snippet_marker">B: %1$d/%2$d | M: %3$d/%4$d | Fare: %5$.2f€</string>
 
     <!-- ListActivity.java -->
     <string name="toast_id_not_found">\'%1$s\' not found</string>

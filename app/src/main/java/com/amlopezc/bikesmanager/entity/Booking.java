@@ -15,7 +15,7 @@ public class Booking extends JSONBean {
     @JsonIgnore
     public static final int BOOKING_TYPE_MOORINGS = 2; //To identify the booking type
     @JsonIgnore
-    public static final int MAX_BOOKING_TIME = 60000; //1800000; //30'
+    public static final int MAX_BOOKING_TIME = 1800000; //30'
 
     @JsonProperty("id")
     private int mId;

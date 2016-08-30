@@ -202,10 +202,6 @@ public class BikeStation extends JSONBean {
         return getmTotalMoorings() - getmAvailableBikes() - getmReservedBikes() - getmReservedMoorings();
     }
 
-    public String getAvailabilityMessage() {
-        return String.format(Locale.getDefault(),"%d/%d", getmAvailableBikes(), getmTotalMoorings());
-    }
-
     //Get current fare for the station, depending on the availability
     public float getCurrentFare() {
         int availability = getStationAvailability();
@@ -315,5 +311,4 @@ public class BikeStation extends JSONBean {
         String headerTemplate = "%d - %s";
         return String.format(Locale.getDefault(), headerTemplate, getmId(), getmAddress());
     }
-
 }

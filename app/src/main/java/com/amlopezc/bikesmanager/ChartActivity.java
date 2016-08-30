@@ -161,8 +161,8 @@ public class ChartActivity extends AppCompatActivity implements AsyncTaskListene
 
         //Setting tags
         mXValues = new ArrayList<>();
-        mXValues.add(i18n(R.string.text_available_bikes));
-        mXValues.add(i18n(R.string.text_reserved_bikes));
+        mXValues.add(i18n(R.string.text_availability));
+        mXValues.add(i18n(R.string.text_bookings));
         mXValues.add(i18n(R.string.text_occupied));
 
         PieDataSet pieDataSet = new PieDataSet(yData, "");

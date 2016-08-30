@@ -10,29 +10,39 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
+        <TableRow>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceListItem"
+                android:text="@string/text_bikes"
+                android:textStyle="bold"
+                android:textColor="@color/primaryTextColor"/>
+        </TableRow>
+
         <TableRow
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
-            <TextView android:id="@+id/textView_total"
+            <TextView android:id="@+id/textView_totalBikes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceListItem"
                 android:text="@string/text_total" />
-            <TextView android:id="@+id/textView_totalNumber"
+            <TextView android:id="@+id/textView_totalBikes_Number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/itemList_textNumberMargin"
                 android:layout_marginStart="@dimen/itemList_textNumberMargin"
                 android:textAppearance="?android:attr/textAppearanceListItem"
                 android:layout_gravity="end" />
-            <TextView android:id="@+id/textView_available"
+            <TextView android:id="@+id/textView_availableBikes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/widgets_standard_margin"
                 android:layout_marginStart="@dimen/widgets_standard_margin"
                 android:textAppearance="?android:attr/textAppearanceListItem"
-                android:text="@string/text_available_bikes"/>
-            <TextView android:id="@+id/textView_availableNumber"
+                android:text="@string/text_availability"/>
+            <TextView android:id="@+id/textView_availableBikes_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/itemList_textNumberMargin"
@@ -44,31 +54,104 @@
         <TableRow
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
-            <TextView android:id="@+id/textView_reserved"
+            <TextView android:id="@+id/textView_reservedBikes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceListItem"
-                android:text="@string/text_reserved_bikes"/>
-            <TextView android:id="@+id/textView_reservedNumber"
+                android:text="@string/text_bookings" />
+            <TextView android:id="@+id/textView_reservedBikes_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/itemList_textNumberMargin"
+                android:layout_marginStart="@dimen/itemList_textNumberMargin"
+                android:textAppearance="?android:attr/textAppearanceListItem"
+                android:layout_gravity="end"/>
+            <TextView android:id="@+id/textView_inUseBikes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/widgets_standard_margin"
+                android:layout_marginStart="@dimen/widgets_standard_margin"
+                android:textAppearance="?android:attr/textAppearanceListItem"
+                android:text="@string/text_occupied"/>
+            <TextView android:id="@+id/textView_inUseBikes_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/itemList_textNumberMargin"
                 android:layout_marginStart="@dimen/itemList_textNumberMargin"
                 android:textAppearance="?android:attr/textAppearanceListItem"
                 android:layout_gravity="end" />
-            <TextView android:id="@+id/textView_reservedMoorings"
+        </TableRow>
+
+        <TableRow
+            android:paddingTop="@dimen/short_padding">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceListItem"
+                android:text="@string/text_moorings"
+                android:textStyle="bold"
+                android:textColor="@color/primaryTextColor"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView android:id="@+id/textView_totalMoorings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceListItem"
+                android:text="@string/text_total"/>
+            <TextView android:id="@+id/textView_totalMoorings_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/itemList_textNumberMargin"
+                android:layout_marginStart="@dimen/itemList_textNumberMargin"
+                android:textAppearance="?android:attr/textAppearanceListItem"
+                android:layout_gravity="end" />
+            <TextView android:id="@+id/textView_availableMoorings"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/widgets_standard_margin"
                 android:layout_marginStart="@dimen/widgets_standard_margin"
                 android:textAppearance="?android:attr/textAppearanceListItem"
-                android:text="@string/text_reserved_moorings"/>
-            <TextView android:id="@+id/textView_reservedMooringsNumber"
+                android:text="@string/text_availability"/>
+            <TextView android:id="@+id/textView_availableMoorings_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceListItem"
                 android:layout_marginLeft="@dimen/itemList_textNumberMargin"
                 android:layout_marginStart="@dimen/itemList_textNumberMargin"
+                android:layout_gravity="end" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView android:id="@+id/textView_reservedMoorings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceListItem"
+                android:text="@string/text_bookings"/>
+            <TextView android:id="@+id/textView_reservedMoorings_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceListItem"
+                android:layout_marginLeft="@dimen/itemList_textNumberMargin"
+                android:layout_marginStart="@dimen/itemList_textNumberMargin"
+                android:layout_gravity="end" />
+            <TextView android:id="@+id/textView_inUseMoorings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/widgets_standard_margin"
+                android:layout_marginStart="@dimen/widgets_standard_margin"
+                android:textAppearance="?android:attr/textAppearanceListItem"
+                android:text="@string/text_occupied"/>
+            <TextView android:id="@+id/textView_inUseMoorings_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/itemList_textNumberMargin"
+                android:layout_marginStart="@dimen/itemList_textNumberMargin"
+                android:textAppearance="?android:attr/textAppearanceListItem"
                 android:layout_gravity="end" />
         </TableRow>
     </TableLayout>

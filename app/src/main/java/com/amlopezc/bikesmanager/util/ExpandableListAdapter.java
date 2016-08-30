@@ -127,19 +127,27 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     private void setChildData(View convertView, BikeStation bikeStation) {
         TextView tv_listChild;
 
-        tv_listChild = (TextView) convertView.findViewById(R.id.textView_totalNumber);
+        tv_listChild = (TextView) convertView.findViewById(R.id.textView_totalBikes_Number);
         tv_listChild.setText(String.format(Locale.getDefault(), "%d", bikeStation.getmTotalMoorings()));
-
-        tv_listChild = (TextView) convertView.findViewById(R.id.textView_availableNumber);
+        tv_listChild = (TextView) convertView.findViewById(R.id.textView_availableBikes_number);
         tv_listChild.setText(String.format(Locale.getDefault(), "%d", bikeStation.getmAvailableBikes()));
         //Color for available bikes number
         setAvailabilityColor(bikeStation, tv_listChild);
-
-        tv_listChild = (TextView) convertView.findViewById(R.id.textView_reservedNumber);
+        tv_listChild = (TextView) convertView.findViewById(R.id.textView_reservedBikes_number);
         tv_listChild.setText(String.format(Locale.getDefault(), "%d", bikeStation.getmReservedBikes()));
+        tv_listChild = (TextView) convertView.findViewById(R.id.textView_inUseBikes_number);
+        int inUse = bikeStation.getmTotalMoorings() - bikeStation.getmAvailableBikes() - bikeStation.getmReservedBikes();
+        tv_listChild.setText(String.format(Locale.getDefault(), "%d", inUse));
 
-        tv_listChild = (TextView) convertView.findViewById(R.id.textView_reservedMooringsNumber);
+        tv_listChild = (TextView) convertView.findViewById(R.id.textView_totalMoorings_number);
+        tv_listChild.setText(String.format(Locale.getDefault(), "%d", bikeStation.getmTotalMoorings()));
+        tv_listChild = (TextView) convertView.findViewById(R.id.textView_availableMoorings_number);
+        tv_listChild.setText(String.format(Locale.getDefault(), "%d", bikeStation.getAvailableMoorings()));
+        tv_listChild = (TextView) convertView.findViewById(R.id.textView_reservedMoorings_number);
         tv_listChild.setText(String.format(Locale.getDefault(), "%d", bikeStation.getmReservedMoorings()));
+        tv_listChild = (TextView) convertView.findViewById(R.id.textView_inUseMoorings_number);
+        inUse = bikeStation.getmTotalMoorings() - bikeStation.getAvailableMoorings() - bikeStation.getmReservedMoorings();
+        tv_listChild.setText(String.format(Locale.getDefault(), "%d", inUse));
 
         tv_listChild = (TextView) convertView.findViewById(R.id.textView_fareNumber);
         tv_listChild.setText(String.format(Locale.getDefault(), "%.2f€", bikeStation.getCurrentFare()));

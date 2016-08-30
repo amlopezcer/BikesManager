@@ -15,11 +15,9 @@
     <string name="toast_sync_error">Error al sincronizar con el servidor</string>
 
     <!-- Common texts-->
-    <string name="text_available_moorings">Disponibles (A)</string>
-    <string name="text_available_bikes">Disponibles (B)</string>
-    <string name="text_reserved_moorings">Reservas (A)</string>
-    <string name="text_reserved_bikes">Reservas (B)</string>
-    <string name="text_occupied">Ocupadas</string>
+    <string name="text_availability">Disponibilidad</string>
+    <string name="text_bookings">Reservas</string>
+    <string name="text_occupied">En uso</string>
     <string name="text_total">Total</string>
     <string name="text_set">Establecer</string>
     <string name="text_no">No</string>
@@ -41,6 +39,8 @@
     <string name="text_book">Reservar</string>
     <string name="text_error">Error</string>
     <string name="text_operation_completed">Operación completada</string>
+    <string name="text_bikes">Bicicletas</string>
+    <string name="text_moorings">Anclajes</string>
 
     <!-- File to store username and password -->
     <string name="file_user_preferences">user_file</string>
@@ -70,11 +70,15 @@
     <!-- MapsActivity.java -->
     <string name="dialog_logout">¿Cerrar sesión?</string>
     <string name="toast_user_settings">Datos del usuario \'%1$s\' guardados</string>
-    <string name="toast_bikeop_impossible">La disponibilidad de la estación no permite completar la operación</string>
-    <string name="toast_location_not_granted">No es posible determinar tu ubicación</string>
-    <string name="toast_bike_taken">Ya tienes una bici cogida o reservada en otra estación</string>
-    <string name="toast_bike_not_taken">No tienes ninguna bici cogida o has reservado un anclaje en otra estación</string>
-    <string name="toast_balance_insufficient">Saldo actual insuficiente</string>
+    <string name="text_bikeop_impossible">La disponibilidad de la estación no permite completar la operación</string>
+    <string name="text_location_not_granted">No es posible determinar tu ubicación</string>
+    <string name="text_bike_taken">Ya tienes una bici cogida o reservada en otra estación</string>
+    <string name="text_bike_not_taken">No tienes ninguna bici cogida o has reservado un anclaje en otra estación</string>
+    <string name="text_balance_insufficient">Saldo actual insuficiente</string>
+    <string name="desc_imageButton_account">Ir a cuenta</string>
+    <string name="text_state_bike_taken">¡Bici cogida!</string>
+    <string name="text_state_bike_not_taken">No tienes bici cogida</string>
+    <string name="text_snippet_marker">B: %1$d/%2$d | A: %3$d/%4$d | Tarifa: %5$.2f€</string>
 
     <!-- ListActivity.java -->
     <string name="toast_id_not_found">\'%1$s\' no encontrado</string>
