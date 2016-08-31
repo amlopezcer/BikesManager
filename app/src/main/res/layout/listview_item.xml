@@ -3,8 +3,9 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/itemList_padding"
-    android:animateLayoutChanges="true">
+    android:padding="@dimen/activity_padding"
+    android:animateLayoutChanges="true"
+    android:background="@color/lightGrey">
 
     <TableLayout android:id="@+id/tableLayout_data"
         android:layout_width="wrap_content"

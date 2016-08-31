@@ -42,6 +42,10 @@ public class ListActivity extends AppCompatActivity implements AsyncTaskListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
 
+        initComponentsUI();
+    }
+
+    private void initComponentsUI() {
         mExpandableListView = (ExpandableListView) findViewById(R.id.expListView_list);
         ImageButton imageButtonSearch = (ImageButton) findViewById(R.id.imgButton_search);
         assert imageButtonSearch != null;
@@ -66,7 +70,6 @@ public class ListActivity extends AppCompatActivity implements AsyncTaskListener
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         DeviceUtilities.hideSoftKeyboard(this); //Hides the keyboard
 
         // Action bar item click handler
@@ -104,7 +107,7 @@ public class ListActivity extends AppCompatActivity implements AsyncTaskListener
                     updateLocalLayout();
                 } catch (Exception e) {
                     Log.e("[GET Result]" + getClass().getCanonicalName(), e.getLocalizedMessage(), e);
-                    showBasicErrorDialog(i18n(R.string.toast_sync_error), i18n(R.string.text_ok));
+                    showBasicErrorDialog(i18n(R.string.text_sync_error), i18n(R.string.text_ok));
                 }
                 break;
         }

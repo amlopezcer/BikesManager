@@ -54,8 +54,8 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/darkPrimaryColor"
+            android:layout_height="@dimen/separator_height"
+            android:background="@color/dividerColor"
             android:layout_below="@+id/imageView_bikeIcon" />
 
     </RelativeLayout>

@@ -121,7 +121,7 @@ public class ChartActivity extends AppCompatActivity implements AsyncTaskListene
                     updateLocalLayout(data);
                 } catch (Exception e) {
                     Log.e("[GET Result]" + getClass().getCanonicalName(), e.getLocalizedMessage(), e);
-                    showBasicErrorDialog(i18n(R.string.toast_sync_error), i18n(R.string.text_ok));
+                    showBasicErrorDialog(i18n(R.string.text_sync_error), i18n(R.string.text_ok));
                 }
                 break;
         }

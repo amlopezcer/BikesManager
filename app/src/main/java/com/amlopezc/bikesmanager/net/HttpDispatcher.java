@@ -29,7 +29,7 @@ public class HttpDispatcher {
     private final String BASE_URL_ADDRESS = "http://%s:%s/BikesManager/rest/entities.%s";
     private final String SERVER_ADDRESS;
     private final String SERVER_PORT;
-    private final String ENTITY; //bikestation or bikeuser
+    private final String ENTITY;
 
     private ObjectMapper mMapper; //To process JSON strings
 

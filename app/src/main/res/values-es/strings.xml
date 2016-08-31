@@ -11,9 +11,6 @@
     <string name="title_activity_account">Cuenta</string>
     <string name="title_activity_edit_profile">Editar perfil</string>
 
-    <!-- Common toasts -->
-    <string name="toast_sync_error">Error al sincronizar con el servidor</string>
-
     <!-- Common texts-->
     <string name="text_availability">Disponibilidad</string>
     <string name="text_bookings">Reservas</string>
@@ -21,10 +18,8 @@
     <string name="text_total">Total</string>
     <string name="text_set">Establecer</string>
     <string name="text_no">No</string>
-    <string name="text_yes">Sí</string>
     <string name="text_server_address">Dirección del servidor</string>
     <string name="text_server_port">Puerto del servidor</string>
-    <string name="text_not_defined">no definido</string>
     <string name="text_fare">Tarifa:</string>
     <string name="text_full_name">Nombre completo</string>
     <string name="text_mail">Email</string>
@@ -41,6 +36,7 @@
     <string name="text_operation_completed">Operación completada</string>
     <string name="text_bikes">Bicicletas</string>
     <string name="text_moorings">Anclajes</string>
+    <string name="text_sync_error">Error al sincronizar con el servidor</string>
 
     <!-- File to store username and password -->
     <string name="file_user_preferences">user_file</string>
@@ -69,8 +65,7 @@
 
     <!-- MapsActivity.java -->
     <string name="dialog_logout">¿Cerrar sesión?</string>
-    <string name="toast_user_settings">Datos del usuario \'%1$s\' guardados</string>
-    <string name="text_bikeop_impossible">La disponibilidad de la estación no permite completar la operación</string>
+    <string name="text_bike_operation_impossible">La disponibilidad de la estación no permite completar la operación</string>
     <string name="text_location_not_granted">No es posible determinar tu ubicación</string>
     <string name="text_bike_taken">Ya tienes una bici cogida o reservada en otra estación</string>
     <string name="text_bike_not_taken">No tienes ninguna bici cogida o has reservado un anclaje en otra estación</string>
@@ -78,6 +73,7 @@
     <string name="desc_imageButton_account">Ir a cuenta</string>
     <string name="text_state_bike_taken">¡Bici cogida!</string>
     <string name="text_state_bike_not_taken">No tienes bici cogida</string>
+    <string name="text_state_superuser">Superusuario activado</string>
     <string name="text_snippet_marker">B: %1$d/%2$d | A: %3$d/%4$d | Tarifa: %5$.2f€</string>
 
     <!-- ListActivity.java -->
@@ -88,7 +84,6 @@
     <string name="dialog_cancel_booking">¿Cancelar reserva?</string>
     <string name="dialog_cancel_positive">Sí, cancelar</string>
     <string name="dialog_delete">Borrar</string>
-    <string name="confirm_deposit">Ingreso realizado</string>
     <string name="textView_no_bikes">No hay bicis reservadas</string>
     <string name="textView_no_moorings">No hay anclajes reservados</string>
     <string name="textView_remaining_time">Tiempo restante: %1$02d:%2$02d</string>
@@ -168,7 +163,7 @@
     <string name="title_connection">Datos de conexión</string>
     <string name="title_user_options">Opciones de usuario</string>
     <string name="switch_title">Superusuario</string>
-    <string name="switch_summary">Activar para evitar las comprobaciones en las operaciones con bicis</string>
+    <string name="switch_summary">Evita comprobaciones al coger o dejar bicis</string>
     <string name="editText_server_summary">Dirección IP del servidor para la conexión</string>
     <string name="editText_port_summary">Puerto del servidor para la conexión</string>
 

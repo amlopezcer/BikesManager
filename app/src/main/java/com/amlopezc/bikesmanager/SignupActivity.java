@@ -40,6 +40,10 @@ public class SignUpActivity extends AppCompatActivity implements AsyncTaskListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
+        initComponentsUI();
+    }
+
+    private void initComponentsUI() {
         mEditTextFullName = (EditText) findViewById(R.id.editText_fullName);
         mEditTextFullName.addTextChangedListener(new MyTextWatcher(mEditTextFullName));
         mEditTextEmail = (EditText) findViewById(R.id.editText_mail);
@@ -180,7 +184,7 @@ public class SignUpActivity extends AppCompatActivity implements AsyncTaskListen
                     showBasicErrorDialog(i18n(R.string.toast_user_not_available), i18n(R.string.text_ok));
 
                 } else
-                    showBasicErrorDialog(i18n(R.string.toast_sync_error), i18n(R.string.text_ok));
+                    showBasicErrorDialog(i18n(R.string.text_sync_error), i18n(R.string.text_ok));
                 }
     }
 

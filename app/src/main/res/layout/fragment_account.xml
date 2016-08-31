@@ -26,15 +26,13 @@
         android:layout_marginRight="@dimen/widgets_short_margin"
         android:layout_marginEnd="@dimen/widgets_short_margin"
         android:ellipsize="end"
-        android:maxLines="1"
-        android:text="hola"/>
+        android:maxLines="1"/>
 
     <TextView android:id="@+id/textView_book_bike_clock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/textView_book_bike_address"
-        android:textColor="@color/secondaryTextColor"
-        android:text="Cronómtero"/>
+        android:textColor="@color/secondaryTextColor"/>
 
     <Button android:id="@+id/button_cancel_book_bike"
         android:layout_width="@dimen/custom_light_buttons_width"
@@ -67,15 +65,13 @@
         android:layout_marginRight="@dimen/widgets_short_margin"
         android:layout_marginEnd="@dimen/widgets_short_margin"
         android:ellipsize="end"
-        android:maxLines="1"
-        android:text="hola"/>
+        android:maxLines="1" />
 
     <TextView android:id="@+id/textView_book_moorings_clock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/textView_book_moorings_address"
-        android:textColor="@color/secondaryTextColor"
-        android:text="Cronómtero"/>
+        android:textColor="@color/secondaryTextColor"/>
 
     <Button android:id="@+id/button_cancel_book_moorings"
         android:layout_width="@dimen/custom_light_buttons_width"

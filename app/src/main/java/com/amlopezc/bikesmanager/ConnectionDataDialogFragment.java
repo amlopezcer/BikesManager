@@ -58,9 +58,10 @@ public class ConnectionDataDialogFragment extends DialogFragment {
                                         putString(SettingsActivityFragment.KEY_PREF_SYNC_PORT, data).
                                         apply();
 
-                                //If the caller is MapsActivity, update its layout, no need to check
-                                // if this comes from LoginActivity because in that class no further
-                                // action is required
+                                /* If the caller is MapsActivity, update its layout, no need to check
+                                    if this comes from LoginActivity because in that class no further
+                                    action is required
+                                 */
                                 if (getActivity().getComponentName().getClassName().contains("Maps"))
                                     ((MapsActivity) getActivity()).doPositiveClickConnectionDataDialog();
 

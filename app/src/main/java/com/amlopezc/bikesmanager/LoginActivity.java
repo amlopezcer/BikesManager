@@ -41,18 +41,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         //Ensuring connection data is set, showing ConnectionDataDialog otherwise
         checkConnectionData();
-
-        setAppVersion(); //Set version textView with the current app version
-
-        Button buttonSignUp = (Button) findViewById(R.id.button_signUp);
-        assert buttonSignUp != null;
-        buttonSignUp.setOnClickListener(this);
-        Button buttonSignIn = (Button) findViewById(R.id.button_signIn);
-        assert buttonSignIn != null;
-        buttonSignIn.setOnClickListener(this);
-        ImageButton buttonConnectionSettings = (ImageButton) findViewById(R.id.imgButton_connection_settings);
-        assert buttonConnectionSettings != null;
-        buttonConnectionSettings.setOnClickListener(this);
+        //Set version textView with the current app version
+        setAppVersion();
+        //Init components
+        initComponentsUI();
     }
 
     private void checkConnectionData() {
@@ -82,6 +74,19 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             assert textViewVersion != null;
             textViewVersion.setText("-");
         }
+    }
+
+    //Init basic UI components
+    private void initComponentsUI() {
+        Button buttonSignUp = (Button) findViewById(R.id.button_signUp);
+        assert buttonSignUp != null;
+        buttonSignUp.setOnClickListener(this);
+        Button buttonSignIn = (Button) findViewById(R.id.button_signIn);
+        assert buttonSignIn != null;
+        buttonSignIn.setOnClickListener(this);
+        ImageButton buttonConnectionSettings = (ImageButton) findViewById(R.id.imgButton_connection_settings);
+        assert buttonConnectionSettings != null;
+        buttonConnectionSettings.setOnClickListener(this);
     }
 
     @Override
@@ -144,7 +149,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         } catch (Exception e) {
             Log.e("[GET Result]" + getClass().getCanonicalName(), e.getLocalizedMessage(), e);
-            showBasicErrorDialog(i18n(R.string.toast_sync_error), i18n(R.string.text_ok));
+            showBasicErrorDialog(i18n(R.string.text_sync_error), i18n(R.string.text_ok));
         }
     }
 

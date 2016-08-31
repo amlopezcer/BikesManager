@@ -46,8 +46,8 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
     private Button mButtonCancelBikeBook, mButtonCancelMooringsBook;
     private CountDownTimer mCountDownTimerBike, mCountDownTimerMoorings;
     private ArrayList<Boolean> mIsTimerRunning; //To control countdown timers
-    private int mCancelOperation;
-    private boolean mIsActivityRunning;
+    private int mCancelOperation; //Cancel operation selected (bikes or moorings)
+    private boolean mIsActivityRunning; //To control timers behavior when they finish
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,32 +59,17 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         String username = sharedPreferences.getString(getString(R.string.text_user_name), "");
         setTitle(username);
 
-        //Get the user
+        //Get the user and update it if there are any timed out booking
         mBikeUser = BikeUser.getInstance();
         checkUserTimedOutBookings();
 
+        //Init timers
         mIsTimerRunning = new ArrayList<>();
         //In the beginning, no countdown timer is running
         mIsTimerRunning.add(BIKE_TIMER_POS, false);
         mIsTimerRunning.add(MOORINGS_TIMER_POS, false);
 
-        Button buttonDeposit = (Button)findViewById(R.id.button_deposit_money);
-        assert buttonDeposit != null;
-        buttonDeposit.setOnClickListener(this);
-        Button buttonEdit = (Button)findViewById(R.id.button_edit_profile);
-        assert buttonEdit != null;
-        buttonEdit.setOnClickListener(this);
-        Button buttonDeleteAccount = (Button)findViewById(R.id.button_delete_account);
-        assert buttonDeleteAccount != null;
-        buttonDeleteAccount.setOnClickListener(this);
-
-        mButtonCancelBikeBook = (Button)findViewById(R.id.button_cancel_book_bike);
-        assert mButtonCancelBikeBook != null;
-        mButtonCancelBikeBook.setOnClickListener(this);
-        mButtonCancelMooringsBook = (Button)findViewById(R.id.button_cancel_book_moorings);
-        assert mButtonCancelMooringsBook != null;
-        mButtonCancelMooringsBook.setOnClickListener(this);
-
+        initComponentsUI();
         disableCancelButtonsIfNeeded();
         initBookingData();
     }
@@ -111,6 +96,26 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         httpDispatcher.doPut(this, mBikeUser, HttpConstants.PUT_BASIC_BY_ID);
     }
 
+    //Init basic UI components
+    private void initComponentsUI() {
+        Button buttonDeposit = (Button)findViewById(R.id.button_deposit_money);
+        assert buttonDeposit != null;
+        buttonDeposit.setOnClickListener(this);
+        Button buttonEdit = (Button)findViewById(R.id.button_edit_profile);
+        assert buttonEdit != null;
+        buttonEdit.setOnClickListener(this);
+        Button buttonDeleteAccount = (Button)findViewById(R.id.button_delete_account);
+        assert buttonDeleteAccount != null;
+        buttonDeleteAccount.setOnClickListener(this);
+
+        mButtonCancelBikeBook = (Button)findViewById(R.id.button_cancel_book_bike);
+        assert mButtonCancelBikeBook != null;
+        mButtonCancelBikeBook.setOnClickListener(this);
+        mButtonCancelMooringsBook = (Button)findViewById(R.id.button_cancel_book_moorings);
+        assert mButtonCancelMooringsBook != null;
+        mButtonCancelMooringsBook.setOnClickListener(this);
+    }
+
     //Depending on the user booking status, format Cancel buttons
     private void disableCancelButtonsIfNeeded() {
         if(!mBikeUser.ismBookTaken()) {
@@ -128,6 +133,7 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
         TextView textViewBookBikeAddress = (TextView) findViewById(R.id.textView_book_bike_address);
         final TextView textViewBookBikeClock = (TextView) findViewById(R.id.textView_book_bike_clock);
 
+        //Set timers
         if(mBikeUser.ismBookTaken()) {
             assert textViewBookBikeAddress != null;
             textViewBookBikeAddress.setText(mBikeUser.getmBookAddress());
@@ -371,20 +377,24 @@ public class AccountActivity extends AppCompatActivity implements View.OnClickLi
                     httpDispatcher.doPut(this, bikeStation, HttpConstants.PUT_BASIC_BY_ID);
                 } catch (Exception e) {
                     Log.e("[GET Result]" + getClass().getCanonicalName(), e.getLocalizedMessage(), e);
-                    showBasicErrorDialog(i18n(R.string.toast_sync_error), i18n(R.string.text_ok));
+                    showBasicErrorDialog(i18n(R.string.text_sync_error), i18n(R.string.text_ok));
                 }
                 break;
-            case HttpConstants.OPERATION_PUT: //No checks in the server, so response is always going to be OK
-                if(result.contains(BikeUser.ENTITY_ID))
+            case HttpConstants.OPERATION_PUT: //No checks in the server, response is always OK
+                if(result.contains(BikeUser.ENTITY_ID)) {
                     updateCurrentBalance(); //Same PUT for cancel bookings or update balance, so I just do this anyway
-
-                Toast.makeText(this,
-                        i18n(R.string.text_operation_completed),
-                        Toast.LENGTH_SHORT).show();
+                    /*Show a Toast for user feedback (included in the IF statement to be shown
+                        just once when cancel bookings (two PUTs: user and station))
+                     */
+                    Toast.makeText(this,
+                            i18n(R.string.text_operation_completed),
+                            Toast.LENGTH_SHORT).show();
+                }
 
                 break;
             case HttpConstants.OPERATION_DELETE:
-                if(result.contains(BikeUser.ENTITY_ID)) //User deletion, the other option is booking deletion which do not require any checks
+                //User deletion, the other option is booking deletion which do not require any checks
+                if(result.contains(BikeUser.ENTITY_ID))
                     deleteLocalUser(); //When the server operation is done, reset local configurations
                 break;
         }

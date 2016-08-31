@@ -1,8 +1,6 @@
 package com.amlopezc.bikesmanager.entity;
 
 
-import android.util.Log;
-
 import com.amlopezc.bikesmanager.net.HttpConstants;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -21,6 +21,10 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
 
+        initComponentsUI();
+    }
+
+    private void initComponentsUI() {
         Button buttonGreat = (Button) findViewById(R.id.button_great);
         assert buttonGreat != null;
         buttonGreat.setOnClickListener(this);
@@ -34,9 +38,8 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
         TextView textViewMoney = (TextView) findViewById(R.id.textView_welcomeMoney);
         assert textViewMoney != null;
         textViewMoney.setText(i18n(R.string.text_format_money, NEW_USER_PRESENT));
-
-        //getUpdatedUserData();
     }
+
 
     @Override
     public void onClick(View v) {

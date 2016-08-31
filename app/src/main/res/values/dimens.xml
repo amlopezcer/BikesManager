@@ -11,10 +11,10 @@
     <dimen name="dialogs_padding">16dp</dimen>
     <dimen name="activity_padding">16dp</dimen>
     <dimen name="short_padding">8dp</dimen>
+    <dimen name="separator_height">1dp</dimen>
 
     <!-- List -->
     <dimen name="itemList_textNumberMargin">4dp</dimen>
-    <dimen name="itemList_padding">8dp</dimen>
 
     <!-- Custom button -->
     <dimen name="custom_button_padding">4dp</dimen>

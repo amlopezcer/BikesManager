@@ -40,6 +40,14 @@ public class EditProfileActivity extends AppCompatActivity implements AsyncTaskL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
+        //Get the user and init components
+        mBikeUser = BikeUser.getInstance();
+        initComponentsUI();
+        fillLayoutUserData();
+    }
+
+    //Init basic UI components
+    private void initComponentsUI() {
         mEditTextFullName = (EditText) findViewById(R.id.editTextProfile_fullName);
         mEditTextFullName.addTextChangedListener(new MyTextWatcher(mEditTextFullName));
         mEditTextEmail = (EditText) findViewById(R.id.editTextProfile_mail);
@@ -50,10 +58,6 @@ public class EditProfileActivity extends AppCompatActivity implements AsyncTaskL
         mInputLayoutFullName = (TextInputLayout) findViewById(R.id.inputLayoutProfile_fullName);
         mInputLayoutEmail = (TextInputLayout) findViewById(R.id.inputLayoutProfile_mail);
         mInputLayoutUsername = (TextInputLayout) findViewById(R.id.inputLayoutProfile_username);
-
-        mBikeUser = BikeUser.getInstance();
-
-        fillLayoutUserData();
     }
 
     private void fillLayoutUserData() {
@@ -210,7 +214,7 @@ public class EditProfileActivity extends AppCompatActivity implements AsyncTaskL
 
                     showBasicErrorDialog(i18n(R.string.toast_user_not_available), i18n(R.string.text_ok));
                 } else
-                    showBasicErrorDialog(i18n(R.string.toast_sync_error), i18n(R.string.text_ok));
+                    showBasicErrorDialog(i18n(R.string.text_sync_error), i18n(R.string.text_ok));
                 }
 
         fillLayoutUserData(); //Update layout

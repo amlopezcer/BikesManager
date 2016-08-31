@@ -72,6 +72,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
     private TextView mTextView_balance;
 
+    private boolean mSuperuserActivated;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,10 +162,13 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         assert imageButton_account != null;
         imageButton_account.setOnClickListener(this);
 
-        //Ensuring connection data is set, showing ConnectionDataDialog otherwise
+
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        //Ensuring connection data is set, showing ConnectionDataDialog otherwise.
         String serverAddress = sharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_SERVER, "");
         String serverPort = sharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_PORT, "");
+        //Check if superuser option is activated
+        mSuperuserActivated = sharedPreferences.getBoolean(SettingsActivityFragment.KEY_PREF_SUPERUSER, false);
 
         if(serverAddress.trim().isEmpty() || serverPort.trim().isEmpty())
             showConnectionDataDialog();
@@ -184,12 +189,17 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         TextView bikeStateText = (TextView) findViewById(R.id.textView_bikeStateText);
         assert bikeStateText != null;
 
-        if(mBikeUser.ismBikeTaken()) {
-            bikeStateBar.setBackgroundColor(ContextCompat.getColor(this, R.color.lightPrimaryColor));
-            bikeStateText.setText(i18n(R.string.text_state_bike_taken));
+        if(mSuperuserActivated) {
+            bikeStateBar.setBackgroundColor(ContextCompat.getColor(this, R.color.orange));
+            bikeStateText.setText(i18n(R.string.text_state_superuser));
         } else {
-            bikeStateBar.setBackgroundColor(ContextCompat.getColor(this, R.color.lightGrey));
-            bikeStateText.setText(i18n(R.string.text_state_bike_not_taken));
+            if (mBikeUser.ismBikeTaken()) {
+                bikeStateBar.setBackgroundColor(ContextCompat.getColor(this, R.color.lightPrimaryColor));
+                bikeStateText.setText(i18n(R.string.text_state_bike_taken));
+            } else {
+                bikeStateBar.setBackgroundColor(ContextCompat.getColor(this, R.color.lightGrey));
+                bikeStateText.setText(i18n(R.string.text_state_bike_not_taken));
+            }
         }
 
         mTextView_balance.setText(i18n(R.string.text_format_money, mBikeUser.getmBalance()));
@@ -415,7 +425,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
     //Manages the operation selected with the server
     private void performBikeStationOperation(String operation) {
-        if(!isUserAbleToModifyBikeStation(operation, mStations.get(mCurrentBikeStationAddress)))
+        if(!mSuperuserActivated && !isUserAbleToModifyBikeStation(operation, mStations.get(mCurrentBikeStationAddress)))
             return;
 
         BikeStation bikeStation = mStations.get(mCurrentBikeStationAddress).updateBikeStation(operation, mBikeUser);
@@ -455,7 +465,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
             httpDispatcher.doPut(this, bikeStation, operation);
 
         } else
-            showBasicErrorDialog(i18n(R.string.text_bikeop_impossible), i18n(R.string.text_ok));
+            showBasicErrorDialog(i18n(R.string.text_bike_operation_impossible), i18n(R.string.text_ok));
     }
 
     //Check if the current user status allows to take or leave bikes
@@ -512,7 +522,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                     }
                 } catch (Exception e) {
                     Log.e("[GET Result]" + getClass().getCanonicalName(), e.getLocalizedMessage(), e);
-                    showBasicErrorDialog(i18n(R.string.toast_sync_error), i18n(R.string.text_ok));
+                    showBasicErrorDialog(i18n(R.string.text_sync_error), i18n(R.string.text_ok));
                 }
                 break;
             case HttpConstants.OPERATION_PUT:
@@ -535,10 +545,10 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                 else if (result.contains(HttpConstants.SERVER_RESPONSE_KO)) {
                         //Here, only the bike station operation can goes wrong, get user data from the server to discard local changes
                         getUpdatedUserData();
-                        showBasicErrorDialog(i18n(R.string.text_bikeop_impossible), i18n(R.string.text_ok));
+                        showBasicErrorDialog(i18n(R.string.text_bike_operation_impossible), i18n(R.string.text_ok));
                     }
                 else
-                    showBasicErrorDialog(i18n(R.string.toast_sync_error), i18n(R.string.text_ok));
+                    showBasicErrorDialog(i18n(R.string.text_sync_error), i18n(R.string.text_ok));
 
 
                 initUserIfNeeded();

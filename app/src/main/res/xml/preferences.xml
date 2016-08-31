@@ -20,8 +20,8 @@
 
         <EditTextPreference
             android:key="server_port"
-            android:inputType="number"
             android:title="@string/text_server_port"
+            android:inputType="number"
             android:defaultValue="8080"
             android:summary="@string/editText_port_summary"/>
     </PreferenceCategory>

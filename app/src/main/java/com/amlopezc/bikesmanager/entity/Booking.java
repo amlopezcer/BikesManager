@@ -117,7 +117,6 @@ public class Booking extends JSONBean {
 
     //</editor-fold>
 
-
     //<editor-fold desc="EQUALS AND HASHCODE">
     @Override
     public boolean equals(Object o) {

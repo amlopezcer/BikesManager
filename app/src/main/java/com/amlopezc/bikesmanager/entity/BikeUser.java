@@ -115,6 +115,8 @@ public class BikeUser extends JSONBean {
         return mBalance;
     }
 
+    public String getmEntityid() {return mEntityid; }
+
     @Override
     public int getServerId() {
         return mId;

@@ -11,9 +11,6 @@
     <string name="title_activity_account">Account</string>
     <string name="title_activity_edit_profile">Edit profile</string>
 
-    <!-- Common toasts -->
-    <string name="toast_sync_error">Error while sync with the server</string>
-
     <!-- Common texts-->
     <string name="text_availability">Availability</string>
     <string name="text_bookings">Bookings</string>
@@ -21,10 +18,8 @@
     <string name="text_total">Total</string>
     <string name="text_set">Set</string>
     <string name="text_no">No</string>
-    <string name="text_yes">Yes</string>
     <string name="text_server_address">Server address</string>
     <string name="text_server_port">Server port</string>
-    <string name="text_not_defined">not defined</string>
     <string name="text_fare">Fare:</string>
     <string name="text_full_name">Full name</string>
     <string name="text_mail">Email</string>
@@ -41,11 +36,12 @@
     <string name="text_operation_completed">Operation completed</string>
     <string name="text_bikes">Bicycles</string>
     <string name="text_moorings">Moorings</string>
+    <string name="text_sync_error">Error while sync with the server</string>
 
     <!-- File to store username and password -->
     <string name="file_user_preferences">user_file</string>
 
-    <!-- SignupActivity.java and EditProfileActivity.java -->
+    <!-- SignUpActivity.java and EditProfileActivity.java -->
     <string name="text_err_name">Enter your full name</string>
     <string name="text_err_mail">Enter a valid email address</string>
     <string name="text_err_username">Enter your user name</string>
@@ -69,8 +65,7 @@
 
     <!-- MapsActivity.java -->
     <string name="dialog_logout">Log out?</string>
-    <string name="toast_user_settings">\'%1$s\' user data saved</string>
-    <string name="text_bikeop_impossible">Station availability don\'t allow to complete the operation</string>
+    <string name="text_bike_operation_impossible">Station availability don\'t allow to complete the operation</string>
     <string name="text_location_not_granted">Not possible to determine your location</string>
     <string name="text_bike_taken">You already have a bike taken or booked in other station</string>
     <string name="text_bike_not_taken">You don\'t have any bike taken or you have moorings booked in other station</string>
@@ -78,6 +73,7 @@
     <string name="desc_imageButton_account">Go to account</string>
     <string name="text_state_bike_taken">Bike taken!</string>
     <string name="text_state_bike_not_taken">No bike taken</string>
+    <string name="text_state_superuser">Superuser activated</string>
     <string name="text_snippet_marker">B: %1$d/%2$d | M: %3$d/%4$d | Fare: %5$.2f€</string>
 
     <!-- ListActivity.java -->
@@ -88,12 +84,11 @@
     <string name="dialog_cancel_booking">Cancel booking?</string>
     <string name="dialog_cancel_positive">Yes, cancel</string>
     <string name="dialog_delete">Delete</string>
-    <string name="confirm_deposit">Deposit done</string>
     <string name="textView_no_bikes">No bikes booked</string>
     <string name="textView_no_moorings">No moorings booked</string>
     <string name="textView_remaining_time">Remaining time: %1$02d:%2$02d</string>
 
-    <!-- SigninDialogFragment.java -->
+    <!-- SignInDialogFragment.java -->
     <string name="builder_ok_positive">Sign in</string>
 
     <!-- DepositMoneyDialogFragment.java -->
@@ -168,7 +163,7 @@
     <string name="title_connection">Connection data</string>
     <string name="title_user_options">User options</string>
     <string name="switch_title">Superuser</string>
-    <string name="switch_summary">Activate to avoid checks on operations with bikes</string>
+    <string name="switch_summary">Avoids checks while taking or leaving bikes</string>
     <string name="editText_server_summary">Server IP address for connection</string>
     <string name="editText_port_summary">Server port for connection</string>
 
