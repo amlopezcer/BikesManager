@@ -82,6 +82,8 @@ public class HttpGetWorker extends AsyncTask<String, Void, String> {
             conn.connect();
             int response = conn.getResponseCode();
             Log.i(this.getClass().getCanonicalName(), "The response is: " + response);
+            if(response == 500)
+                return null;
             is = conn.getInputStream();
             return readIt(is);
         } finally {

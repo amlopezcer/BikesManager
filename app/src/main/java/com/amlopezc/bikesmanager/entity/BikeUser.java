@@ -2,6 +2,7 @@ package com.amlopezc.bikesmanager.entity;
 
 
 import com.amlopezc.bikesmanager.WelcomeActivity;
+import com.amlopezc.bikesmanager.WelcomeActivityFragment;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -267,7 +268,7 @@ public class BikeUser extends JSONBean {
         this.mMooringsAddress = ADDRESS_NONE_TEXT;
         this.mBookDate = getCurrentDateFormatted();
         this.mMooringsDate = getCurrentDateFormatted();
-        this.mBalance = WelcomeActivity.NEW_USER_PRESENT; //Welcome present: 5.00€
+        this.mBalance = WelcomeActivityFragment.NEW_USER_PRESENT; //Welcome present: 5.00€
         this.mEntityid = ENTITY_ID; //Redundant but avoids issues with JSON serialization
         processHashMD5();
     }

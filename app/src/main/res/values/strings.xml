@@ -72,7 +72,7 @@
     <string name="text_balance_insufficient">Current balance insufficient</string>
     <string name="desc_imageButton_account">Go to account</string>
     <string name="text_state_bike_taken">Bike taken!</string>
-    <string name="text_state_bike_not_taken">No bike taken</string>
+    <string name="text_state_bike_not_taken">You have no bike</string>
     <string name="text_state_superuser">Superuser activated</string>
     <string name="text_snippet_marker">B: %1$d/%2$d | M: %3$d/%4$d | Fare: %5$.2f€</string>
 

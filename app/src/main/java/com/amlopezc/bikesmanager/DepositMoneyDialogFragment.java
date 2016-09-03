@@ -39,7 +39,7 @@ public class DepositMoneyDialogFragment extends DialogFragment {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 String deposit = mEditText_money.getText().toString().trim();
-                                ((AccountActivity) getActivity()).doPositiveClickDepositMoneyDialog(deposit);
+                                ((AccountActivity)getActivity()).doPositiveClickDepositMoneyDialog(deposit);
                                 dialog.cancel();
                             }
                         }).

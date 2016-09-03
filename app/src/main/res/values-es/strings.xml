@@ -72,7 +72,7 @@
     <string name="text_balance_insufficient">Saldo actual insuficiente</string>
     <string name="desc_imageButton_account">Ir a cuenta</string>
     <string name="text_state_bike_taken">¡Bici cogida!</string>
-    <string name="text_state_bike_not_taken">No tienes bici cogida</string>
+    <string name="text_state_bike_not_taken">No tienes bici</string>
     <string name="text_state_superuser">Superusuario activado</string>
     <string name="text_snippet_marker">B: %1$d/%2$d | A: %3$d/%4$d | Tarifa: %5$.2f€</string>
 
