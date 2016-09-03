@@ -55,7 +55,8 @@
     <string name="toast_incorrect_password">Contraseña incorrecta para el usuario \'%1$s\'</string>
 
     <!-- ChartActivity.java -->
-    <string name="chart_total_msg">Bicis totales: %1$d</string>
+    <string name="chart_total_bikes_msg">Bicis totales: %1$d</string>
+    <string name="chart_total_moorings_msg">Anclajes totales: %1$d</string>
 
     <!-- SigninDialogFragment.java -->
     <string name="builder_sign_in_msg">Introducir datos de usuario</string>

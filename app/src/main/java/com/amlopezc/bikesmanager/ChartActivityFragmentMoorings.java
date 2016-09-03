@@ -39,15 +39,15 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Shows a pie chart with the current bike stations state
+ * Shows a pie chart with the current moorings state
  */
-public class ChartActivityFragment extends Fragment implements AsyncTaskListener<String> {
+public class ChartActivityFragmentMoorings extends Fragment implements AsyncTaskListener<String> {
 
     private PieChart mChart;
     private ArrayList<String> mXValues;
 
 
-    public ChartActivityFragment() {}
+    public ChartActivityFragmentMoorings() {}
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,7 +60,7 @@ public class ChartActivityFragment extends Fragment implements AsyncTaskListener
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_chart, container, false);
+        View view = inflater.inflate(R.layout.fragment_chart_moorings, container, false);
         initUIComponents(view);
 
         return view;
@@ -68,7 +68,7 @@ public class ChartActivityFragment extends Fragment implements AsyncTaskListener
 
     //Setting the chart basic format
     private void initUIComponents(View view) {
-        mChart = (PieChart) view.findViewById(R.id.chart_pieChart);
+        mChart = (PieChart) view.findViewById(R.id.chart_pieChart_moorings);
         mChart.setDescription(null);
         mChart.setHoleColorTransparent(true);
         mChart.setDrawSliceText(true);
@@ -85,7 +85,7 @@ public class ChartActivityFragment extends Fragment implements AsyncTaskListener
 
                 Toast.makeText(getActivity(),
                         String.format(Locale.getDefault(), "%s: %d", mXValues.get(entry.getXIndex()), (int) entry.getVal()),
-                        Toast.LENGTH_LONG).show();
+                        Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -148,23 +148,23 @@ public class ChartActivityFragment extends Fragment implements AsyncTaskListener
 
     //Read server data to update current state
     private ArrayList<Integer> readData(List<BikeStation> bikeStationList) {
-        int totalBikes = 0;
-        int availableBikes = 0;
-        int reservedBikes = 0;
+        int totalMoorings = 0;
+        int availableMoorings = 0;
+        int reservedMoorings = 0;
 
         for(BikeStation bikeStation : bikeStationList) {
-            totalBikes += bikeStation.getmTotalMoorings();
-            availableBikes += bikeStation.getmAvailableBikes();
-            reservedBikes += bikeStation.getmReservedBikes();
+            totalMoorings += bikeStation.getmTotalMoorings();
+            availableMoorings += bikeStation.getAvailableMoorings();
+            reservedMoorings += bikeStation.getmReservedMoorings();
         }
 
-        int occupiedBikes = totalBikes - availableBikes - reservedBikes;
+        int occupiedMoorings = totalMoorings - availableMoorings - reservedMoorings;
 
         ArrayList<Integer> data = new ArrayList<>();
-        data.add(totalBikes);
-        data.add(availableBikes);
-        data.add(reservedBikes);
-        data.add(occupiedBikes);
+        data.add(totalMoorings);
+        data.add(availableMoorings);
+        data.add(reservedMoorings);
+        data.add(occupiedMoorings);
 
         return data;
     }
@@ -190,7 +190,7 @@ public class ChartActivityFragment extends Fragment implements AsyncTaskListener
         PieData pieData = new PieData(mXValues, pieDataSet);
         setPieDataFormat(pieData);
 
-        mChart.setCenterText(i18n(R.string.chart_total_msg, totalBikes));
+        mChart.setCenterText(i18n(R.string.chart_total_moorings_msg, totalBikes));
         mChart.setCenterTextColor(R.color.secondaryTextColor);
         //mChart.setCenterTextTypeface(Typeface.DEFAULT_BOLD);
 

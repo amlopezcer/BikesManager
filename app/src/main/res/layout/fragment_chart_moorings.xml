@@ -4,11 +4,11 @@
     android:layout_height="match_parent"
     android:padding="@dimen/activity_padding"
     android:background="@color/white"
-    tools:context="com.amlopezc.bikesmanager.ChartActivityFragment" >
+    tools:context="com.amlopezc.bikesmanager.ChartActivityFragmentMoorings" >
 
-   <com.github.mikephil.charting.charts.PieChart
-       android:id="@+id/chart_pieChart"
-       android:layout_width="match_parent"
-       android:layout_height="match_parent"/>
+    <com.github.mikephil.charting.charts.PieChart
+        android:id="@+id/chart_pieChart_moorings"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </RelativeLayout>

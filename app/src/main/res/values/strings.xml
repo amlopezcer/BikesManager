@@ -55,7 +55,8 @@
     <string name="toast_incorrect_password">Incorrect password for user \'%1$s\'</string>
 
     <!-- ChartActivity.java -->
-    <string name="chart_total_msg">Total bikes: %1$d</string>
+    <string name="chart_total_bikes_msg">Total bikes: %1$d</string>
+    <string name="chart_total_moorings_msg">Total moorings: %1$d</string>
 
     <!-- SigninDialogFragment.java -->
     <string name="builder_sign_in_msg">Enter user data</string>

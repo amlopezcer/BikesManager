@@ -84,7 +84,8 @@
             android:label="@string/title_activity_chart"
             android:parentActivityName=".MapsActivity"
             android:screenOrientation="portrait"
-            android:configChanges="orientation|keyboardHidden">
+            android:configChanges="orientation|keyboardHidden"
+            android:theme="@style/MyMaterialTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.amlopezc.bikesmanager.MapsActivity" />
