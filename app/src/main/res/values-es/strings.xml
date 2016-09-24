@@ -125,7 +125,7 @@
     <string name="textView_welcome">¡Bienvenido %1$s!</string>
     <string name="desc_image_welcome">Imagen de bienvenida</string>
     <string name="textView_welcomePresent">Un pequeño regalo&#8230;</string> <!-- "&#8230;" = "..." -->
-    <string name="button_great">Genial!</string>
+    <string name="button_great">¡Genial!</string>
 
     <!-- fragment_list.xml -->
     <string name="hint_search">Buscar</string>

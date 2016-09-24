@@ -163,7 +163,6 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         assert imageButton_account != null;
         imageButton_account.setOnClickListener(this);
 
-
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         //Ensuring connection data is set, showing ConnectionDataDialog otherwise.
         String serverAddress = sharedPreferences.getString(SettingsActivityFragment.KEY_PREF_SYNC_SERVER, "");
@@ -211,10 +210,12 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         if (mBikeUser == null)
             mBikeUser = BikeUser.getInstance();
 
+
         //conditions which indicate the user is not updated
-        if(mBikeUser.getmUserName() == null || mBikeUser.getmUserName().isEmpty() ||
+        if(mBikeUser.getmUserName() == null || (mBikeUser.getmUserName() != null && mBikeUser.getmUserName().isEmpty()) || //Avoid a null pointer exception
                 mBikeUser.getmId() == -1 || mBikeUser.isBookingTimedOut())
             getUpdatedUserData();
+
     }
 
     private void getUpdatedUserData() {

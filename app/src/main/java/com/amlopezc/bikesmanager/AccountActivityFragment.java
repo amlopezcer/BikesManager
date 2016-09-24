@@ -147,7 +147,8 @@ public class AccountActivityFragment extends Fragment implements View.OnClickLis
                         int seconds = (int) millisUntilFinished / 1000;
                         int minutes = seconds / 60;
                         seconds = seconds % 60;
-                        mTextViewBookBikeClock.setText(i18n(R.string.textView_remaining_time, minutes, seconds));
+                        if(mIsActivityRunning) //Check if the fragment where the timer is going to be updated is attached to the activity
+                            mTextViewBookBikeClock.setText(i18n(R.string.textView_remaining_time, minutes, seconds));
                     }
                     public void onFinish() {
                         finishTimer(OP_CANCEL_BIKE);
@@ -176,7 +177,8 @@ public class AccountActivityFragment extends Fragment implements View.OnClickLis
                         int seconds = (int) millisUntilFinished / 1000;
                         int minutes = seconds / 60;
                         seconds = seconds % 60;
-                        mTextViewBookMooringClock.setText(i18n(R.string.textView_remaining_time, minutes, seconds));
+                        if(mIsActivityRunning) //Check if the fragment where the timer is going to be updated is attached to the activity
+                            mTextViewBookMooringClock.setText(i18n(R.string.textView_remaining_time, minutes, seconds));
                     }
                     public void onFinish() {
                         finishTimer(OP_CANCEL_MOORINGS);
