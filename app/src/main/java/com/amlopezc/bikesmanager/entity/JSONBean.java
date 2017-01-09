@@ -60,15 +60,23 @@ public abstract class JSONBean implements PropertyChangeListener {
 
     public abstract void setServerId(int serverId);
 
-    //Format date data to insert it correctly in the Database, format: yyyy-mm-ddThh:mm:ss+02:00
+    //Format date data to insert it correctly in the Database, format: yyyy-mm-ddThh:mm:ss+02:00 (or +01:00), depending on the time change every six months
     protected String getCurrentDateFormatted() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
         Calendar cal = Calendar.getInstance();
         StringBuilder builder = new StringBuilder(dateFormat.format(cal.getTime()));
+        int month = Calendar.getInstance().get(Calendar.MONTH);
+
+        String monthString; //Required because of JSON date formats (commented before)
+        if(month < 3 || month > 9) //0-index (3 = April, 9 = October), so before april or after october it's winter time
+            monthString = "+01:00"; //winter
+        else
+            monthString = "+02:00"; //summer
+
         return builder.append("T")
                 .append(timeFormat.format(cal.getTime()))
-                .append("+02:00").toString();
+                .append(monthString).toString();
     }
 
     //Obtain a long representation of a date
