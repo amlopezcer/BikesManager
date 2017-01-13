@@ -81,7 +81,7 @@
     <string name="toast_id_not_found">\'%1$s\' not found</string>
 
     <!-- AccountActivity.java -->
-    <string name="dialog_delete_account">Delete account?</string>
+    <string name="dialog_delete_account">Bookings will be cancelled and your money given back. Delete account?</string>
     <string name="dialog_cancel_booking">Cancel booking?</string>
     <string name="dialog_cancel_positive">Yes, cancel</string>
     <string name="dialog_delete">Delete</string>
