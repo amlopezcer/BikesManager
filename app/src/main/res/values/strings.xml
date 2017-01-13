@@ -88,6 +88,7 @@
     <string name="textView_no_bikes">No bikes booked</string>
     <string name="textView_no_moorings">No moorings booked</string>
     <string name="textView_remaining_time">Remaining time: %1$02d:%2$02d</string>
+    <string name="dialog_error_delete_account">Leave your bike first</string>
 
     <!-- SignInDialogFragment.java -->
     <string name="builder_ok_positive">Sign in</string>

@@ -97,7 +97,7 @@ public class EditProfileActivityFragment extends Fragment implements AsyncTaskLi
         if (id == R.id.action_tick_confirm_changes) {
             DeviceUtilities.hideSoftKeyboard(getActivity()); //Hides keyboard
             scrollToTheTop(); //Scrolls to the top of the screen, useful for smaller ones
-            confirmProfileChanges();
+            submit();
             return true;
         }
 
@@ -107,29 +107,6 @@ public class EditProfileActivityFragment extends Fragment implements AsyncTaskLi
     private void scrollToTheTop() {
         ScrollView scrollView = (ScrollView) getActivity().findViewById(R.id.scrollView_editProfile); //The scroll view is located in the activity
         scrollView.smoothScrollTo(0,0);
-    }
-
-    //Dialog to confirm changes
-    private void confirmProfileChanges() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(i18n(R.string.dialog_confirm_changes)).
-                setPositiveButton(
-                        i18n(R.string.text_save),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                submit();
-                                dialog.cancel();
-                            }
-                        }).
-                setNegativeButton(
-                        i18n(R.string.text_cancel),
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
     }
 
     private void submit() {
@@ -142,7 +119,7 @@ public class EditProfileActivityFragment extends Fragment implements AsyncTaskLi
             return;
 
         //everything goes fine so far
-        updateUser();
+        confirmProfileChanges();
     }
 
     //Validate text fields data (not empty, adequate format for the email...)
@@ -163,6 +140,30 @@ public class EditProfileActivityFragment extends Fragment implements AsyncTaskLi
 
         return true;
     }
+
+    //Dialog to confirm changes
+    private void confirmProfileChanges() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(i18n(R.string.dialog_confirm_changes)).
+                setPositiveButton(
+                        i18n(R.string.text_save),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                updateUser();
+                                dialog.cancel();
+                            }
+                        }).
+                setNegativeButton(
+                        i18n(R.string.text_cancel),
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
 
     //Adapt the error message to the field in trouble
     private String getErrorMsg(int id) {

@@ -227,7 +227,10 @@ public class AccountActivityFragment extends Fragment implements View.OnClickLis
                 startActivity(intent);
                 break;
             case R.id.button_delete_account:
-                confirmDeleteAccount();
+                if(mBikeUser.ismBikeTaken())
+                    showBasicErrorDialog(i18n(R.string.dialog_error_delete_account), i18n(R.string.text_ok));
+                else
+                    confirmDeleteAccount();
                 break;
             case R.id.button_cancel_book_bike:
                 confirmCancelBooking(OP_CANCEL_BIKE);
@@ -260,6 +263,13 @@ public class AccountActivityFragment extends Fragment implements View.OnClickLis
                         i18n(R.string.dialog_delete),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
+
+                                //Delete bookings
+                                if(mBikeUser.ismBookTaken())
+                                    cancelBooking(OP_CANCEL_BIKE, true);
+                                if(mBikeUser.ismMooringsTaken())
+                                    cancelBooking(OP_CANCEL_MOORINGS, true);
+
                                 deleteServerAccount();
                                 dialog.cancel();
                             }
@@ -289,7 +299,7 @@ public class AccountActivityFragment extends Fragment implements View.OnClickLis
                         i18n(R.string.dialog_cancel_positive),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-                                cancelBooking(operation);
+                                cancelBooking(operation, false);
                                 dialog.cancel();
                             }
                         }).
@@ -305,7 +315,7 @@ public class AccountActivityFragment extends Fragment implements View.OnClickLis
     }
 
     //Logic to cancel bookings
-    private void cancelBooking(int operation) {
+    private void cancelBooking(int operation, boolean deleteUserOp) {
         String address;
         mCancelOperation = operation;
         int bookingType;
@@ -331,7 +341,10 @@ public class AccountActivityFragment extends Fragment implements View.OnClickLis
 
         //Update user and layout
         finishTimer(operation);
-        updateServerUser();
+
+        if(!deleteUserOp) //If the booking removal is due to a user deletion, there is no need of update it
+            updateServerUser();
+
         initBookingData();
         disableCancelButtonsIfNeeded();
     }

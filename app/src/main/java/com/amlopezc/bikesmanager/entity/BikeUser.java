@@ -1,7 +1,6 @@
 package com.amlopezc.bikesmanager.entity;
 
 
-import com.amlopezc.bikesmanager.WelcomeActivity;
 import com.amlopezc.bikesmanager.WelcomeActivityFragment;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -280,6 +279,10 @@ public class BikeUser extends JSONBean {
 
     public void resetInstance () {
         mInstance = null;
+    }
+
+    public void payBike(float currentStationFare){
+        setmBalance(getmBalance() - currentStationFare);
     }
 
     public void takeBike() {

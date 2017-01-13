@@ -48,7 +48,7 @@ public abstract class JSONBean implements PropertyChangeListener {
         processHashMD5();
     }
 
-    public void processHashMD5() {
+    protected void processHashMD5() {
         HashFunction hashFunction = Hashing.md5();
         HashCode hashCode = hashFunction.hashInt(hashCode());
         md5 = hashCode.toString();

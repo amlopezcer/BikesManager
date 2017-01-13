@@ -88,6 +88,7 @@
     <string name="textView_no_bikes">No hay bicis reservadas</string>
     <string name="textView_no_moorings">No hay anclajes reservados</string>
     <string name="textView_remaining_time">Tiempo restante: %1$02d:%2$02d</string>
+    <string name="dialog_error_delete_account">Primero deja la bici</string>
 
     <!-- SigninDialogFragment.java -->
     <string name="builder_ok_positive">Iniciar sesión</string>

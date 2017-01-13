@@ -445,6 +445,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                         httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_BOOKING);
                         httpDispatcher.doDelete(this, null, String.format(Locale.getDefault(), HttpConstants.DELETE_BOOKING_BY_USERNAME, mBikeUser.getmUserName(), Booking.BOOKING_TYPE_BIKE));
                     }
+                    mBikeUser.payBike(bikeStation.getCurrentFare());
                     mBikeUser.takeBike();
                     break;
                 case HttpConstants.PUT_LEAVE_BIKE:
@@ -489,9 +490,6 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
             showBasicErrorDialog(i18n(R.string.text_balance_insufficient), i18n(R.string.text_ok));
             return false;
         }
-
-        if(operation.equals(HttpConstants.PUT_TAKE_BIKE)) //Here, the bike can be taken
-            mBikeUser.setmBalance(mBikeUser.getmBalance() - bikeStation.getCurrentFare());
 
         return true;
     }
@@ -553,10 +551,10 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                                 Toast.LENGTH_SHORT).show();
                     }
                 else if (result.contains(HttpConstants.SERVER_RESPONSE_KO)) {
-                        //Here, only the bike station operation can goes wrong, get user data from the server to discard local changes
-                        getUpdatedUserData();
-                        showBasicErrorDialog(i18n(R.string.text_bike_operation_impossible), i18n(R.string.text_ok));
-                    }
+                    //Here, only the bike station operation can goes wrong, get user data from the server to discard local changes
+                    getUpdatedUserData();
+                    showBasicErrorDialog(i18n(R.string.text_bike_operation_impossible), i18n(R.string.text_ok));
+                }
                 else
                     showBasicErrorDialog(i18n(R.string.text_sync_error), i18n(R.string.text_ok));
 
