@@ -282,7 +282,11 @@ public class BikeUser extends JSONBean {
     }
 
     public void payBike(float currentStationFare){
-        setmBalance(getmBalance() - currentStationFare);
+        float newBalance = getmBalance() - currentStationFare;
+        if(newBalance <= 0)
+            setmBalance(0); //In case "superuser" is activated (no restrictions)
+        else
+            setmBalance(newBalance);
     }
 
     public void takeBike() {
