@@ -51,6 +51,8 @@ public class AccountActivityFragment extends Fragment implements View.OnClickLis
     private ArrayList<Boolean> mIsTimerRunning; //To control countdown timers
     private boolean mCancelBike; //Cancel operation selected (bikes or moorings)
     private boolean mCancelMoorings; //Cancel operation selected (bikes or moorings)
+    private String mStationAddressBikes;
+    private String mStationAddressMoorings;
     private boolean mIsActivityRunning; //To control timers behavior when they finish
 
 
@@ -73,6 +75,8 @@ public class AccountActivityFragment extends Fragment implements View.OnClickLis
 
         mCancelBike = false;
         mCancelMoorings = false;
+        mStationAddressBikes = "";
+        mStationAddressMoorings = "";
 
         initComponentsUI(view);
         disableCancelButtonsIfNeeded();
@@ -326,11 +330,13 @@ public class AccountActivityFragment extends Fragment implements View.OnClickLis
 
         if(operation == OP_CANCEL_BIKE) {
             mCancelBike = true;
+            mStationAddressBikes = mBikeUser.getmBookAddress();
             address = mBikeUser.getmBookAddress().replaceAll(" ", "_"); //To avoid issues with urls
             mBikeUser.cancelBookBike();
             bookingType = Booking.BOOKING_TYPE_BIKE;
         } else {
             mCancelMoorings = true;
+            mStationAddressMoorings = mBikeUser.getmMooringsAddress();
             address = mBikeUser.getmMooringsAddress().replaceAll(" ", "_"); //To avoid issues with urls
             mBikeUser.cancelBookMoorings();
             bookingType = Booking.BOOKING_TYPE_MOORINGS;
@@ -378,15 +384,17 @@ public class AccountActivityFragment extends Fragment implements View.OnClickLis
                     BikeStation bikeStation = mapper.readValue(result, BikeStation.class);
 
                     //Update bike station
-                    if (mCancelBike) {
+                    if (mCancelBike && mStationAddressBikes.equals(bikeStation.getmAddress())) {
                         bikeStation.cancelBikeBooking();
                         mCancelBike = false;
+                        mStationAddressBikes = "";
                         httpDispatcher.doPut(this, bikeStation, HttpConstants.PUT_BASIC_BY_ID);
                     }
 
-                    if(mCancelMoorings) {
+                    if(mCancelMoorings && mStationAddressMoorings.equals(bikeStation.getmAddress())) {
                         bikeStation.cancelMooringsBooking();
                         mCancelMoorings = false;
+                        mStationAddressMoorings = "";
                         httpDispatcher.doPut(this, bikeStation, HttpConstants.PUT_BASIC_BY_ID);
                     }
                 } catch (Exception e) {
