@@ -49,7 +49,8 @@ public class AccountActivityFragment extends Fragment implements View.OnClickLis
             mTextViewBookMooringClock, mTextViewBalance;
     private CountDownTimer mCountDownTimerBike, mCountDownTimerMoorings;
     private ArrayList<Boolean> mIsTimerRunning; //To control countdown timers
-    private int mCancelOperation; //Cancel operation selected (bikes or moorings)
+    private boolean mCancelBike; //Cancel operation selected (bikes or moorings)
+    private boolean mCancelMoorings; //Cancel operation selected (bikes or moorings)
     private boolean mIsActivityRunning; //To control timers behavior when they finish
 
 
@@ -69,6 +70,9 @@ public class AccountActivityFragment extends Fragment implements View.OnClickLis
         //In the beginning, no countdown timer is running
         mIsTimerRunning.add(BIKE_TIMER_POS, false);
         mIsTimerRunning.add(MOORINGS_TIMER_POS, false);
+
+        mCancelBike = false;
+        mCancelMoorings = false;
 
         initComponentsUI(view);
         disableCancelButtonsIfNeeded();
@@ -317,21 +321,22 @@ public class AccountActivityFragment extends Fragment implements View.OnClickLis
     //Logic to cancel bookings
     private void cancelBooking(int operation, boolean deleteUserOp) {
         String address;
-        mCancelOperation = operation;
         int bookingType;
         HttpDispatcher httpDispatcher;
 
         if(operation == OP_CANCEL_BIKE) {
+            mCancelBike = true;
             address = mBikeUser.getmBookAddress().replaceAll(" ", "_"); //To avoid issues with urls
             mBikeUser.cancelBookBike();
             bookingType = Booking.BOOKING_TYPE_BIKE;
         } else {
+            mCancelMoorings = true;
             address = mBikeUser.getmMooringsAddress().replaceAll(" ", "_"); //To avoid issues with urls
             mBikeUser.cancelBookMoorings();
             bookingType = Booking.BOOKING_TYPE_MOORINGS;
         }
 
-        //Get the station
+        //Get the station, its update occurs when the server responds
         httpDispatcher = new HttpDispatcher(getActivity(), HttpConstants.ENTITY_STATION);
         httpDispatcher.doGet(this, String.format(HttpConstants.GET_FIND_BIKESTATION_ADDRESS, address)); //path: .../stationAddress/{address}
 
@@ -373,12 +378,17 @@ public class AccountActivityFragment extends Fragment implements View.OnClickLis
                     BikeStation bikeStation = mapper.readValue(result, BikeStation.class);
 
                     //Update bike station
-                    if (mCancelOperation == OP_CANCEL_BIKE)
+                    if (mCancelBike) {
                         bikeStation.cancelBikeBooking();
-                    else
-                        bikeStation.cancelMooringsBooking();
+                        mCancelBike = false;
+                        httpDispatcher.doPut(this, bikeStation, HttpConstants.PUT_BASIC_BY_ID);
+                    }
 
-                    httpDispatcher.doPut(this, bikeStation, HttpConstants.PUT_BASIC_BY_ID);
+                    if(mCancelMoorings) {
+                        bikeStation.cancelMooringsBooking();
+                        mCancelMoorings = false;
+                        httpDispatcher.doPut(this, bikeStation, HttpConstants.PUT_BASIC_BY_ID);
+                    }
                 } catch (Exception e) {
                     Log.e("[GET Result]" + getClass().getCanonicalName(), e.getLocalizedMessage(), e);
                     showBasicErrorDialog(i18n(R.string.text_sync_error), i18n(R.string.text_ok));
