@@ -206,7 +206,7 @@ public class BikeStation extends JSONBean {
         float currentFare;
 
         if(availability == 0)
-            currentFare = getmBasicFare();
+            currentFare = 2.0f;
         else if (availability < 50)
             currentFare =  getmBasicFare() * 2;
         else
