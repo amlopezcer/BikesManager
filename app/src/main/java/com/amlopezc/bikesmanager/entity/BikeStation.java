@@ -205,12 +205,10 @@ public class BikeStation extends JSONBean {
         int availability = getStationAvailability();
         float currentFare;
 
-        if(availability == 0)
-            currentFare = 2.0f;
-        else if (availability < 50)
-            currentFare =  getmBasicFare() * 2;
+        if (availability < 50)
+            currentFare = getmBasicFare() * 2;
         else
-            currentFare =  getmBasicFare();
+            currentFare = getmBasicFare();
 
         BigDecimal result = round(currentFare, 2); //2 decimals
         return result.floatValue();
