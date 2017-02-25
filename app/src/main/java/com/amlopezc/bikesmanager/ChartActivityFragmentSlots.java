@@ -39,15 +39,15 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Shows a pie chart with the current moorings state
+ * Shows a pie chart with the current slots state
  */
-public class ChartActivityFragmentMoorings extends Fragment implements AsyncTaskListener<String> {
+public class ChartActivityFragmentSlots extends Fragment implements AsyncTaskListener<String> {
 
     private PieChart mChart;
     private ArrayList<String> mXValues;
 
 
-    public ChartActivityFragmentMoorings() {}
+    public ChartActivityFragmentSlots() {}
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,7 +60,7 @@ public class ChartActivityFragmentMoorings extends Fragment implements AsyncTask
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_chart_moorings, container, false);
+        View view = inflater.inflate(R.layout.fragment_chart_slots, container, false);
         initUIComponents(view);
 
         return view;
@@ -68,7 +68,7 @@ public class ChartActivityFragmentMoorings extends Fragment implements AsyncTask
 
     //Setting the chart basic format
     private void initUIComponents(View view) {
-        mChart = (PieChart) view.findViewById(R.id.chart_pieChart_moorings);
+        mChart = (PieChart) view.findViewById(R.id.chart_pieChart_slots);
         mChart.setDescription(null);
         mChart.setHoleColorTransparent(true);
         mChart.setDrawSliceText(true);
@@ -148,23 +148,23 @@ public class ChartActivityFragmentMoorings extends Fragment implements AsyncTask
 
     //Read server data to update current state
     private ArrayList<Integer> readData(List<BikeStation> bikeStationList) {
-        int totalMoorings = 0;
-        int availableMoorings = 0;
-        int reservedMoorings = 0;
+        int totalSlots = 0;
+        int availableSlots = 0;
+        int reservedSlots = 0;
 
         for(BikeStation bikeStation : bikeStationList) {
-            totalMoorings += bikeStation.getmTotalMoorings();
-            availableMoorings += bikeStation.getAvailableMoorings();
-            reservedMoorings += bikeStation.getmReservedMoorings();
+            totalSlots += bikeStation.getmTotalSlots();
+            availableSlots += bikeStation.getAvailableSlots();
+            reservedSlots += bikeStation.getmReservedSlots();
         }
 
-        int occupiedMoorings = totalMoorings - availableMoorings - reservedMoorings;
+        int occupiedSlots = totalSlots - availableSlots - reservedSlots;
 
         ArrayList<Integer> data = new ArrayList<>();
-        data.add(totalMoorings);
-        data.add(availableMoorings);
-        data.add(reservedMoorings);
-        data.add(occupiedMoorings);
+        data.add(totalSlots);
+        data.add(availableSlots);
+        data.add(reservedSlots);
+        data.add(occupiedSlots);
 
         return data;
     }
@@ -190,7 +190,7 @@ public class ChartActivityFragmentMoorings extends Fragment implements AsyncTask
         PieData pieData = new PieData(mXValues, pieDataSet);
         setPieDataFormat(pieData);
 
-        mChart.setCenterText(i18n(R.string.chart_total_moorings_msg, totalBikes));
+        mChart.setCenterText(i18n(R.string.chart_total_slots_msg, totalBikes));
         mChart.setCenterTextColor(R.color.secondaryTextColor);
         //mChart.setCenterTextTypeface(Typeface.DEFAULT_BOLD);
 

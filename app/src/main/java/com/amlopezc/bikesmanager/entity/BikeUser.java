@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 
 @JsonPropertyOrder({"balance", "biketaken", "bookaddress", "bookdate", "booktaken", "email", "entityid",
-        "fullname", "id", "md5", "mooringsaddress", "mooringsdate", "mooringstaken", "password",
+        "fullname", "id", "md5", "password", "slotsaddress", "slotsdate", "slotstaken",
         "username"})
 public class BikeUser extends JSONBean {
 
@@ -31,16 +31,16 @@ public class BikeUser extends JSONBean {
     private boolean mBikeTaken;
     @JsonProperty("booktaken") //Bikes bookings
     private boolean mBookTaken;
-    @JsonProperty("mooringstaken") //This filed refers only to a moorings booking, you cannot take moorings
-    private boolean mMooringsTaken;
+    @JsonProperty("slotstaken") //This filed refers only to a slots booking, you cannot take slots
+    private boolean mSlotsTaken;
     @JsonProperty("bookaddress") //Bikes bookings
     private String mBookAddress;
-    @JsonProperty("mooringsaddress") //This filed refers only to a moorings booking, you cannot take moorings
-    private String mMooringsAddress;
+    @JsonProperty("slotsaddress") //This filed refers only to a slots booking, you cannot take slots
+    private String mSlotsAddress;
     @JsonProperty("bookdate") //Bikes bookings
     private String mBookDate;
-    @JsonProperty("mooringsdate") //This filed refers only to a moorings booking, you cannot take moorings
-    private String mMooringsDate;
+    @JsonProperty("slotsdate") //This filed refers only to a slots booking, you cannot take slots
+    private String mSlotsDate;
     @JsonProperty("balance")
     private float mBalance;
     @JsonProperty("entityid")
@@ -91,24 +91,24 @@ public class BikeUser extends JSONBean {
         return mBookTaken;
     }
 
-    public boolean ismMooringsTaken() {
-        return mMooringsTaken;
+    public boolean ismSlotsTaken() {
+        return mSlotsTaken;
     }
 
     public String getmBookAddress() {
         return mBookAddress;
     }
 
-    public String getmMooringsAddress() {
-        return mMooringsAddress;
+    public String getmSlotsAddress() {
+        return mSlotsAddress;
     }
 
     public String getmBookDate() {
         return mBookDate;
     }
 
-    public String getmMooringsDate() {
-        return mMooringsDate;
+    public String getmSlotsDate() {
+        return mSlotsDate;
     }
 
     public float getmBalance() {
@@ -166,10 +166,10 @@ public class BikeUser extends JSONBean {
         support.firePropertyChange("mBookTaken", oldValue, mBookTaken);
     }
 
-    public void setmMooringsTaken(boolean mMooringsTaken) {
-        boolean oldValue = this.mMooringsTaken;
-        this.mMooringsTaken = mMooringsTaken;
-        support.firePropertyChange("mMooringsTaken", oldValue, mMooringsTaken);
+    public void setmSlotsTaken(boolean mSlotsTaken) {
+        boolean oldValue = this.mSlotsTaken;
+        this.mSlotsTaken = mSlotsTaken;
+        support.firePropertyChange("mSlotsTaken", oldValue, mSlotsTaken);
     }
 
     public void setmBookAddress(String mBookAddress) {
@@ -178,10 +178,10 @@ public class BikeUser extends JSONBean {
         support.firePropertyChange("mBookAddress", oldValue, mBookAddress);
     }
 
-    public void setmMooringsAddress(String mMooringsAddress) {
-        String oldValue = this.mMooringsAddress;
-        this.mMooringsAddress = mMooringsAddress;
-        support.firePropertyChange("mMooringsAddress", oldValue, mMooringsAddress);
+    public void setmSlotsAddress(String mSlotsAddress) {
+        String oldValue = this.mSlotsAddress;
+        this.mSlotsAddress = mSlotsAddress;
+        support.firePropertyChange("mSlotsAddress", oldValue, mSlotsAddress);
     }
 
     public void setmBookDate(String mBookDate) {
@@ -190,10 +190,10 @@ public class BikeUser extends JSONBean {
         support.firePropertyChange("mBookDate", oldValue, mBookDate);
     }
 
-    public void setmMooringsDate(String mMooringsDate) {
-        String oldValue = this.mMooringsDate;
-        this.mMooringsDate = mMooringsDate;
-        support.firePropertyChange("mMooringsDate", oldValue, mMooringsDate);
+    public void setmSlotsDate(String mSlotsDate) {
+        String oldValue = this.mSlotsDate;
+        this.mSlotsDate = mSlotsDate;
+        support.firePropertyChange("mSlotsDate", oldValue, mSlotsDate);
     }
 
     public void setmBalance(float mBalance) {
@@ -221,16 +221,16 @@ public class BikeUser extends JSONBean {
         if (mId != bikeUser.mId) return false;
         if (mBikeTaken != bikeUser.mBikeTaken) return false;
         if (mBookTaken != bikeUser.mBookTaken) return false;
-        if (mMooringsTaken != bikeUser.mMooringsTaken) return false;
+        if (mSlotsTaken != bikeUser.mSlotsTaken) return false;
         if (Float.compare(bikeUser.mBalance, mBalance) != 0) return false;
         if (!mUserName.equals(bikeUser.mUserName)) return false;
         if (!mPassword.equals(bikeUser.mPassword)) return false;
         if (!mFullName.equals(bikeUser.mFullName)) return false;
         if (!mEmail.equals(bikeUser.mEmail)) return false;
         if (!mBookAddress.equals(bikeUser.mBookAddress)) return false;
-        if (!mMooringsAddress.equals(bikeUser.mMooringsAddress)) return false;
+        if (!mSlotsAddress.equals(bikeUser.mSlotsAddress)) return false;
         if (!mBookDate.equals(bikeUser.mBookDate)) return false;
-        return mMooringsDate.equals(bikeUser.mMooringsDate);
+        return mSlotsDate.equals(bikeUser.mSlotsDate);
 
     }
 
@@ -243,11 +243,11 @@ public class BikeUser extends JSONBean {
         result = 31 * result + mEmail.hashCode();
         result = 31 * result + (mBikeTaken ? 1 : 0);
         result = 31 * result + (mBookTaken ? 1 : 0);
-        result = 31 * result + (mMooringsTaken ? 1 : 0);
+        result = 31 * result + (mSlotsTaken ? 1 : 0);
         result = 31 * result + mBookAddress.hashCode();
-        result = 31 * result + mMooringsAddress.hashCode();
+        result = 31 * result + mSlotsAddress.hashCode();
         result = 31 * result + mBookDate.hashCode();
-        result = 31 * result + mMooringsDate.hashCode();
+        result = 31 * result + mSlotsDate.hashCode();
         result = 31 * result + (mBalance != +0.0f ? Float.floatToIntBits(mBalance) : 0);
         return result;
     }
@@ -262,11 +262,11 @@ public class BikeUser extends JSONBean {
         //Some standard data for new users
         this.mBikeTaken = false;
         this.mBookTaken = false;
-        this.mMooringsTaken = false;
+        this.mSlotsTaken = false;
         this.mBookAddress = ADDRESS_NONE_TEXT;
-        this.mMooringsAddress = ADDRESS_NONE_TEXT;
+        this.mSlotsAddress = ADDRESS_NONE_TEXT;
         this.mBookDate = getCurrentDateFormatted();
-        this.mMooringsDate = getCurrentDateFormatted();
+        this.mSlotsDate = getCurrentDateFormatted();
         this.mBalance = WelcomeActivityFragment.NEW_USER_PRESENT; //Welcome present: 5.00€
         this.mEntityid = ENTITY_ID; //Redundant but avoids issues with JSON serialization
         processHashMD5();
@@ -297,8 +297,8 @@ public class BikeUser extends JSONBean {
     }
 
     public void leaveBike() {
-        if(ismMooringsTaken())
-            cancelBookMoorings();
+        if(ismSlotsTaken())
+            cancelBookSlots();
 
         setmBikeTaken(false);
     }
@@ -309,10 +309,10 @@ public class BikeUser extends JSONBean {
         setmBookAddress(bookAddress);
     }
 
-    public void bookMoorings(String bookAddress) {
-        setmMooringsTaken(true);
-        setmMooringsDate(getCurrentDateFormatted());
-        setmMooringsAddress(bookAddress);
+    public void bookSlots(String bookAddress) {
+        setmSlotsTaken(true);
+        setmSlotsDate(getCurrentDateFormatted());
+        setmSlotsAddress(bookAddress);
     }
 
     public void cancelBookBike() {
@@ -321,10 +321,10 @@ public class BikeUser extends JSONBean {
         setmBookAddress(ADDRESS_NONE_TEXT);
     }
 
-    public void cancelBookMoorings() {
-        setmMooringsTaken(false);
-        setmMooringsDate(getCurrentDateFormatted());
-        setmMooringsAddress(ADDRESS_NONE_TEXT);
+    public void cancelBookSlots() {
+        setmSlotsTaken(false);
+        setmSlotsDate(getCurrentDateFormatted());
+        setmSlotsAddress(ADDRESS_NONE_TEXT);
     }
 
     public long getRemainingBookingTime(String date){
@@ -335,15 +335,15 @@ public class BikeUser extends JSONBean {
     }
 
     public boolean isBookingTimedOut() {
-        return isBikeBookingTimedOut() || isMooringsBookingTimedOut();
+        return isBikeBookingTimedOut() || isSlotsBookingTimedOut();
     }
 
     public boolean isBikeBookingTimedOut() {
         return ismBookTaken() && (getRemainingBookingTime(getmBookDate()) <= 0);
     }
 
-    public boolean isMooringsBookingTimedOut() {
-        return ismMooringsTaken() && (getRemainingBookingTime(getmMooringsDate()) <= 0);
+    public boolean isSlotsBookingTimedOut() {
+        return ismSlotsTaken() && (getRemainingBookingTime(getmSlotsDate()) <= 0);
     }
 
 }

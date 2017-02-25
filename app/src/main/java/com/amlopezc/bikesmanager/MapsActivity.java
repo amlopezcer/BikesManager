@@ -69,7 +69,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     private HashMap<String, BikeStation> mStations;
     private BikeUser mBikeUser;
     private Booking mCurrentBookingBike;
-    private Booking mCurrentBookingMoorings;
+    private Booking mCurrentBookingSlots;
     private String mCurrentBikeStationAddress;
 
     private TextView mTextView_balance;
@@ -165,7 +165,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         imageButton_account.setOnClickListener(this);
 
         mCurrentBookingBike = null;
-        mCurrentBookingMoorings = null;
+        mCurrentBookingSlots = null;
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         //Ensuring connection data is set, showing ConnectionDataDialog otherwise.
@@ -354,16 +354,16 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     private String setMarkerSnippet(BikeStation bikeStation) {
         return i18n(R.string.text_snippet_marker,
                 bikeStation.getmAvailableBikes(),
-                bikeStation.getmTotalMoorings(),
-                bikeStation.getAvailableMoorings(),
-                bikeStation.getmTotalMoorings(),
+                bikeStation.getmTotalSlots(),
+                bikeStation.getAvailableSlots(),
+                bikeStation.getmTotalSlots(),
                 bikeStation.getCurrentFare());
     }
 
     //Set marker colors depending on the availability (green to red) or booking status (blue)
     private BitmapDescriptor getAvailabilityColor(BikeStation bikeStation) {
         if((mBikeUser.ismBookTaken() && mBikeUser.getmBookAddress().equals(bikeStation.getmAddress())) ||
-                (mBikeUser.ismMooringsTaken() && mBikeUser.getmMooringsAddress().equals(bikeStation.getmAddress())))
+                (mBikeUser.ismSlotsTaken() && mBikeUser.getmSlotsAddress().equals(bikeStation.getmAddress())))
             return BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE);
 
         int availability = bikeStation.getStationAvailability();
@@ -448,9 +448,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                     mBikeUser.takeBike();
                     break;
                 case HttpConstants.PUT_LEAVE_BIKE:
-                    if(mBikeUser.ismMooringsTaken()) {
+                    if(mBikeUser.ismSlotsTaken()) {
                         httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_BOOKING);
-                        httpDispatcher.doDelete(this, null, String.format(Locale.getDefault(), HttpConstants.DELETE_BOOKING_BY_USERNAME, mBikeUser.getmUserName(), Booking.BOOKING_TYPE_MOORINGS));
+                        httpDispatcher.doDelete(this, null, String.format(Locale.getDefault(), HttpConstants.DELETE_BOOKING_BY_USERNAME, mBikeUser.getmUserName(), Booking.BOOKING_TYPE_SLOTS));
                     }
                     mBikeUser.leaveBike();
                     break;
@@ -458,9 +458,9 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                     mBikeUser.bookBike(bikeStation.getmAddress());
                     mCurrentBookingBike = new Booking(mBikeUser.getmUserName(), bikeStation.getmAddress(), mBikeUser.getmBookDate(), Booking.BOOKING_TYPE_BIKE);
                     break;
-                case HttpConstants.PUT_BOOK_MOORINGS:
-                    mBikeUser.bookMoorings(bikeStation.getmAddress());
-                    mCurrentBookingMoorings = new Booking(mBikeUser.getmUserName(), bikeStation.getmAddress(), mBikeUser.getmMooringsDate(), Booking.BOOKING_TYPE_MOORINGS);
+                case HttpConstants.PUT_BOOK_SLOTS:
+                    mBikeUser.bookSlots(bikeStation.getmAddress());
+                    mCurrentBookingSlots = new Booking(mBikeUser.getmUserName(), bikeStation.getmAddress(), mBikeUser.getmSlotsDate(), Booking.BOOKING_TYPE_SLOTS);
                     break;
             }
 
@@ -473,6 +473,12 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
 
     //Check if the current user status allows to take or leave bikes
     private boolean isUserAbleToModifyBikeStation(String operation, BikeStation bikeStation) {
+        if (operation.equals(HttpConstants.PUT_TAKE_BIKE) &&
+                (bikeStation.getmAvailableBikes() == 0 && !mBikeUser.getmBookAddress().equals(bikeStation.getmAddress()))) {
+            showBasicErrorDialog(i18n(R.string.text_bike_operation_impossible), i18n(R.string.text_ok));
+            return false;
+        }
+
         if(operation.equals(HttpConstants.PUT_TAKE_BIKE) && (mBikeUser.ismBikeTaken() ||
                 (mBikeUser.ismBookTaken() && !mBikeUser.getmBookAddress().equals(bikeStation.getmAddress())))) {
             showBasicErrorDialog(i18n(R.string.text_bike_taken), i18n(R.string.text_ok));
@@ -480,7 +486,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
         }
 
         if(operation.equals(HttpConstants.PUT_LEAVE_BIKE) && (!mBikeUser.ismBikeTaken() ||
-                (mBikeUser.ismMooringsTaken() && !mBikeUser.getmMooringsAddress().equals(bikeStation.getmAddress())))) {
+                (mBikeUser.ismSlotsTaken() && !mBikeUser.getmSlotsAddress().equals(bikeStation.getmAddress())))) {
             showBasicErrorDialog(i18n(R.string.text_bike_not_taken), i18n(R.string.text_ok));
             return false;
         }
@@ -502,12 +508,12 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
     }
 
     //Book dialog response indicating the booking type
-    public void doPositiveClickBookDialog(boolean isBikeBooked, boolean isMooringsBooked) {
+    public void doPositiveClickBookDialog(boolean isBikeBooked, boolean isSlotsBooked) {
         if(isBikeBooked)
             performBikeStationOperation(HttpConstants.PUT_BOOK_BIKE);
 
-        if(isMooringsBooked)
-            performBikeStationOperation(HttpConstants.PUT_BOOK_MOORINGS);
+        if(isSlotsBooked)
+            performBikeStationOperation(HttpConstants.PUT_BOOK_SLOTS);
     }
 
     @Override
@@ -541,10 +547,10 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                             httpDispatcher.doPost(this, mCurrentBookingBike);
                             mCurrentBookingBike = null;
                         }
-                        if(mCurrentBookingMoorings != null) {
+                        if(mCurrentBookingSlots != null) {
                             httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_BOOKING);
-                            httpDispatcher.doPost(this, mCurrentBookingMoorings);
-                            mCurrentBookingMoorings = null;
+                            httpDispatcher.doPost(this, mCurrentBookingSlots);
+                            mCurrentBookingSlots = null;
                         }
 
                     } else { //Result related to the user update, everything goes fine.

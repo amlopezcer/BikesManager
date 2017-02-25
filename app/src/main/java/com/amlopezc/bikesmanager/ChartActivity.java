@@ -38,7 +38,7 @@ public class ChartActivity extends AppCompatActivity {
     private void initViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new ChartActivityFragmentBikes(), i18n(R.string.text_bikes));
-        adapter.addFragment(new ChartActivityFragmentMoorings(), i18n(R.string.text_moorings));
+        adapter.addFragment(new ChartActivityFragmentSlots(), i18n(R.string.text_slots));
         viewPager.setAdapter(adapter);
     }
 

@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 import java.util.Locale;
 
 @JsonPropertyOrder({"address", "availablebikes", "basicfare", "changetimestamp", "entityid", "id",
-        "latitude", "longitude", "md5", "reservedbikes", "reservedmoorings", "totalmoorings"})
+        "latitude", "longitude", "md5", "reservedbikes", "reservedslots", "totalslots"})
 public class BikeStation extends JSONBean {
 
     @JsonIgnore
@@ -20,10 +20,10 @@ public class BikeStation extends JSONBean {
     private int mId;
     @JsonProperty("address")
     private String mAddress;
-    @JsonProperty("totalmoorings")
-    private int mTotalMoorings;
-    @JsonProperty("reservedmoorings")
-    private int mReservedMoorings;
+    @JsonProperty("totalslots")
+    private int mTotalSlots;
+    @JsonProperty("reservedslots")
+    private int mReservedSlots;
     @JsonProperty("availablebikes")
     private int mAvailableBikes;
     @JsonProperty("reservedbikes")
@@ -41,13 +41,13 @@ public class BikeStation extends JSONBean {
 
     public BikeStation() {}
 
-    public BikeStation(int mId, String mAddress, int mTotalMoorings, int mReservedMoorings,
+    public BikeStation(int mId, String mAddress, int mTotalSlots, int mReservedSlots,
                        int mAvailableBikes, int mReservedBikes, float mLatitude, float mLongitude,
                        String mChangeTimestamp, float mBasicFare, String mEntityId) {
         this.mId = mId;
         this.mAddress = mAddress;
-        this.mTotalMoorings = mTotalMoorings;
-        this.mReservedMoorings = mReservedMoorings;
+        this.mTotalSlots = mTotalSlots;
+        this.mReservedSlots = mReservedSlots;
         this.mAvailableBikes = mAvailableBikes;
         this.mReservedBikes = mReservedBikes;
         this.mLatitude = mLatitude;
@@ -63,9 +63,9 @@ public class BikeStation extends JSONBean {
 
     public String getmAddress() { return mAddress; }
 
-    public int getmTotalMoorings() { return mTotalMoorings; }
+    public int getmTotalSlots() { return mTotalSlots; }
 
-    public int getmReservedMoorings() { return mReservedMoorings; }
+    public int getmReservedSlots() { return mReservedSlots; }
 
     public int getmAvailableBikes() { return mAvailableBikes; }
 
@@ -100,16 +100,16 @@ public class BikeStation extends JSONBean {
         support.firePropertyChange("mAddress", oldValue, mAddress);
     }
 
-    public void setmTotalMoorings(int mTotalMoorings) {
-        int oldValue = this.mTotalMoorings;
-        this.mTotalMoorings = mTotalMoorings;
-        support.firePropertyChange("mTotalMoorings", oldValue, mTotalMoorings);
+    public void setmTotalSlots(int mTotalSlots) {
+        int oldValue = this.mTotalSlots;
+        this.mTotalSlots = mTotalSlots;
+        support.firePropertyChange("mTotalSlots", oldValue, mTotalSlots);
     }
 
-    public void setmReservedMoorings(int mReservedMoorings) {
-        int oldValue = this.mReservedMoorings;
-        this.mReservedMoorings = mReservedMoorings;
-        support.firePropertyChange("mReservedMoorings", oldValue, mReservedMoorings);
+    public void setmReservedSlots(int mReservedSlots) {
+        int oldValue = this.mReservedSlots;
+        this.mReservedSlots = mReservedSlots;
+        support.firePropertyChange("mReservedSlots", oldValue, mReservedSlots);
     }
 
     public void setmAvailableBikes(int mAvailableBikes) {
@@ -165,8 +165,8 @@ public class BikeStation extends JSONBean {
         BikeStation that = (BikeStation) o;
 
         if (mId != that.mId) return false;
-        if (mTotalMoorings != that.mTotalMoorings) return false;
-        if (mReservedMoorings != that.mReservedMoorings) return false;
+        if (mTotalSlots != that.mTotalSlots) return false;
+        if (mReservedSlots != that.mReservedSlots) return false;
         if (mAvailableBikes != that.mAvailableBikes) return false;
         if (mReservedBikes != that.mReservedBikes) return false;
         if (Float.compare(that.mLatitude, mLatitude) != 0) return false;
@@ -182,8 +182,8 @@ public class BikeStation extends JSONBean {
     public int hashCode() {
         int result = mId;
         result = 31 * result + mAddress.hashCode();
-        result = 31 * result + mTotalMoorings;
-        result = 31 * result + mReservedMoorings;
+        result = 31 * result + mTotalSlots;
+        result = 31 * result + mReservedSlots;
         result = 31 * result + mAvailableBikes;
         result = 31 * result + mReservedBikes;
         result = 31 * result + (mLatitude != +0.0f ? Float.floatToIntBits(mLatitude) : 0);
@@ -196,8 +196,8 @@ public class BikeStation extends JSONBean {
     //</editor-fold>
 
 
-    public int getAvailableMoorings() {
-        return getmTotalMoorings() - getmAvailableBikes() - getmReservedBikes() - getmReservedMoorings();
+    public int getAvailableSlots() {
+        return getmTotalSlots() - getmAvailableBikes() - getmReservedBikes() - getmReservedSlots();
     }
 
     //Get current fare for the station, depending on the availability
@@ -222,7 +222,7 @@ public class BikeStation extends JSONBean {
 
     //Get station availability
     public int getStationAvailability() {
-        return (getmAvailableBikes()*100) / getmTotalMoorings();
+        return (getmAvailableBikes()*100) / getmTotalSlots();
     }
 
     //Update station status, will return null if the op can't be completed
@@ -239,8 +239,8 @@ public class BikeStation extends JSONBean {
                 break;
             case HttpConstants.PUT_LEAVE_BIKE:
                 //Is there room to leave bikes?
-                isOperationPossible = getAvailableMoorings() > 0 ||
-                        (getAvailableMoorings() == 0 && bikeUser.getmMooringsAddress().equals(getmAddress()));
+                isOperationPossible = getAvailableSlots() > 0 ||
+                        (getAvailableSlots() == 0 && bikeUser.getmSlotsAddress().equals(getmAddress()));
                 if(isOperationPossible)
                     leaveBike(bikeUser);
                 break;
@@ -250,11 +250,11 @@ public class BikeStation extends JSONBean {
                 if(isOperationPossible)
                     bookBike();
                 break;
-            case HttpConstants.PUT_BOOK_MOORINGS:
-                //Are there moorings to book?
-                isOperationPossible = getAvailableMoorings() > 0;
+            case HttpConstants.PUT_BOOK_SLOTS:
+                //Are there slots to book?
+                isOperationPossible = getAvailableSlots() > 0;
                 if(isOperationPossible)
-                    bookMoorings();
+                    bookSlots();
                 break;
         }
 
@@ -276,8 +276,8 @@ public class BikeStation extends JSONBean {
     }
 
     private void leaveBike(BikeUser bikeUser) {
-        if(bikeUser.ismMooringsTaken())
-            cancelMooringsBooking();
+        if(bikeUser.ismSlotsTaken())
+            cancelSlotsBooking();
 
         mAvailableBikes++;
     }
@@ -287,8 +287,8 @@ public class BikeStation extends JSONBean {
         mReservedBikes++;
     }
 
-    private void bookMoorings() {
-        mReservedMoorings++;
+    private void bookSlots() {
+        mReservedSlots++;
     }
 
     public void cancelBikeBooking(){
@@ -297,8 +297,8 @@ public class BikeStation extends JSONBean {
         mChangeTimestamp = getCurrentDateFormatted();
     }
 
-    public void cancelMooringsBooking(){
-        mReservedMoorings--;
+    public void cancelSlotsBooking(){
+        mReservedSlots--;
         mChangeTimestamp = getCurrentDateFormatted();
     }
 

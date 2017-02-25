@@ -36,23 +36,23 @@ import java.util.Locale;
 public class AccountActivityFragment extends Fragment implements View.OnClickListener,
         AsyncTaskListener<String> {
 
-    //Constants to position the countdown timer control of bikes and moorings in the 'mIsTimerRunning' array
+    //Constants to position the countdown timer control of bikes and slots in the 'mIsTimerRunning' array
     private final int BIKE_TIMER_POS = 0;
-    private final int MOORINGS_TIMER_POS = 1;
+    private final int SLOTS_TIMER_POS = 1;
     //Constant to control the booking which want to be canceled
     private final int OP_CANCEL_BIKE = 0;
-    private final int OP_CANCEL_MOORINGS = 1;
+    private final int OP_CANCEL_SLOTS = 1;
 
     private BikeUser mBikeUser; //Current logged user (singleton instance)
-    private Button mButtonCancelBikeBook, mButtonCancelMooringsBook;
-    private TextView mtTextViewBookBikeAddress, mTextViewBookBikeClock, mTextViewBookMooringsAddress,
+    private Button mButtonCancelBikeBook, mButtonCancelSlotsBook;
+    private TextView mtTextViewBookBikeAddress, mTextViewBookBikeClock, mTextViewBookSlotsAddress,
             mTextViewBookMooringClock, mTextViewBalance;
-    private CountDownTimer mCountDownTimerBike, mCountDownTimerMoorings;
+    private CountDownTimer mCountDownTimerBike, mCountDownTimerSlots;
     private ArrayList<Boolean> mIsTimerRunning; //To control countdown timers
-    private boolean mCancelBike; //Cancel operation selected (bikes or moorings)
-    private boolean mCancelMoorings; //Cancel operation selected (bikes or moorings)
+    private boolean mCancelBike; //Cancel operation selected (bikes or slots)
+    private boolean mCancelSlots; //Cancel operation selected (bikes or slots)
     private String mStationAddressBikes;
-    private String mStationAddressMoorings;
+    private String mStationAddressSlots;
     private boolean mIsActivityRunning; //To control timers behavior when they finish
 
 
@@ -71,12 +71,12 @@ public class AccountActivityFragment extends Fragment implements View.OnClickLis
         mIsTimerRunning = new ArrayList<>();
         //In the beginning, no countdown timer is running
         mIsTimerRunning.add(BIKE_TIMER_POS, false);
-        mIsTimerRunning.add(MOORINGS_TIMER_POS, false);
+        mIsTimerRunning.add(SLOTS_TIMER_POS, false);
 
         mCancelBike = false;
-        mCancelMoorings = false;
+        mCancelSlots = false;
         mStationAddressBikes = "";
-        mStationAddressMoorings = "";
+        mStationAddressSlots = "";
 
         initComponentsUI(view);
         disableCancelButtonsIfNeeded();
@@ -93,8 +93,8 @@ public class AccountActivityFragment extends Fragment implements View.OnClickLis
             mBikeUser.cancelBookBike();
             updatable = true;
         }
-        if(mBikeUser.isMooringsBookingTimedOut()) {
-            mBikeUser.cancelBookMoorings();
+        if(mBikeUser.isSlotsBookingTimedOut()) {
+            mBikeUser.cancelBookSlots();
             updatable = true;
         }
         if(updatable)
@@ -118,13 +118,13 @@ public class AccountActivityFragment extends Fragment implements View.OnClickLis
 
         mButtonCancelBikeBook = (Button)view.findViewById(R.id.button_cancel_book_bike);
         mButtonCancelBikeBook.setOnClickListener(this);
-        mButtonCancelMooringsBook = (Button)view.findViewById(R.id.button_cancel_book_moorings);
-        mButtonCancelMooringsBook.setOnClickListener(this);
+        mButtonCancelSlotsBook = (Button)view.findViewById(R.id.button_cancel_book_slots);
+        mButtonCancelSlotsBook.setOnClickListener(this);
 
         mtTextViewBookBikeAddress = (TextView) view.findViewById(R.id.textView_book_bike_address);
         mTextViewBookBikeClock = (TextView)view.findViewById(R.id.textView_book_bike_clock);
-        mTextViewBookMooringsAddress = (TextView) view.findViewById(R.id.textView_book_moorings_address);
-        mTextViewBookMooringClock = (TextView)view.findViewById(R.id.textView_book_moorings_clock);
+        mTextViewBookSlotsAddress = (TextView) view.findViewById(R.id.textView_book_slots_address);
+        mTextViewBookMooringClock = (TextView)view.findViewById(R.id.textView_book_slots_clock);
         mTextViewBalance = (TextView)view.findViewById(R.id.textView_profile_balance);
     }
 
@@ -134,9 +134,9 @@ public class AccountActivityFragment extends Fragment implements View.OnClickLis
             mButtonCancelBikeBook.setEnabled(false);
             mButtonCancelBikeBook.setTextColor(ContextCompat.getColor(getActivity(), R.color.lightGrey));
         }
-        if(!mBikeUser.ismMooringsTaken()) {
-            mButtonCancelMooringsBook.setEnabled(mBikeUser.ismMooringsTaken());
-            mButtonCancelMooringsBook.setTextColor(ContextCompat.getColor(getActivity(), R.color.lightGrey));
+        if(!mBikeUser.ismSlotsTaken()) {
+            mButtonCancelSlotsBook.setEnabled(mBikeUser.ismSlotsTaken());
+            mButtonCancelSlotsBook.setTextColor(ContextCompat.getColor(getActivity(), R.color.lightGrey));
         }
     }
 
@@ -174,13 +174,13 @@ public class AccountActivityFragment extends Fragment implements View.OnClickLis
             mTextViewBookBikeClock.setText("");
         }
 
-        if(mBikeUser.ismMooringsTaken()) {
-            mTextViewBookMooringsAddress.setText(mBikeUser.getmMooringsAddress());
-            if(!mIsTimerRunning.get(MOORINGS_TIMER_POS)) {
+        if(mBikeUser.ismSlotsTaken()) {
+            mTextViewBookSlotsAddress.setText(mBikeUser.getmSlotsAddress());
+            if(!mIsTimerRunning.get(SLOTS_TIMER_POS)) {
                 //Get remaining booking time
-                long remainingTime = mBikeUser.getRemainingBookingTime(mBikeUser.getmMooringsDate());
-                mIsTimerRunning.add(MOORINGS_TIMER_POS, true);
-                mCountDownTimerMoorings = new CountDownTimer(remainingTime, 1000) {
+                long remainingTime = mBikeUser.getRemainingBookingTime(mBikeUser.getmSlotsDate());
+                mIsTimerRunning.add(SLOTS_TIMER_POS, true);
+                mCountDownTimerSlots = new CountDownTimer(remainingTime, 1000) {
                     public void onTick(long millisUntilFinished) {
                         int seconds = (int) millisUntilFinished / 1000;
                         int minutes = seconds / 60;
@@ -189,9 +189,9 @@ public class AccountActivityFragment extends Fragment implements View.OnClickLis
                             mTextViewBookMooringClock.setText(i18n(R.string.textView_remaining_time, minutes, seconds));
                     }
                     public void onFinish() {
-                        finishTimer(OP_CANCEL_MOORINGS);
+                        finishTimer(OP_CANCEL_SLOTS);
                         if(mIsActivityRunning) { //Update user from here only if the activity is running
-                            mBikeUser.cancelBookMoorings();
+                            mBikeUser.cancelBookSlots();
                             updateServerUser();
                             initBookingData();
                             disableCancelButtonsIfNeeded();
@@ -200,7 +200,7 @@ public class AccountActivityFragment extends Fragment implements View.OnClickLis
                 }.start();
             }
         } else{
-            mTextViewBookMooringsAddress.setText(i18n(R.string.textView_no_moorings));
+            mTextViewBookSlotsAddress.setText(i18n(R.string.textView_no_slots));
             mTextViewBookMooringClock.setText("");
         }
 
@@ -243,8 +243,8 @@ public class AccountActivityFragment extends Fragment implements View.OnClickLis
             case R.id.button_cancel_book_bike:
                 confirmCancelBooking(OP_CANCEL_BIKE);
                 break;
-            case R.id.button_cancel_book_moorings:
-                confirmCancelBooking(OP_CANCEL_MOORINGS);
+            case R.id.button_cancel_book_slots:
+                confirmCancelBooking(OP_CANCEL_SLOTS);
                 break;
         }
     }
@@ -275,8 +275,8 @@ public class AccountActivityFragment extends Fragment implements View.OnClickLis
                                 //Delete bookings
                                 if(mBikeUser.ismBookTaken())
                                     cancelBooking(OP_CANCEL_BIKE, true);
-                                if(mBikeUser.ismMooringsTaken())
-                                    cancelBooking(OP_CANCEL_MOORINGS, true);
+                                if(mBikeUser.ismSlotsTaken())
+                                    cancelBooking(OP_CANCEL_SLOTS, true);
 
                                 deleteServerAccount();
                                 dialog.cancel();
@@ -335,11 +335,11 @@ public class AccountActivityFragment extends Fragment implements View.OnClickLis
             mBikeUser.cancelBookBike();
             bookingType = Booking.BOOKING_TYPE_BIKE;
         } else {
-            mCancelMoorings = true;
-            mStationAddressMoorings = mBikeUser.getmMooringsAddress();
-            address = mBikeUser.getmMooringsAddress().replaceAll(" ", "_"); //To avoid issues with urls
-            mBikeUser.cancelBookMoorings();
-            bookingType = Booking.BOOKING_TYPE_MOORINGS;
+            mCancelSlots = true;
+            mStationAddressSlots = mBikeUser.getmSlotsAddress();
+            address = mBikeUser.getmSlotsAddress().replaceAll(" ", "_"); //To avoid issues with urls
+            mBikeUser.cancelBookSlots();
+            bookingType = Booking.BOOKING_TYPE_SLOTS;
         }
 
         //Get the station, its update occurs when the server responds
@@ -367,9 +367,9 @@ public class AccountActivityFragment extends Fragment implements View.OnClickLis
                 mCountDownTimerBike.cancel();
             mIsTimerRunning.add(BIKE_TIMER_POS, false);
         } else {
-            if(mCountDownTimerMoorings != null)
-                mCountDownTimerMoorings.cancel();
-            mIsTimerRunning.add(MOORINGS_TIMER_POS, false);
+            if(mCountDownTimerSlots != null)
+                mCountDownTimerSlots.cancel();
+            mIsTimerRunning.add(SLOTS_TIMER_POS, false);
         }
     }
 
@@ -391,10 +391,10 @@ public class AccountActivityFragment extends Fragment implements View.OnClickLis
                         httpDispatcher.doPut(this, bikeStation, HttpConstants.PUT_BASIC_BY_ID);
                     }
 
-                    if(mCancelMoorings && mStationAddressMoorings.equals(bikeStation.getmAddress())) {
-                        bikeStation.cancelMooringsBooking();
-                        mCancelMoorings = false;
-                        mStationAddressMoorings = "";
+                    if(mCancelSlots && mStationAddressSlots.equals(bikeStation.getmAddress())) {
+                        bikeStation.cancelSlotsBooking();
+                        mCancelSlots = false;
+                        mStationAddressSlots = "";
                         httpDispatcher.doPut(this, bikeStation, HttpConstants.PUT_BASIC_BY_ID);
                     }
                 } catch (Exception e) {

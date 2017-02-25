@@ -153,7 +153,7 @@ public class ChartActivityFragmentBikes extends Fragment implements AsyncTaskLis
         int reservedBikes = 0;
 
         for(BikeStation bikeStation : bikeStationList) {
-            totalBikes += bikeStation.getmTotalMoorings();
+            totalBikes += bikeStation.getmTotalSlots();
             availableBikes += bikeStation.getmAvailableBikes();
             reservedBikes += bikeStation.getmReservedBikes();
         }

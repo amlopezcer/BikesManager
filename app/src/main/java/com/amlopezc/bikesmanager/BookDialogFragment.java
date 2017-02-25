@@ -13,7 +13,7 @@ import android.widget.CompoundButton;
 import com.amlopezc.bikesmanager.entity.BikeUser;
 
 /**
- * Dialog to select the booking you want to do: moorings or bikes
+ * Dialog to select the booking you want to do: slots or bikes
  */
 public class BookDialogFragment extends DialogFragment {
 
@@ -21,7 +21,7 @@ public class BookDialogFragment extends DialogFragment {
     public static final String CLASS_ID = "BookDialogFragment";
 
     private CheckBox mCheckBox_bike;
-    private CheckBox mCheckBox_moorings;
+    private CheckBox mCheckBox_slots;
     private BikeUser mBikeUser;
 
     @Override
@@ -34,7 +34,7 @@ public class BookDialogFragment extends DialogFragment {
         final View view = inflater.inflate(R.layout.dialog_book, null);
 
         mCheckBox_bike = (CheckBox) view.findViewById(R.id.checkbox_bookBike);
-        mCheckBox_moorings = (CheckBox) view.findViewById(R.id.checkbox_bookMoorings);
+        mCheckBox_slots = (CheckBox) view.findViewById(R.id.checkbox_bookSlots);
         mBikeUser = BikeUser.getInstance();
 
         setCheckBoxAvailability();
@@ -45,8 +45,8 @@ public class BookDialogFragment extends DialogFragment {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 boolean isBikeBooked = mCheckBox_bike.isChecked();
-                                boolean isMooringsBooked =  mCheckBox_moorings.isChecked();
-                                ((MapsActivity) getActivity()).doPositiveClickBookDialog(isBikeBooked, isMooringsBooked);
+                                boolean isSlotsBooked =  mCheckBox_slots.isChecked();
+                                ((MapsActivity) getActivity()).doPositiveClickBookDialog(isBikeBooked, isSlotsBooked);
                                 dialog.cancel();
                             }
                         }).
@@ -66,14 +66,14 @@ public class BookDialogFragment extends DialogFragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).
-                        setEnabled(mCheckBox_bike.isChecked() || mCheckBox_moorings.isChecked());
+                        setEnabled(mCheckBox_bike.isChecked() || mCheckBox_slots.isChecked());
             }
         });
-        mCheckBox_moorings.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        mCheckBox_slots.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).
-                        setEnabled(mCheckBox_bike.isChecked() || mCheckBox_moorings.isChecked());
+                        setEnabled(mCheckBox_bike.isChecked() || mCheckBox_slots.isChecked());
             }
         });
 
@@ -83,7 +83,7 @@ public class BookDialogFragment extends DialogFragment {
     //Enable or disable checkboxes depending on user current booking status
     private void setCheckBoxAvailability() {
         mCheckBox_bike.setEnabled(!(mBikeUser.ismBikeTaken() || mBikeUser.ismBookTaken())); //this "book" refers to bikes
-        mCheckBox_moorings.setEnabled(!mBikeUser.ismMooringsTaken()); //This filed refers only to a moorings booking, you cannot take moorings
+        mCheckBox_slots.setEnabled(!mBikeUser.ismSlotsTaken()); //This filed refers only to a slots booking, you cannot take slots
     }
 
     //Internationalization method

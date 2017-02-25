@@ -26,7 +26,7 @@ public final class HttpConstants {
     public static final String PUT_TAKE_BIKE = "take";
     public static final String PUT_LEAVE_BIKE = "leave";
     public static final String PUT_BOOK_BIKE = "book_bike";
-    public static final String PUT_BOOK_MOORINGS = "book_slot";
+    public static final String PUT_BOOK_SLOTS = "book_slot";
     public static final String PUT_USER_BASIC_DATA = "basicdata";
 
     // To distinguish DELETE ops
