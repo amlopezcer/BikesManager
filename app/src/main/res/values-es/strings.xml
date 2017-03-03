@@ -35,7 +35,7 @@
     <string name="text_error">Error</string>
     <string name="text_operation_completed">Operación completada</string>
     <string name="text_bikes">Bicicletas</string>
-    <string name="text_moorings">Anclajes</string>
+    <string name="text_slots">Anclajes</string>
     <string name="text_sync_error">Error al sincronizar con el servidor</string>
 
     <!-- File to store username and password -->
@@ -56,7 +56,7 @@
 
     <!-- ChartActivity.java -->
     <string name="chart_total_bikes_msg">Bicis totales: %1$d</string>
-    <string name="chart_total_moorings_msg">Anclajes totales: %1$d</string>
+    <string name="chart_total_slots_msg">Anclajes totales: %1$d</string>
 
     <!-- SigninDialogFragment.java -->
     <string name="builder_sign_in_msg">Introducir datos de usuario</string>
@@ -86,7 +86,7 @@
     <string name="dialog_cancel_positive">Sí, cancelar</string>
     <string name="dialog_delete">Borrar</string>
     <string name="textView_no_bikes">No hay bicis reservadas</string>
-    <string name="textView_no_moorings">No hay anclajes reservados</string>
+    <string name="textView_no_slots">No hay anclajes reservados</string>
     <string name="textView_remaining_time">Tiempo restante: %1$02d:%2$02d</string>
     <string name="dialog_error_delete_account">Primero deja la bici</string>
 
@@ -116,7 +116,7 @@
 
     <!-- fragment_account.xml -->
     <string name="textView_book_bike">Bici reservada</string>
-    <string name="textView_book_moorings">Anclaje reservado</string>
+    <string name="textView_book_slots">Anclaje reservado</string>
     <string name="textView_profile_balance_text">Saldo actual</string>
     <string name="button_deposit">Ingresar</string>
     <string name="button_edit_profile">Editar perfil</string>
@@ -159,7 +159,7 @@
 
     <!-- dialog_book.xml -->
     <string name="dialog_book_bike">Reservar bici</string>
-    <string name="dialog_book_moorings">Reservar anclaje</string>
+    <string name="dialog_book_slots">Reservar anclaje</string>
 
     <!-- preferences.xml -->
     <string name="title_connection">Datos de conexión</string>

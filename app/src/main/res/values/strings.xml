@@ -35,7 +35,7 @@
     <string name="text_error">Error</string>
     <string name="text_operation_completed">Operation completed</string>
     <string name="text_bikes">Bicycles</string>
-    <string name="text_moorings">Slots</string>
+    <string name="text_slots">Slots</string>
     <string name="text_sync_error">Error while sync with the server</string>
 
     <!-- File to store username and password -->
@@ -56,7 +56,7 @@
 
     <!-- ChartActivity.java -->
     <string name="chart_total_bikes_msg">Total bikes: %1$d</string>
-    <string name="chart_total_moorings_msg">Total slots: %1$d</string>
+    <string name="chart_total_slots_msg">Total slots: %1$d</string>
 
     <!-- SigninDialogFragment.java -->
     <string name="builder_sign_in_msg">Enter user data</string>
@@ -86,7 +86,7 @@
     <string name="dialog_cancel_positive">Yes, cancel</string>
     <string name="dialog_delete">Delete</string>
     <string name="textView_no_bikes">No bikes booked</string>
-    <string name="textView_no_moorings">No slots booked</string>
+    <string name="textView_no_slots">No slots booked</string>
     <string name="textView_remaining_time">Remaining time: %1$02d:%2$02d</string>
     <string name="dialog_error_delete_account">Leave your bike first</string>
 
@@ -116,7 +116,7 @@
 
     <!-- fragment_account.xml -->
     <string name="textView_book_bike">Booked bike</string>
-    <string name="textView_book_moorings">Booked slots</string>
+    <string name="textView_book_slots">Booked slots</string>
     <string name="textView_profile_balance_text">Current balance</string>
     <string name="button_deposit">Deposit</string>
     <string name="button_edit_profile">Edit profile</string>
@@ -159,7 +159,7 @@
 
     <!-- dialog_book.xml -->
     <string name="dialog_book_bike">Book bike</string>
-    <string name="dialog_book_moorings">Book slot</string>
+    <string name="dialog_book_slots">Book slot</string>
 
     <!-- preferences.xml -->
     <string name="title_connection">Connection data</string>

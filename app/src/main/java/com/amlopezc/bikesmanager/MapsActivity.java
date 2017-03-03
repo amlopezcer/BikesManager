@@ -444,6 +444,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                     if(mBikeUser.ismBookTaken()) {
                         httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_BOOKING);
                         httpDispatcher.doDelete(this, null, String.format(Locale.getDefault(), HttpConstants.DELETE_BOOKING_BY_USERNAME, mBikeUser.getmUserName(), Booking.BOOKING_TYPE_BIKE));
+                        operation = HttpConstants.PUT_TAKE_WITH_BOOK;
                     }
                     mBikeUser.takeBike();
                     break;
@@ -451,6 +452,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMarke
                     if(mBikeUser.ismSlotsTaken()) {
                         httpDispatcher = new HttpDispatcher(this, HttpConstants.ENTITY_BOOKING);
                         httpDispatcher.doDelete(this, null, String.format(Locale.getDefault(), HttpConstants.DELETE_BOOKING_BY_USERNAME, mBikeUser.getmUserName(), Booking.BOOKING_TYPE_SLOTS));
+                        operation = HttpConstants.PUT_LEAVE_WITH_BOOK;
                     }
                     mBikeUser.leaveBike();
                     break;
