@@ -385,17 +385,15 @@ public class AccountActivityFragment extends Fragment implements View.OnClickLis
 
                     //Update bike station
                     if (mCancelBike && mStationAddressBikes.equals(bikeStation.getmAddress())) {
-                        bikeStation.cancelBikeBooking();
                         mCancelBike = false;
                         mStationAddressBikes = "";
-                        httpDispatcher.doPut(this, bikeStation, HttpConstants.PUT_BASIC_BY_ID);
+                        httpDispatcher.doPut(this, bikeStation, HttpConstants.PUT_CANCEL_BOOK_BIKE);
                     }
 
                     if(mCancelSlots && mStationAddressSlots.equals(bikeStation.getmAddress())) {
-                        bikeStation.cancelSlotsBooking();
                         mCancelSlots = false;
                         mStationAddressSlots = "";
-                        httpDispatcher.doPut(this, bikeStation, HttpConstants.PUT_BASIC_BY_ID);
+                        httpDispatcher.doPut(this, bikeStation, HttpConstants.PUT_CANCEL_BOOK_SLOTS);
                     }
                 } catch (Exception e) {
                     Log.e("[GET Result]" + getClass().getCanonicalName(), e.getLocalizedMessage(), e);

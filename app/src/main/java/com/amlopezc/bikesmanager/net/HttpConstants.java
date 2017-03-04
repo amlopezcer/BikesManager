@@ -28,9 +28,10 @@ public final class HttpConstants {
     public static final String PUT_BOOK_BIKE = "book_bike";
     public static final String PUT_BOOK_SLOTS = "book_slots";
     public static final String PUT_USER_BASIC_DATA = "basicdata";
-
     public static final String PUT_TAKE_WITH_BOOK = "take_book";
     public static final String PUT_LEAVE_WITH_BOOK = "leave_book";
+    public static final String PUT_CANCEL_BOOK_BIKE = "cancel_book_bike";
+    public static final String PUT_CANCEL_BOOK_SLOTS = "cancel_book_slots";
 
     // To distinguish DELETE ops
     public static final String DELETE_BASIC_BY_ID = null; //no need of data to complete de basic URL

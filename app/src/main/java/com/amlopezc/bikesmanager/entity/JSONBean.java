@@ -77,10 +77,13 @@ public abstract class JSONBean implements PropertyChangeListener {
         return builder.append("T")
                 .append(timeFormat.format(cal.getTime()))
                 .append(monthString).toString();
+
+        //return Calendar.getInstance().getTime().toString();
     }
 
     //Obtain a long representation of a date
     protected long getLongDateStored(String dateStored) {
+
         DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
         //Received: yyyy-mm-ddThh:mm:ss+01:00; wanted:yyyy-MM-dd HH:mm:ss
         String dateInString = dateStored.substring(0, 10) + " " + dateStored.substring(11, 19);

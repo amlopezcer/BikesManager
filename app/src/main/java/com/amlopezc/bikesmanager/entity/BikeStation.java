@@ -234,72 +234,28 @@ public class BikeStation extends JSONBean {
                 //Are there bikes to take?
                 isOperationPossible = getmAvailableBikes() > 0 ||
                         (getmAvailableBikes() == 0 && bikeUser.getmBookAddress().equals(getmAddress()));
-                if(isOperationPossible)
-                    takeBike(bikeUser);
                 break;
             case HttpConstants.PUT_LEAVE_BIKE:
                 //Is there room to leave bikes?
                 isOperationPossible = getAvailableSlots() > 0 ||
                         (getAvailableSlots() == 0 && bikeUser.getmSlotsAddress().equals(getmAddress()));
-                if(isOperationPossible)
-                    leaveBike(bikeUser);
                 break;
             case HttpConstants.PUT_BOOK_BIKE:
                 //Are there bikes to book?
                 isOperationPossible = getmAvailableBikes() > 0;
-                if(isOperationPossible)
-                    bookBike();
                 break;
             case HttpConstants.PUT_BOOK_SLOTS:
                 //Are there slots to book?
                 isOperationPossible = getAvailableSlots() > 0;
-                if(isOperationPossible)
-                    bookSlots();
                 break;
         }
 
         //Format TimeStamp and return the instance
-        if(isOperationPossible) {
-            setmChangeTimestamp(getCurrentDateFormatted());
+        if(isOperationPossible)
             return this;
-        }
 
         //Op not possible
         return null;
-    }
-
-    private void takeBike(BikeUser bikeUser) {
-        if(bikeUser.ismBookTaken())
-            cancelBikeBooking();
-
-        mAvailableBikes--;
-    }
-
-    private void leaveBike(BikeUser bikeUser) {
-        if(bikeUser.ismSlotsTaken())
-            cancelSlotsBooking();
-
-        mAvailableBikes++;
-    }
-
-    private void bookBike() {
-        mAvailableBikes--;
-        mReservedBikes++;
-    }
-
-    private void bookSlots() {
-        mReservedSlots++;
-    }
-
-    public void cancelBikeBooking(){
-        mAvailableBikes++;
-        mReservedBikes--;
-        mChangeTimestamp = getCurrentDateFormatted();
-    }
-
-    public void cancelSlotsBooking(){
-        mReservedSlots--;
-        mChangeTimestamp = getCurrentDateFormatted();
     }
 
     //Map markers header (id - address)
