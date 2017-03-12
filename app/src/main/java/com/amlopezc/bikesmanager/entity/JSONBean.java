@@ -71,12 +71,7 @@ public abstract class JSONBean implements PropertyChangeListener {
         String currentDateString = calendar.getTime().toString();
         boolean winterTime = currentDateString.contains("CET");
 
-        Log.d("PRUEBA HORARIA", "Mi String de hora= "+currentDateString+"; mi boolean winterTime= "+winterTime);
-
-        //int month = Calendar.getInstance().get(Calendar.MONTH);
-
         String monthString; //Required because of JSON date formats (commented before)
-        //if(month < 3 || month > 9) //0-index (3 = April, 9 = October), so before april or after october it's winter time
         if(winterTime)
             monthString = "+01:00"; //winter
         else
@@ -85,8 +80,6 @@ public abstract class JSONBean implements PropertyChangeListener {
         return builder.append("T")
                 .append(timeFormat.format(calendar.getTime()))
                 .append(monthString).toString();
-
-        //return Calendar.getInstance().getTime().toString();
     }
 
     //Obtain a long representation of a date
