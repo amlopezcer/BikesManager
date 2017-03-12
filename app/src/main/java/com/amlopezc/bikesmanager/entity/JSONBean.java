@@ -60,22 +60,30 @@ public abstract class JSONBean implements PropertyChangeListener {
 
     public abstract void setServerId(int serverId);
 
-    //Format date data to insert it correctly in the Database, format: yyyy-mm-ddThh:mm:ss+02:00 (or +01:00), depending on the time change every six months
+    //Format date data to insert it correctly in the Database, format: yyyy-mm-ddThh:mm:ss+02:00 (or +01:00), depending on the summer time
     protected String getCurrentDateFormatted() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
-        Calendar cal = Calendar.getInstance();
-        StringBuilder builder = new StringBuilder(dateFormat.format(cal.getTime()));
-        int month = Calendar.getInstance().get(Calendar.MONTH);
+
+        Calendar calendar = Calendar.getInstance();
+        StringBuilder builder = new StringBuilder(dateFormat.format(calendar.getTime()));
+
+        String currentDateString = calendar.getTime().toString();
+        boolean winterTime = currentDateString.contains("CET");
+
+        Log.d("PRUEBA HORARIA", "Mi String de hora= "+currentDateString+"; mi boolean winterTime= "+winterTime);
+
+        //int month = Calendar.getInstance().get(Calendar.MONTH);
 
         String monthString; //Required because of JSON date formats (commented before)
-        if(month < 3 || month > 9) //0-index (3 = April, 9 = October), so before april or after october it's winter time
+        //if(month < 3 || month > 9) //0-index (3 = April, 9 = October), so before april or after october it's winter time
+        if(winterTime)
             monthString = "+01:00"; //winter
         else
             monthString = "+02:00"; //summer
 
         return builder.append("T")
-                .append(timeFormat.format(cal.getTime()))
+                .append(timeFormat.format(calendar.getTime()))
                 .append(monthString).toString();
 
         //return Calendar.getInstance().getTime().toString();
